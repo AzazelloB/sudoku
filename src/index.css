@@ -9,7 +9,13 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: theme('colors.gray.800');
   background-color: theme('colors.gray.200');
+}
+
+.dark body {
+  color: theme('colors.gray.200');
+  background-color: theme('colors.gray.900');
 }
 
 code {

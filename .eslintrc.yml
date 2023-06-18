@@ -27,5 +27,6 @@ rules: {
   no-shadow: off,
   no-underscore-dangle: off,
   import/no-unresolved: off,
+  no-unused-vars: warn,
 }
 
