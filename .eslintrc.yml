@@ -26,12 +26,6 @@ rules: {
   no-restricted-syntax: off,
   no-shadow: off,
   no-underscore-dangle: off,
+  import/no-unresolved: off,
 }
-settings: {
-  import/resolver: {
-    node: {
-      paths: ['src'],
-      extensions: ['.js', '.jsx', '.ts', '.tsx']
-    }
-  }
-}
+
