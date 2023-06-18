@@ -3,6 +3,10 @@ import { createEffect, createSignal, onCleanup } from 'solid-js';
 import { colors } from '~/constants/theme';
 import { useGlobalContext } from '~/context/GlobalContext';
 
+const sleep = (ms) => new Promise((resolve) => {
+  setTimeout(resolve, ms);
+});
+
 const HomePage = () => {
   const { theme } = useGlobalContext();
 
@@ -20,13 +24,60 @@ const HomePage = () => {
   const selectedCells = [];
   const cells = [];
 
-  const generateGrid = () => {
+  const updateAvaliable = (cell, value) => {
+    // remove value from avaliable of cells in same row
+    for (let i = 0; i < cellsInRow; i += 1) {
+      const cellInRow = cells[i + cell.y * cellsInRow];
+      if (cellInRow.avaliable.includes(value)) {
+        cellInRow.avaliable.splice(cellInRow.avaliable.indexOf(value), 1);
+      }
+    }
+
+    // remove value from avaliable of cells in same column
+    for (let i = 0; i < cellsInColumn; i += 1) {
+      const cellInColumn = cells[cell.x + i * cellsInRow];
+      if (cellInColumn.avaliable.includes(value)) {
+        cellInColumn.avaliable.splice(cellInColumn.avaliable.indexOf(value), 1);
+      }
+    }
+
+    // remove value from avaliable of cells in same square
+    const squareX = Math.floor(cell.x / 3);
+    const squareY = Math.floor(cell.y / 3);
+    for (let i = 0; i < 3; i += 1) {
+      const cellInSquare = cells[
+        (i + squareX * 3) + (squareY * 3) * cellsInRow
+      ];
+      if (cellInSquare.avaliable.includes(value)) {
+        cellInSquare.avaliable.splice(cellInSquare.avaliable.indexOf(value), 1);
+      }
+    }
+  };
+
+  const generateGrid = async () => {
     for (let i = 0; i < cellsInRow * cellsInColumn; i += 1) {
       cells.push({
         value: null,
         corner: [],
         middle: [],
+        avaliable: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        x: i % cellsInRow,
+        y: Math.floor(i / cellsInRow),
       });
+    }
+
+    for (let i = 0; i < cellsInRow * cellsInColumn; i += 1) {
+      const cell = cells[i];
+
+      const randomIndex = Math.floor(Math.random() * cell.avaliable.length);
+      const value = cell.avaliable[randomIndex];
+      cell.avaliable.splice(randomIndex, 1);
+      cell.value = value;
+
+      // eslint-disable-next-line no-await-in-loop
+      await sleep(150);
+
+      updateAvaliable(cell, value);
     }
   };
 
@@ -373,10 +424,9 @@ const HomePage = () => {
     window.addEventListener('keydown', handleKeyboardDown);
 
     const ctx = canvas.getContext('2d');
+    generateGrid();
 
     const gameLoop = () => {
-      generateGrid();
-
       draw(ctx);
 
       window.requestAnimationFrame(gameLoop);
