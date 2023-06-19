@@ -228,26 +228,12 @@ const HomePage = () => {
     return true;
   };
 
-  const highlightCell = () => {
-    if (!highlightedCell) {
-      if (selectedCells.length > 0) {
-        highlightedCell = {
-          ...selectedCells[selectedCells.length - 1],
-        };
-      } else {
-        highlightedCell = { x: 0, y: 0 };
-      }
-    }
-  };
-
-  const moveHighlightedCell = (direction, shiftPressed, ctrlPressed) => {
-    if (shiftPressed) {
-      selectCell(highlightedCell);
-    } else {
-      selectedCells.length = 0;
+  const moveSelectedCell = (direction, shiftPressed, ctrlPressed) => {
+    if (selectedCells.length === 0) {
+      selectCell({ x: 0, y: 0 });
     }
 
-    highlightCell();
+    let currentCell = selectedCells[selectedCells.length - 1];
 
     let dx = 0;
     let dy = 0;
@@ -255,10 +241,10 @@ const HomePage = () => {
     switch (direction) {
       case 'up':
         if (ctrlPressed) {
-          if (highlightedCell.y % 3 === 0) {
+          if (currentCell.y % 3 === 0) {
             dy = -3;
           } else {
-            dy = -highlightedCell.y % 3;
+            dy = -currentCell.y % 3;
           }
         } else {
           dy = -1;
@@ -267,10 +253,10 @@ const HomePage = () => {
 
       case 'down':
         if (ctrlPressed) {
-          if (highlightedCell.y % 3 === 2) {
+          if (currentCell.y % 3 === 2) {
             dy = 3;
           } else {
-            dy = 3 - (highlightedCell.y % 3) - 1;
+            dy = 3 - (currentCell.y % 3) - 1;
           }
         } else {
           dy = 1;
@@ -279,10 +265,10 @@ const HomePage = () => {
 
       case 'left':
         if (ctrlPressed) {
-          if (highlightedCell.x % 3 === 0) {
+          if (currentCell.x % 3 === 0) {
             dx = -3;
           } else {
-            dx = -highlightedCell.x % 3;
+            dx = -currentCell.x % 3;
           }
         } else {
           dx = -1;
@@ -291,10 +277,10 @@ const HomePage = () => {
 
       case 'right':
         if (ctrlPressed) {
-          if (highlightedCell.x % 3 === 2) {
+          if (currentCell.x % 3 === 2) {
             dx = 3;
           } else {
-            dx = 3 - (highlightedCell.x % 3) - 1;
+            dx = 3 - (currentCell.x % 3) - 1;
           }
         } else {
           dx = 1;
@@ -305,15 +291,37 @@ const HomePage = () => {
         break;
     }
 
-    if (checkBoundaries(highlightedCell.x + dx, highlightedCell.y + dy)) {
-      highlightedCell.x += dx;
-      highlightedCell.y += dy;
+    const lastCell = { ...currentCell };
+
+    if (checkBoundaries(currentCell.x + dx, currentCell.y + dy)) {
+      currentCell = {
+        x: currentCell.x + dx,
+        y: currentCell.y + dy,
+      };
     }
 
     if (shiftPressed) {
-      selectCell(highlightedCell);
+      const minX = Math.min(lastCell.x, currentCell.x);
+      const maxX = Math.max(lastCell.x, currentCell.x);
+      const minY = Math.min(lastCell.y, currentCell.y);
+      const maxY = Math.max(lastCell.y, currentCell.y);
+
+      if (dx < 0 || dy < 0) {
+        for (let i = maxX; i >= minX; i -= 1) {
+          for (let j = maxY; j >= minY; j -= 1) {
+            selectCell({ x: i, y: j });
+          }
+        }
+      } else {
+        for (let i = minX; i <= maxX; i += 1) {
+          for (let j = minY; j <= maxY; j += 1) {
+            selectCell({ x: i, y: j });
+          }
+        }
+      }
     } else {
       selectedCells.length = 0;
+      selectCell(currentCell);
     }
   };
 
@@ -418,19 +426,19 @@ const HomePage = () => {
         break;
 
       case 'ArrowUp':
-        moveHighlightedCell('up', e.shiftKey, e.ctrlKey);
+        moveSelectedCell('up', e.shiftKey, e.ctrlKey);
         break;
 
       case 'ArrowDown':
-        moveHighlightedCell('down', e.shiftKey, e.ctrlKey);
+        moveSelectedCell('down', e.shiftKey, e.ctrlKey);
         break;
 
       case 'ArrowLeft':
-        moveHighlightedCell('left', e.shiftKey, e.ctrlKey);
+        moveSelectedCell('left', e.shiftKey, e.ctrlKey);
         break;
 
       case 'ArrowRight':
-        moveHighlightedCell('right', e.shiftKey, e.ctrlKey);
+        moveSelectedCell('right', e.shiftKey, e.ctrlKey);
         break;
 
       case '/':
