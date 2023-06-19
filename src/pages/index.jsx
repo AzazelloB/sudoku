@@ -3,10 +3,6 @@ import { createEffect, createSignal, onCleanup } from 'solid-js';
 import { colors } from '~/constants/theme';
 import { useGlobalContext } from '~/context/GlobalContext';
 
-const sleep = (ms) => new Promise((resolve) => {
-  setTimeout(resolve, ms);
-});
-
 const HomePage = () => {
   const { theme } = useGlobalContext();
 
@@ -21,64 +17,90 @@ const HomePage = () => {
   const cellHeight = height / cellsInColumn;
   let highlightedCell = null;
   let mouseDown = false;
+  let revealed = false;
   const selectedCells = [];
   const cells = [];
 
-  const updateAvaliable = (cell, value) => {
-    // remove value from avaliable of cells in same row
-    for (let i = 0; i < cellsInRow; i += 1) {
-      const cellInRow = cells[i + cell.y * cellsInRow];
-      if (cellInRow.avaliable.includes(value)) {
-        cellInRow.avaliable.splice(cellInRow.avaliable.indexOf(value), 1);
+  const populateSudoku = (i) => {
+    if (i === cells.length) {
+      return true;
+    }
+
+    const cell = cells[i];
+
+    const avaliableValues = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+    while (avaliableValues.length) {
+      const value = avaliableValues.splice(
+        Math.floor(Math.random() * avaliableValues.length),
+        1,
+      )[0];
+
+      cell.answer = value;
+
+      if (isValidSudoku()) {
+        if (populateSudoku(i + 1)) {
+          return true;
+        }
       }
     }
 
-    // remove value from avaliable of cells in same column
-    for (let i = 0; i < cellsInColumn; i += 1) {
-      const cellInColumn = cells[cell.x + i * cellsInRow];
-      if (cellInColumn.avaliable.includes(value)) {
-        cellInColumn.avaliable.splice(cellInColumn.avaliable.indexOf(value), 1);
-      }
-    }
-
-    // remove value from avaliable of cells in same square
-    const squareX = Math.floor(cell.x / 3);
-    const squareY = Math.floor(cell.y / 3);
-    for (let i = 0; i < 3; i += 1) {
-      const cellInSquare = cells[
-        (i + squareX * 3) + (squareY * 3) * cellsInRow
-      ];
-      if (cellInSquare.avaliable.includes(value)) {
-        cellInSquare.avaliable.splice(cellInSquare.avaliable.indexOf(value), 1);
-      }
-    }
+    cell.answer = null;
+    return false;
   };
 
-  const generateGrid = async () => {
+  const isValidSudoku = () => {
+    const rows = [];
+    const columns = [];
+    const squares = [];
+
+    for (let i = 0; i < cellsInRow; i += 1) {
+      rows.push([]);
+      columns.push([]);
+      squares.push([]);
+    }
+
+    for (let i = 0; i < cells.length; i += 1) {
+      const cell = cells[i];
+
+      if (cell.answer) {
+        if (rows[cell.y].includes(cell.answer)) {
+          return false;
+        }
+
+        rows[cell.y].push(cell.answer);
+
+        if (columns[cell.x].includes(cell.answer)) {
+          return false;
+        }
+
+        columns[cell.x].push(cell.answer);
+
+        const squareIndex = Math.floor(cell.x / 3) + Math.floor(cell.y / 3) * 3;
+        if (squares[squareIndex].includes(cell.answer)) {
+          return false;
+        }
+
+        squares[squareIndex].push(cell.answer);
+      }
+    }
+
+    return true;
+  };
+
+  const generateGrid = () => {
     for (let i = 0; i < cellsInRow * cellsInColumn; i += 1) {
       cells.push({
         value: null,
+        answer: null,
         corner: [],
         middle: [],
-        avaliable: [1, 2, 3, 4, 5, 6, 7, 8, 9],
         x: i % cellsInRow,
         y: Math.floor(i / cellsInRow),
       });
     }
 
-    for (let i = 0; i < cellsInRow * cellsInColumn; i += 1) {
-      const cell = cells[i];
-
-      const randomIndex = Math.floor(Math.random() * cell.avaliable.length);
-      const value = cell.avaliable[randomIndex];
-      cell.avaliable.splice(randomIndex, 1);
-      cell.value = value;
-
-      // eslint-disable-next-line no-await-in-loop
-      await sleep(150);
-
-      updateAvaliable(cell, value);
-    }
+    populateSudoku(0);
   };
 
   const draw = (ctx) => {
@@ -127,10 +149,12 @@ const HomePage = () => {
       for (let j = 0; j < cellsInColumn; j += 1) {
         const cell = cells[j * cellsInRow + i];
 
-        if (cell.value) {
+        const value = revealed ? cell.answer : cell.value;
+
+        if (value) {
           ctx.font = '42px Arial';
           ctx.fillText(
-            cell.value,
+            value,
             i * cellWidth + cellWidth / 2,
             j * cellHeight + cellHeight / 2,
           );
@@ -407,6 +431,10 @@ const HomePage = () => {
 
       case 'ArrowRight':
         moveHighlightedCell('right', e.shiftKey, e.ctrlKey);
+        break;
+
+      case '/':
+        revealed = !revealed;
         break;
 
       default:
