@@ -2,7 +2,6 @@ import { cellsInColumn, cellsInRow } from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
 
 const populateSudoku = (i) => {
-  console.log(state.cells);
   if (i === state.cells.length) {
     return true;
   }
@@ -70,6 +69,8 @@ const isValidSudoku = () => {
 };
 
 export const generateGrid = () => {
+  state.cells.length = 0;
+
   for (let i = 0; i < cellsInRow * cellsInColumn; i += 1) {
     state.cells.push({
       value: null,

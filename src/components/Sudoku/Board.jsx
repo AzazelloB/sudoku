@@ -14,14 +14,13 @@ const Board = (props) => {
   let canvas;
 
   createEffect(() => {
-    // TODO fix the need to clear state because of hot reloading
-    console.log(state);
-    state.cells = [];
     const cleanup = initControls(canvas, props.mode());
 
     onCleanup(cleanup);
 
-    generateGrid();
+    if (state.cells.length === 0) {
+      generateGrid();
+    }
 
     const ctx = canvas.getContext('2d');
 
