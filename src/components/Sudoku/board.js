@@ -75,6 +75,7 @@ export const generateGrid = () => {
     state.cells.push({
       value: null,
       answer: null,
+      revealed: false,
       corner: [],
       middle: [],
       x: i % cellsInRow,
@@ -83,6 +84,42 @@ export const generateGrid = () => {
   }
 
   populateSudoku(0);
+};
+
+const difficultyLevels = {
+  easy: 38,
+  normal: 30,
+  hard: 23,
+};
+
+export const revealCells = (difficulty) => {
+  const cellsToReveal = difficultyLevels[difficulty];
+
+  for (let i = 0; i < cellsToReveal; i += 1) {
+    let cell;
+
+    do {
+      cell = state.cells[Math.floor(Math.random() * state.cells.length)];
+    } while (cell.revealed);
+
+    cell.revealed = true;
+  }
+};
+
+export const checkIfSolved = () => {
+  for (let i = 0; i < state.cells.length; i += 1) {
+    const cell = state.cells[i];
+
+    if (cell.revealed) {
+      continue;
+    }
+
+    if (cell.answer !== parseInt(cell.value, 10)) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 export const selectCell = (cell) => {

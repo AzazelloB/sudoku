@@ -51,14 +51,22 @@ export const draw = (ctx, theme) => {
 
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillStyle = colors.secondary[theme === 'dark' ? 'light' : 'dark'];
   for (let i = 0; i < cellsInRow; i += 1) {
     for (let j = 0; j < cellsInColumn; j += 1) {
       const cell = state.cells[j * cellsInRow + i];
 
       const value = state.revealed ? cell.answer : cell.value;
 
-      if (value) {
+      if (cell.revealed) {
+        ctx.fillStyle = colors.background[theme === 'dark' ? 'light' : 'dark'];
+        ctx.font = '42px Arial';
+        ctx.fillText(
+          cell.answer,
+          i * cellWidth + cellWidth / 2,
+          j * cellHeight + cellHeight / 2,
+        );
+      } else if (value) {
+        ctx.fillStyle = colors.secondary[theme === 'dark' ? 'light' : 'dark'];
         ctx.font = '42px Arial';
         ctx.fillText(
           value,
@@ -66,6 +74,7 @@ export const draw = (ctx, theme) => {
           j * cellHeight + cellHeight / 2,
         );
       } else {
+        ctx.fillStyle = colors.secondary[theme === 'dark' ? 'light' : 'dark'];
         ctx.font = '18px Arial';
         cell.corner.forEach((value, valueI) => {
           ctx.fillText(
