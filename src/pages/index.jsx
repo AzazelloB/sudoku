@@ -116,7 +116,7 @@ const HomePage = () => {
             },
           )}>
             <div class={classNames(
-              'bg-background dark:bg-background-dark rounded-md px-12 py-5',
+              'bg-background dark:bg-background-dark rounded-md shadow-lg px-12 py-5',
               'text-4xl',
             )}>
               Paused
