@@ -130,6 +130,18 @@ export const selectCell = (cell) => {
   state.selectedCells.push({ ...cell });
 };
 
+export const deselectCell = (cell) => {
+  const index = state.selectedCells.findIndex(
+    (c) => c.x === cell.x && c.y === cell.y,
+  );
+
+  if (index === -1) {
+    return;
+  }
+
+  state.selectedCells.splice(index, 1);
+};
+
 const checkBoundaries = (x, y) => {
   if (x < 0 || x > cellsInRow - 1 || y < 0 || y > cellsInColumn - 1) {
     return false;

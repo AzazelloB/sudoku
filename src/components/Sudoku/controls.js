@@ -1,15 +1,29 @@
-import { moveSelectedCell, selectCell } from '~/components/Sudoku/board';
+import { deselectCell, moveSelectedCell, selectCell } from '~/components/Sudoku/board';
 import { cellHeight, cellWidth, cellsInRow } from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
 
 const handleMouseDown = (e) => {
   state.mouseDown = true;
 
-  if (!e.ctrlKey) {
-    state.selectedCells.length = 0;
-  }
+  const selected = state.selectedCells.find((c) => c.x === state.highlightedCell.x
+                                                && c.y === state.highlightedCell.y);
 
-  selectCell(state.highlightedCell);
+  if (selected) {
+    if (e.ctrlKey) {
+      deselectCell(state.highlightedCell);
+    } else if (state.selectedCells.length === 1) {
+      state.selectedCells.length = 0;
+    } else {
+      state.selectedCells.length = 0;
+      selectCell(state.highlightedCell);
+    }
+  } else {
+    if (!e.ctrlKey) {
+      state.selectedCells.length = 0;
+    }
+
+    selectCell(state.highlightedCell);
+  }
 };
 
 const handleMouseUp = () => {
@@ -29,6 +43,7 @@ function handleMouseMove(e) {
     y: cellY,
   };
 
+  // TODO if you move mouse when trying to deselect, it will select again
   if (state.mouseDown) {
     selectCell(state.highlightedCell);
   }
@@ -39,32 +54,20 @@ const handleMouseLeave = () => {
   state.mouseDown = false;
 };
 
-const handleMouseClick = (e) => {
-  if (state.selectedCells.find((cell) => cell.x === state.highlightedCell.x
-                                      && cell.y === state.highlightedCell.y)) {
-    return;
-  }
-
-  if (e.ctrlKey) {
-    state.selectedCells.push({ ...state.highlightedCell });
-  } else {
-    state.selectedCells.length = 0;
-    state.selectedCells.push({ ...state.highlightedCell });
-  }
-};
-
 function handleKeyboardDown(e) {
   const isLetter = e.keyCode >= 65 && e.keyCode <= 90;
   const isNumber = e.keyCode >= 48 && e.keyCode <= 57;
 
   if (isLetter || isNumber) {
+    e.preventDefault();
+
     const symbol = String.fromCharCode(e.keyCode);
 
     if (e.shiftKey) {
       state.selectedCells.forEach((cell) => {
         state.cells[cell.y * cellsInRow + cell.x].value = symbol;
       });
-    } else if (this.mode === 'corner') {
+    } else if (e.altKey || this.mode === 'corner') {
       state.selectedCells.forEach((cell) => {
         const cellInGrid = state.cells[cell.y * cellsInRow + cell.x];
 
@@ -104,18 +107,22 @@ function handleKeyboardDown(e) {
       break;
 
     case 'ArrowUp':
+      e.preventDefault();
       moveSelectedCell('up', e.shiftKey, e.ctrlKey);
       break;
 
     case 'ArrowDown':
+      e.preventDefault();
       moveSelectedCell('down', e.shiftKey, e.ctrlKey);
       break;
 
     case 'ArrowLeft':
+      e.preventDefault();
       moveSelectedCell('left', e.shiftKey, e.ctrlKey);
       break;
 
     case 'ArrowRight':
+      e.preventDefault();
       moveSelectedCell('right', e.shiftKey, e.ctrlKey);
       break;
 
@@ -128,25 +135,34 @@ function handleKeyboardDown(e) {
   }
 }
 
+function handleClickOutside(e) {
+  if (!this.canvas || this.canvas.contains(e.target)) {
+    return;
+  }
+
+  state.selectedCells.length = 0;
+}
+
 export const initControls = (canvas, mode) => {
   const mouseMoveHandler = handleMouseMove.bind({ canvas });
   const keyboardDownHandler = handleKeyboardDown.bind({ mode });
+  const outiseClickHandler = handleClickOutside.bind({ canvas });
 
   canvas.addEventListener('mousedown', handleMouseDown);
   canvas.addEventListener('mouseup', handleMouseUp);
   canvas.addEventListener('mousemove', mouseMoveHandler);
-  canvas.addEventListener('click', handleMouseClick);
   canvas.addEventListener('mouseleave', handleMouseLeave);
 
-  window.addEventListener('keydown', keyboardDownHandler);
+  document.addEventListener('keydown', keyboardDownHandler);
+  document.addEventListener('mousedown', outiseClickHandler);
 
   return () => {
     canvas.removeEventListener('mousedown', handleMouseDown);
     canvas.removeEventListener('mouseup', handleMouseUp);
     canvas.removeEventListener('mousemove', mouseMoveHandler);
-    canvas.removeEventListener('click', handleMouseClick);
     canvas.removeEventListener('mouseleave', handleMouseLeave);
 
-    window.removeEventListener('keydown', keyboardDownHandler);
+    document.removeEventListener('keydown', keyboardDownHandler);
+    document.removeEventListener('mousedown', outiseClickHandler);
   };
 };
