@@ -38,6 +38,8 @@ const HomePage = () => {
   const handleNewGameClick = () => {
     generateGrid();
     revealCells(difficulty());
+    setTime(0);
+    setPause(false);
   };
 
   const handleCheckClick = () => {
