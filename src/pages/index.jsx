@@ -1,4 +1,4 @@
-import { Show, createSignal, onCleanup } from 'solid-js';
+import { createSignal, onCleanup } from 'solid-js';
 import classNames from 'classnames';
 
 import { formatTime } from '~/utils/datetime';
@@ -106,22 +106,29 @@ const HomePage = () => {
         </div>
 
         <div class={classNames(
-          'relative',
+          'relative overflow-hidden',
         )}>
-          <Show when={paused()}>
-            <div class="absolute inset-0 z-10 flex items-center justify-center">
-              <div class={classNames(
-                'bg-background dark:bg-background-dark rounded-md px-12 py-5',
-                'text-4xl',
-              )}>
-                Paused
-              </div>
+          <div class={classNames(
+            'absolute z-10 inset-0 flex items-center justify-center',
+            'transition-all duration-200',
+            {
+              '-translate-y-full': !paused(),
+            },
+          )}>
+            <div class={classNames(
+              'bg-background dark:bg-background-dark rounded-md px-12 py-5',
+              'text-4xl',
+            )}>
+              Paused
             </div>
-          </Show>
+          </div>
 
-          <div class={classNames({
-            'transition-all duration-200 blur-md pointer-events-none': paused(),
-          })}>
+          <div class={classNames(
+            'transition-all duration-200',
+            {
+              'blur-md pointer-events-none': paused(),
+            },
+          )}>
             <Board
               difficulty={difficulty}
               mode={mode}
