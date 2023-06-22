@@ -1,6 +1,6 @@
 - [ ] FIX: Board can be generated with multiple solutions
 - [x] Diselect selected cell (click outside, click on selected)
-- [ ] Timer
+- [x] Timer
 - [ ] Modals (modal on "Check")
 - [ ] History
 - [ ] Board saving

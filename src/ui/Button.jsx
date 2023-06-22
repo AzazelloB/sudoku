@@ -9,13 +9,12 @@ const Button = (props) => {
         props.class,
         'px-4 py-2 rounded-md text-white  hover:bg-primary-dark transition-colors duration-200',
         {
-          'bg-primary-dark': props.active,
-          'bg-primary': !props.active,
+          'bg-primary': !props.variant && !props.active,
+          'bg-primary-dark': !props.variant && props.active,
+          'bg-transparent': props.variant === 'tertiary' && !props.active,
         },
       )}
-    >
-      {props.children}
-    </button>
+      />
   );
 };
 
