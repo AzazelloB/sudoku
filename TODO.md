@@ -1,5 +1,5 @@
 - [ ] FIX: Board can be generated with multiple solutions
-- [ ] Diselect selected cell (click outside, click on selected)
+- [x] Diselect selected cell (click outside, click on selected)
 - [ ] Timer
 - [ ] Modals (modal on "Check")
 - [ ] History
