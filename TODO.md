@@ -1,0 +1,13 @@
+- [ ] FIX: Board can be generated with multiple solutions
+- [ ] Diselect selected cell (click outside, click on selected)
+- [ ] Timer
+- [ ] Modals (modal on "Check")
+- [ ] History
+- [ ] Board saving
+- [ ] Cell hover animation
+- [ ] Row, col highlighting
+- [ ] Design generated with MidJouney
+- [ ] Interface for inputing digits, colors, switching input mode, delete, undo, redo
+- [ ] Double click to select similar (cells with same didgit, color)
+- [ ] Coloring the grid
+- [ ] Hint system
