@@ -30,5 +30,6 @@ rules: {
   no-unused-vars: warn,
   no-unreachable: off,
   no-continue: off,
+  no-plusplus: off,
 }
 

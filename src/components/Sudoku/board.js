@@ -256,3 +256,45 @@ export const moveSelectedCell = (direction, shiftPressed, ctrlPressed) => {
     selectCell(currentCell);
   }
 };
+
+export const clearSelectedCell = () => {
+  state.selectedCells.forEach((cell) => {
+    const cellInGrid = state.cells[cell.y * cellsInRow + cell.x];
+
+    cellInGrid.value = null;
+    cellInGrid.corner.length = 0;
+    cellInGrid.middle.length = 0;
+  });
+};
+
+export const insertValue = (value) => {
+  state.selectedCells.forEach((cell) => {
+    state.cells[cell.y * cellsInRow + cell.x].value = value;
+  });
+};
+
+export const insertCorner = (value) => {
+  state.selectedCells.forEach((cell) => {
+    const cellInGrid = state.cells[cell.y * cellsInRow + cell.x];
+
+    if (cellInGrid.corner.includes(value)) {
+      cellInGrid.corner = cellInGrid.corner.filter((c) => c !== value);
+    } else {
+      cellInGrid.corner.push(value);
+      cellInGrid.corner.sort();
+    }
+  });
+};
+
+export const insertMiddle = (value) => {
+  state.selectedCells.forEach((cell) => {
+    const cellInGrid = state.cells[cell.y * cellsInRow + cell.x];
+
+    if (cellInGrid.middle.includes(value)) {
+      cellInGrid.middle = cellInGrid.middle.filter((c) => c !== value);
+    } else {
+      cellInGrid.middle.push(value);
+      cellInGrid.middle.sort();
+    }
+  });
+};

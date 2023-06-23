@@ -4,4 +4,6 @@ export const state = {
   revealed: false,
   selectedCells: [],
   cells: [],
+  historyCursor: 0,
+  history: [],
 };

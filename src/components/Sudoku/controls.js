@@ -1,5 +1,14 @@
-import { deselectCell, moveSelectedCell, selectCell } from '~/components/Sudoku/board';
-import { cellHeight, cellWidth, cellsInRow } from '~/components/Sudoku/settings';
+import {
+  clearSelectedCell,
+  deselectCell,
+  insertCorner,
+  insertMiddle,
+  insertValue,
+  moveSelectedCell,
+  selectCell,
+} from '~/components/Sudoku/board';
+import { handleRedo, handleUndo, saveSnapshot } from '~/components/Sudoku/history';
+import { cellHeight, cellWidth } from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
 
 const handleMouseDown = (e) => {
@@ -55,55 +64,31 @@ const handleMouseLeave = () => {
 };
 
 function handleKeyboardDown(e) {
-  const isLetter = e.keyCode >= 65 && e.keyCode <= 90;
   const isNumber = e.keyCode >= 48 && e.keyCode <= 57;
 
-  if (isLetter || isNumber) {
+  if (isNumber) {
     const symbol = String.fromCharCode(e.keyCode);
 
     if (e.shiftKey) {
-      state.selectedCells.forEach((cell) => {
-        state.cells[cell.y * cellsInRow + cell.x].value = symbol;
-      });
+      insertValue(symbol);
     } else if (e.altKey || this.mode === 'corner') {
       e.preventDefault();
 
-      state.selectedCells.forEach((cell) => {
-        const cellInGrid = state.cells[cell.y * cellsInRow + cell.x];
-
-        if (cellInGrid.corner.includes(symbol)) {
-          cellInGrid.corner = cellInGrid.corner.filter((c) => c !== symbol);
-        } else {
-          cellInGrid.corner.push(symbol);
-          cellInGrid.corner.sort();
-        }
-      });
+      insertCorner(symbol);
     } else {
-      state.selectedCells.forEach((cell) => {
-        const cellInGrid = state.cells[cell.y * cellsInRow + cell.x];
-
-        if (cellInGrid.middle.includes(symbol)) {
-          cellInGrid.middle = cellInGrid.middle.filter((c) => c !== symbol);
-        } else {
-          cellInGrid.middle.push(symbol);
-          cellInGrid.middle.sort();
-        }
-      });
+      insertMiddle(symbol);
     }
+
+    saveSnapshot();
 
     return;
   }
 
-  switch (e.key) {
+  switch (e.code) {
     case 'Delete':
     case 'Backspace':
-      state.selectedCells.forEach((cell) => {
-        const cellInGrid = state.cells[cell.y * cellsInRow + cell.x];
-
-        cellInGrid.value = null;
-        cellInGrid.corner.length = 0;
-        cellInGrid.middle.length = 0;
-      });
+      clearSelectedCell();
+      saveSnapshot();
       break;
 
     case 'ArrowUp':
@@ -126,7 +111,17 @@ function handleKeyboardDown(e) {
       moveSelectedCell('right', e.shiftKey, e.ctrlKey);
       break;
 
-    case '/':
+    case 'KeyZ':
+      if (e.ctrlKey) {
+        if (e.shiftKey) {
+          handleRedo();
+        } else {
+          handleUndo();
+        }
+      }
+      break;
+
+    case 'Slash':
       state.revealed = !state.revealed;
       break;
 
