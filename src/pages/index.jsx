@@ -7,6 +7,7 @@ import Button from '~/ui/Button';
 import ButtonGroup from '~/ui/ButtonGroup';
 import Pause from '~/ui/icons/Pause';
 import Play from '~/ui/icons/Play';
+import Modal from '~/ui/Modal';
 
 import Board from '~/components/Sudoku/Board';
 import { checkIfSolved, generateGrid, revealCells } from '~/components/Sudoku/board';
@@ -16,9 +17,11 @@ const HomePage = () => {
   const [difficulty, setDifficulty] = createSignal('normal');
   const [paused, setPause] = createSignal(false);
   const [time, setTime] = createSignal(0);
+  const [timerStopped, setTimerStopped] = createSignal(false);
+  const [solved, setSolved] = createSignal(false);
 
   const timer = setInterval(() => {
-    if (!paused()) {
+    if (!timerStopped()) {
       setTime(time() + 1);
     }
   }, 1000);
@@ -32,6 +35,7 @@ const HomePage = () => {
   };
 
   const handlePausePlayClick = () => {
+    setTimerStopped(!paused());
     setPause(!paused());
   };
 
@@ -39,11 +43,17 @@ const HomePage = () => {
     generateGrid();
     revealCells(difficulty());
     setTime(0);
+    setTimerStopped(false);
     setPause(false);
   };
 
   const handleCheckClick = () => {
-    console.log(checkIfSolved());
+    if (checkIfSolved()) {
+      setTimerStopped(true);
+      setSolved(true);
+    } else {
+      setSolved(false);
+    }
   };
 
   return (
@@ -97,11 +107,44 @@ const HomePage = () => {
               New Game
             </Button>
 
-            <Button
-              onClick={handleCheckClick}
-            >
-              Check
-            </Button>
+            <Modal>
+              <Modal.Button
+                onClick={handleCheckClick}
+              >
+                Check
+              </Modal.Button>
+
+              <Modal.Content>
+                {({ closeModal }) => (
+                  <>
+                    <Modal.Title>
+                      {solved() ? 'Congratulations!' : 'Sorry!'}
+                    </Modal.Title>
+
+                    <p class="text-black dark:text-white opacity-60">
+                      {solved() ? 'You solved the puzzle!' : 'You have not solved the puzzle yet.'}
+                    </p>
+
+                    <div class="ml-auto mt-6">
+                      {solved() && (
+                        <Button
+                          class="mr-4"
+                          onClick={handleNewGameClick}
+                        >
+                          New Game
+                        </Button>
+                      )}
+
+                      <Button
+                        onClick={closeModal}
+                      >
+                        Close
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </Modal.Content>
+            </Modal>
           </div>
         </div>
 
@@ -116,7 +159,7 @@ const HomePage = () => {
             },
           )}>
             <div class={classNames(
-              'bg-background dark:bg-background-dark rounded-md shadow-lg px-12 py-5',
+              'bg-background dark:bg-background-dark-accent rounded-md shadow-lg px-12 py-5',
               'text-4xl',
             )}>
               Paused

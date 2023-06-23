@@ -24,6 +24,7 @@ export const colors = {
   background: {
     DEFAULT: '#E5E7EB',
     dark: '#111827',
+    'dark-accent': '#293245',
     light: '#E5E7EB',
   },
 };
