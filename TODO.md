@@ -5,6 +5,7 @@
 - [x] History
 - [x] Upload to github pages
 - [x] Board saving
+- [ ] FIX: doesn't save cell values
 - [ ] Cell hover animation
 - [ ] Row, col highlighting
 - [ ] Design generated with MidJouney
@@ -14,3 +15,4 @@
 - [ ] Hint system
 - [ ] Scale board according to window size
 - [ ] Touch support
+- [ ] MacOS support
