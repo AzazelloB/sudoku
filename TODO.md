@@ -1,4 +1,4 @@
-- [ ] FIX: Board can be generated with multiple solutions
+- [x] FIX: Board can be generated with multiple solutions
 - [x] Diselect selected cell (click outside, click on selected)
 - [x] Timer
 - [x] Modals (modal on "Check")
