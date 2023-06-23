@@ -2,7 +2,7 @@
 - [x] Diselect selected cell (click outside, click on selected)
 - [x] Timer
 - [x] Modals (modal on "Check")
-- [ ] History
+- [x] History
 - [ ] Board saving
 - [ ] Cell hover animation
 - [ ] Row, col highlighting
