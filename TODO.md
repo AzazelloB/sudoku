@@ -17,3 +17,4 @@
 - [ ] Scale board according to window size
 - [ ] Touch support
 - [ ] MacOS support
+- [ ] Ctrl + A
