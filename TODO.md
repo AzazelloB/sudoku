@@ -12,3 +12,5 @@
 - [ ] Double click to select similar (cells with same didgit, color)
 - [ ] Coloring the grid
 - [ ] Hint system
+- [ ] Scale board according to window size
+- [ ] Touch support
