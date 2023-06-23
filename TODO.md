@@ -3,6 +3,7 @@
 - [x] Timer
 - [x] Modals (modal on "Check")
 - [x] History
+- [ ] Upload to github pages
 - [ ] Board saving
 - [ ] Cell hover animation
 - [ ] Row, col highlighting
