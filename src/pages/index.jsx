@@ -56,6 +56,12 @@ const HomePage = () => {
     }
   };
 
+  // eslint-disable-next-line solid/reactivity
+  const handleModalNewGameClick = (closeModal) => () => {
+    closeModal();
+    handleNewGameClick();
+  };
+
   return (
     <div class="flex">
       <div>
@@ -116,20 +122,30 @@ const HomePage = () => {
 
               <Modal.Content>
                 {({ closeModal }) => (
-                  <>
+                  <div class="flex flex-col w-60">
                     <Modal.Title>
                       {solved() ? 'Congratulations!' : 'Sorry!'}
                     </Modal.Title>
 
                     <p class="text-black dark:text-white opacity-60">
-                      {solved() ? 'You solved the puzzle!' : 'You have not solved the puzzle yet.'}
+                      {solved() ? (
+                        <>
+                          Your time: {formatTime(time())}
+                          <br />
+                          You solved the puzzle!
+                        </>
+                      ) : (
+                        <>
+                          You have not solved the puzzle yet.
+                        </>
+                      )}
                     </p>
 
                     <div class="ml-auto mt-6">
                       {solved() && (
                         <Button
                           class="mr-4"
-                          onClick={handleNewGameClick}
+                          onClick={handleModalNewGameClick(closeModal)}
                         >
                           New Game
                         </Button>
@@ -141,7 +157,7 @@ const HomePage = () => {
                         Close
                       </Button>
                     </div>
-                  </>
+                  </div>
                 )}
               </Modal.Content>
             </Modal>

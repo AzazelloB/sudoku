@@ -47,7 +47,7 @@ const Content = (props) => {
             leaveTo="opacity-0 scale-95"
           >
             <DialogPanel class={classNames(
-              'flex flex-col w-full max-w-md px-8 py-4 overflow-hidden transition-all transform',
+              'w-full max-w-md px-8 py-4 overflow-hidden transition-all transform',
               'bg-background dark:bg-background-dark-accent shadow-xl rounded-2xl',
             )}>
               {props.children({ closeModal })}
