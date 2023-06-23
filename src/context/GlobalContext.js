@@ -8,6 +8,7 @@ function useGlobalState() {
     'theme',
     window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
   );
+  const [cells, setCells] = useLocalStorage('cells', []);
 
   createEffect(() => {
     if (theme() === 'dark') {
@@ -20,6 +21,8 @@ function useGlobalState() {
   return {
     theme,
     setTheme,
+    cells,
+    setCells,
   };
 }
 

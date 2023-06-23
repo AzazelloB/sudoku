@@ -1,27 +1,22 @@
-import { createEffect, createSignal } from 'solid-js';
+import { createSignal } from 'solid-js';
 
-const useLocalStorage = (key, initialValue) => {
-  let defaultValue;
+const useLocalStorage = (key, defaultValue) => {
+  const initialValue = window.localStorage.getItem(key)
+    ? JSON.parse(window.localStorage.getItem(key))
+    : defaultValue;
 
-  try {
-    const item = window.localStorage.getItem(key);
-    defaultValue = item ? JSON.parse(item) : initialValue;
-  } catch (error) {
-    console.error(error);
-    defaultValue = initialValue;
-  }
+  const [value, setValue] = createSignal(initialValue);
 
-  const [value, setValue] = createSignal(defaultValue);
-
-  createEffect(() => {
+  const setValueAndStore = ((newValue) => {
     try {
-      window.localStorage.setItem(key, JSON.stringify(value()));
+      setValue(newValue);
+      window.localStorage.setItem(key, JSON.stringify(newValue));
     } catch (error) {
       console.log(error);
     }
   });
 
-  return [value, setValue];
+  return [value, setValueAndStore];
 };
 
 export default useLocalStorage;

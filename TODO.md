@@ -4,7 +4,7 @@
 - [x] Modals (modal on "Check")
 - [x] History
 - [x] Upload to github pages
-- [ ] Board saving
+- [x] Board saving
 - [ ] Cell hover animation
 - [ ] Row, col highlighting
 - [ ] Design generated with MidJouney

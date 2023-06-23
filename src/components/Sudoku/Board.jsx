@@ -7,9 +7,10 @@ import { generateGrid, revealCells } from '~/components/Sudoku/board';
 import { draw } from '~/components/Sudoku/render';
 import { height, width } from '~/components/Sudoku/settings';
 import { clearHistory, saveSnapshot } from '~/components/Sudoku/history';
+import { state } from '~/components/Sudoku/state';
 
 const Board = (props) => {
-  const { theme } = useGlobalContext();
+  const { theme, cells, setCells } = useGlobalContext();
 
   let canvas;
 
@@ -18,8 +19,13 @@ const Board = (props) => {
 
     onCleanup(cleanup);
 
-    generateGrid();
-    revealCells(props.difficulty());
+    if (cells().length === 0) {
+      generateGrid();
+      revealCells(props.difficulty());
+      setCells(state.cells);
+    } else {
+      state.cells = cells();
+    }
 
     clearHistory();
     saveSnapshot();

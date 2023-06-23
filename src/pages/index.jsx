@@ -1,6 +1,8 @@
 import { createSignal, onCleanup } from 'solid-js';
 import classNames from 'classnames';
 
+import { useGlobalContext } from '~/context/GlobalContext';
+import useLocalStorage from '~/hooks/useLocalStorage';
 import { formatTime } from '~/utils/datetime';
 
 import Button from '~/ui/Button';
@@ -11,12 +13,16 @@ import Modal from '~/ui/Modal';
 
 import Board from '~/components/Sudoku/Board';
 import { checkIfSolved, generateGrid, revealCells } from '~/components/Sudoku/board';
+import { state } from '~/components/Sudoku/state';
 
 const HomePage = () => {
+  const { setCells } = useGlobalContext();
+
   const [mode] = createSignal('normal');
-  const [difficulty, setDifficulty] = createSignal('normal');
+
+  const [difficulty, setDifficulty] = useLocalStorage('difficulty', 'normal');
   const [paused, setPause] = createSignal(false);
-  const [time, setTime] = createSignal(0);
+  const [time, setTime] = useLocalStorage('time', 0);
   const [timerStopped, setTimerStopped] = createSignal(false);
   const [solved, setSolved] = createSignal(false);
 
@@ -30,24 +36,31 @@ const HomePage = () => {
     clearInterval(timer);
   });
 
-  const handleDifficultyClick = (difficulty) => () => {
-    setDifficulty(difficulty);
+  const regenerateGrid = () => {
+    generateGrid();
+    revealCells(difficulty());
+    setCells(state.cells);
   };
 
-  const handlePausePlayClick = () => {
+  const handleDifficulty = (diff) => () => {
+    setDifficulty(diff);
+    regenerateGrid();
+  };
+
+  const handlePausePlay = () => {
     setTimerStopped(!paused());
     setPause(!paused());
   };
 
-  const handleNewGameClick = () => {
-    generateGrid();
-    revealCells(difficulty());
+  const handleNewGame = () => {
+    regenerateGrid();
+
     setTime(0);
     setTimerStopped(false);
     setPause(false);
   };
 
-  const handleCheckClick = () => {
+  const handleCheck = () => {
     if (checkIfSolved()) {
       setTimerStopped(true);
       setSolved(true);
@@ -57,9 +70,9 @@ const HomePage = () => {
   };
 
   // eslint-disable-next-line solid/reactivity
-  const handleModalNewGameClick = (closeModal) => () => {
+  const handleModalNewGame = (closeModal) => () => {
     closeModal();
-    handleNewGameClick();
+    handleNewGame();
   };
 
   return (
@@ -73,20 +86,20 @@ const HomePage = () => {
               <ButtonGroup.Button
                 first
                 active={difficulty() === 'easy'}
-                onClick={handleDifficultyClick('easy')}
+                onClick={handleDifficulty('easy')}
               >
                 Easy
               </ButtonGroup.Button>
               <ButtonGroup.Button
                 active={difficulty() === 'normal'}
-                onClick={handleDifficultyClick('normal')}
+                onClick={handleDifficulty('normal')}
               >
                 Normal
               </ButtonGroup.Button>
               <ButtonGroup.Button
                 last
                 active={difficulty() === 'hard'}
-                onClick={handleDifficultyClick('hard')}
+                onClick={handleDifficulty('hard')}
               >
                 Hard
               </ButtonGroup.Button>
@@ -99,7 +112,7 @@ const HomePage = () => {
             <Button
               class="ml-4"
               variant="tertiary"
-              onClick={handlePausePlayClick}
+              onClick={handlePausePlay}
             >
               {paused() ? <Play class="h-4" /> : <Pause class="h-4" />}
             </Button>
@@ -108,14 +121,14 @@ const HomePage = () => {
           <div>
             <Button
               class="mr-4"
-              onClick={handleNewGameClick}
+              onClick={handleNewGame}
             >
               New Game
             </Button>
 
             <Modal>
               <Modal.Button
-                onClick={handleCheckClick}
+                onClick={handleCheck}
               >
                 Check
               </Modal.Button>
@@ -145,7 +158,7 @@ const HomePage = () => {
                       {solved() && (
                         <Button
                           class="mr-4"
-                          onClick={handleModalNewGameClick(closeModal)}
+                          onClick={handleModalNewGame(closeModal)}
                         >
                           New Game
                         </Button>
