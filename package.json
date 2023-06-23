@@ -2,11 +2,14 @@
   "name": "vite-template-solid",
   "version": "0.0.0",
   "description": "",
+  "homepage": "https://azazellob.github.io/sudoku",
   "scripts": {
     "start": "vite",
     "dev": "vite",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "license": "MIT",
   "devDependencies": {
@@ -15,6 +18,7 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-solid": "^0.12.1",
+    "gh-pages": "^5.0.0",
     "postcss": "^8.4.24",
     "solid-devtools": "^0.27.3",
     "tailwindcss": "^3.3.2",
