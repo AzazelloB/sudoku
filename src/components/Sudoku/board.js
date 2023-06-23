@@ -90,19 +90,29 @@ const difficultyLevels = {
   easy: 38,
   normal: 30,
   hard: 23,
+  expert: 17, // 17 is the minimum number of revealed cells for a sudoku to have a unique solution
 };
 
 export const revealCells = (difficulty) => {
-  const cellsToReveal = difficultyLevels[difficulty];
+  const revealedCells = [];
 
-  for (let i = 0; i < cellsToReveal; i += 1) {
-    let cell;
+  while (revealedCells.length < difficultyLevels[difficulty]) {
+    const cell = state.cells[
+      Math.floor(Math.random() * state.cells.length)
+    ];
 
-    do {
-      cell = state.cells[Math.floor(Math.random() * state.cells.length)];
-    } while (cell.revealed);
+    if (cell.revealed) {
+      continue;
+    }
 
     cell.revealed = true;
+
+    if (!isValidSudoku()) {
+      cell.revealed = false;
+      continue;
+    }
+
+    revealedCells.push(cell);
   }
 };
 
