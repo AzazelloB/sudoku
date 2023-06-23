@@ -59,8 +59,6 @@ function handleKeyboardDown(e) {
   const isNumber = e.keyCode >= 48 && e.keyCode <= 57;
 
   if (isLetter || isNumber) {
-    e.preventDefault();
-
     const symbol = String.fromCharCode(e.keyCode);
 
     if (e.shiftKey) {
@@ -68,6 +66,8 @@ function handleKeyboardDown(e) {
         state.cells[cell.y * cellsInRow + cell.x].value = symbol;
       });
     } else if (e.altKey || this.mode === 'corner') {
+      e.preventDefault();
+
       state.selectedCells.forEach((cell) => {
         const cellInGrid = state.cells[cell.y * cellsInRow + cell.x];
 
