@@ -268,10 +268,7 @@ const HomePage = () => {
       </div>
 
       <div>
-        {/* align with buttons in left col */}
-        <h4 class="text-lg mb-1 font-bold">&nbsp;</h4>
-
-        <div class="grid grid-cols-4 gap-4 text-6xl aspect-square">
+        <div class="grid grid-cols-4 gap-4 text-6xl aspect-square mt-8 select-none">
           <Button
             class="text-lg"
             active={mode() === 'normal'}
