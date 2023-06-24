@@ -1,16 +1,17 @@
 import { colors } from '~/constants/theme';
 
 import {
-  cellHeight,
-  cellWidth,
   cellsInColumn,
   cellsInRow,
-  height,
-  width,
 } from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
 
 export const draw = (ctx, theme) => {
+  const { width, height } = ctx.canvas;
+
+  const cellWidth = width / cellsInRow;
+  const cellHeight = height / cellsInColumn;
+
   ctx.fillStyle = colors.background[theme];
   ctx.fillRect(0, 0, width, height);
 
@@ -51,6 +52,7 @@ export const draw = (ctx, theme) => {
 
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
+  const fontSize = width / cellsInRow / 1.5;
   for (let i = 0; i < cellsInRow; i += 1) {
     for (let j = 0; j < cellsInColumn; j += 1) {
       const cell = state.cells[j * cellsInRow + i];
@@ -59,7 +61,7 @@ export const draw = (ctx, theme) => {
 
       if (cell.revealed) {
         ctx.fillStyle = colors.background[theme === 'dark' ? 'light' : 'dark'];
-        ctx.font = '42px Arial';
+        ctx.font = `${fontSize}px Arial`;
         ctx.fillText(
           cell.answer,
           i * cellWidth + cellWidth / 2,
@@ -67,7 +69,7 @@ export const draw = (ctx, theme) => {
         );
       } else if (value) {
         ctx.fillStyle = colors.secondary[theme === 'dark' ? 'light' : 'dark'];
-        ctx.font = '42px Arial';
+        ctx.font = `${fontSize}px Arial`;
         ctx.fillText(
           value,
           i * cellWidth + cellWidth / 2,
@@ -75,7 +77,7 @@ export const draw = (ctx, theme) => {
         );
       } else {
         ctx.fillStyle = colors.secondary[theme === 'dark' ? 'light' : 'dark'];
-        ctx.font = '18px Arial';
+        ctx.font = `${fontSize / 2.4}px Arial`;
         cell.corner.forEach((value, valueI) => {
           ctx.fillText(
             value,
@@ -85,8 +87,8 @@ export const draw = (ctx, theme) => {
         });
 
         ctx.font = cell.middle.length > 4
-          ? `${36 / (cell.middle.length / 2)}px Arial`
-          : '18px Arial';
+          ? `${fontSize / (cell.middle.length / 2)}px Arial`
+          : `${fontSize / 2.4}px Arial`;
         ctx.fillText(
           cell.middle.join(''),
           i * cellWidth + (cellWidth / 2),

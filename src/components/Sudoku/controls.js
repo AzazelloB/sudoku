@@ -9,7 +9,9 @@ import {
   selectCell,
 } from '~/components/Sudoku/board';
 import { handleRedo, handleUndo, saveSnapshot } from '~/components/Sudoku/history';
-import { cellHeight, cellWidth } from '~/components/Sudoku/settings';
+import {
+  cellsInColumn, cellsInRow,
+} from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
 
 const handleMouseDown = (e) => {
@@ -41,6 +43,9 @@ const handleMouseUp = () => {
 };
 
 function handleMouseMove(e) {
+  const cellWidth = this.canvas.width / cellsInRow;
+  const cellHeight = this.canvas.height / cellsInColumn;
+
   const rect = this.canvas.getBoundingClientRect();
   const x = e.clientX - rect.left;
   const y = e.clientY - rect.top;

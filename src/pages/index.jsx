@@ -134,7 +134,7 @@ const HomePage = () => {
   };
 
   return (
-    <div class="flex gap-12">
+    <div class="flex justify-center gap-12">
       <div>
         <h4 class="text-lg mb-1 font-bold">Difficulty</h4>
 
