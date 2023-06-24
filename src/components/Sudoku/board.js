@@ -288,6 +288,10 @@ export const insertCorner = (value) => {
     if (cellInGrid.corner.includes(value)) {
       cellInGrid.corner = cellInGrid.corner.filter((c) => c !== value);
     } else {
+      if (cellInGrid.corner.length === 4) {
+        return;
+      }
+
       cellInGrid.corner.push(value);
       cellInGrid.corner.sort();
     }
