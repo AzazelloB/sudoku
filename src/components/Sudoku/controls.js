@@ -63,6 +63,25 @@ const handleMouseLeave = () => {
   state.mouseDown = false;
 };
 
+const handleDoubleClick = () => {
+  const cell = state.cells.find((c) => c.x === state.highlightedCell.x
+                                    && c.y === state.highlightedCell.y);
+
+  if (cell.revealed || (!cell.revealed && cell.value)) {
+    const valueToLookFor = cell.revealed ? cell.answer : parseInt(cell.value, 10);
+
+    for (let i = 0; i < state.cells.length; i += 1) {
+      const c = state.cells[i];
+
+      const valueToCompateTo = c.revealed ? c.answer : parseInt(c.value, 10);
+
+      if (valueToCompateTo === valueToLookFor) {
+        selectCell(c);
+      }
+    }
+  }
+};
+
 function handleKeyboardDown(e) {
   const isNumber = e.keyCode >= 48 && e.keyCode <= 57;
 
@@ -147,6 +166,7 @@ export const initControls = (canvas, mode) => {
   canvas.addEventListener('mouseup', handleMouseUp);
   canvas.addEventListener('mousemove', mouseMoveHandler);
   canvas.addEventListener('mouseleave', handleMouseLeave);
+  canvas.addEventListener('dblclick', handleDoubleClick);
 
   document.addEventListener('keydown', keyboardDownHandler);
   document.addEventListener('mousedown', outiseClickHandler);
@@ -156,6 +176,7 @@ export const initControls = (canvas, mode) => {
     canvas.removeEventListener('mouseup', handleMouseUp);
     canvas.removeEventListener('mousemove', mouseMoveHandler);
     canvas.removeEventListener('mouseleave', handleMouseLeave);
+    canvas.removeEventListener('dblclick', handleDoubleClick);
 
     document.removeEventListener('keydown', keyboardDownHandler);
     document.removeEventListener('mousedown', outiseClickHandler);
