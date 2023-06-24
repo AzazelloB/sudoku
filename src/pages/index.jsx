@@ -36,15 +36,19 @@ const HomePage = () => {
     clearInterval(timer);
   });
 
-  const regenerateGrid = () => {
+  const restartGame = () => {
     generateGrid();
     revealCells(difficulty());
     setCells(state.cells);
+
+    setTime(0);
+    setTimerStopped(false);
+    setPause(false);
   };
 
   const handleDifficulty = (diff) => () => {
     setDifficulty(diff);
-    regenerateGrid();
+    restartGame();
   };
 
   const handlePausePlay = () => {
@@ -53,11 +57,7 @@ const HomePage = () => {
   };
 
   const handleNewGame = () => {
-    regenerateGrid();
-
-    setTime(0);
-    setTimerStopped(false);
-    setPause(false);
+    restartGame();
   };
 
   const handleCheck = () => {

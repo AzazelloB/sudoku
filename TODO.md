@@ -6,7 +6,7 @@
 - [x] Upload to github pages
 - [x] Board saving
 - [ ] FIX: doesn't save cell values
-- [ ] FIX: reset timer on difficulty change
+- [x] FIX: reset timer on difficulty change
 - [ ] Cell hover animation
 - [ ] Row, col highlighting
 - [ ] Design generated with MidJouney
