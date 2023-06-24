@@ -12,6 +12,16 @@ export const draw = (ctx, theme) => {
   const cellWidth = width / cellsInRow;
   const cellHeight = height / cellsInColumn;
 
+  drawGrid(ctx, theme, width, height, cellWidth, cellHeight);
+
+  drawValues(ctx, width, theme, cellWidth, cellHeight);
+
+  drawHighlightedCell(ctx, theme, cellWidth, cellHeight);
+
+  drawSelection(ctx, theme, cellWidth, cellHeight);
+};
+
+const drawGrid = (ctx, theme, width, height, cellWidth, cellHeight) => {
   ctx.fillStyle = colors.background[theme];
   ctx.fillRect(0, 0, width, height);
 
@@ -49,7 +59,9 @@ export const draw = (ctx, theme) => {
   }
 
   ctx.globalAlpha = 1;
+};
 
+const drawValues = (ctx, width, theme, cellWidth, cellHeight) => {
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   const fontSize = width / cellsInRow / 1.5;
@@ -97,7 +109,9 @@ export const draw = (ctx, theme) => {
       }
     }
   }
+};
 
+const drawHighlightedCell = (ctx, theme, cellWidth, cellHeight) => {
   if (state.highlightedCell) {
     ctx.fillStyle = colors.background[theme === 'dark' ? 'light' : 'dark'];
     ctx.globalAlpha = 0.2;
@@ -109,7 +123,9 @@ export const draw = (ctx, theme) => {
     );
     ctx.globalAlpha = 1;
   }
+};
 
+const drawSelection = (ctx, theme, cellWidth, cellHeight) => {
   ctx.strokeStyle = colors.secondary[theme === 'dark' ? 'light' : 'dark'];
   ctx.fillStyle = colors.background[theme === 'dark' ? 'light' : 'dark'];
   state.selectedCells.forEach((cell) => {
