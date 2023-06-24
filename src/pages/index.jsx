@@ -1,4 +1,4 @@
-import { createSignal, onCleanup } from 'solid-js';
+import { createEffect, createSignal, onCleanup } from 'solid-js';
 import classNames from 'classnames';
 
 import { useGlobalContext } from '~/context/GlobalContext';
@@ -39,6 +39,25 @@ const HomePage = () => {
   const [time, setTime] = useLocalStorage('time', 0);
   const [timerStopped, setTimerStopped] = createSignal(false);
   const [solved, setSolved] = createSignal(false);
+
+  const handleKeyboardDown = (e) => {
+    switch (e.code) {
+      case 'Space':
+        handlePausePlay();
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  createEffect(() => {
+    document.addEventListener('keydown', handleKeyboardDown);
+
+    onCleanup(() => {
+      document.removeEventListener('keydown', handleKeyboardDown);
+    });
+  });
 
   const timer = setInterval(() => {
     if (!timerStopped()) {
@@ -256,12 +275,13 @@ const HomePage = () => {
           <div class={classNames(
             'transition-all duration-200',
             {
-              'blur-md pointer-events-none': paused(),
+              'blur-md': paused(),
             },
           )}>
             <Board
               difficulty={difficulty}
               mode={mode}
+              paused={paused}
             />
           </div>
         </div>

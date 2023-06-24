@@ -37,9 +37,7 @@ const Board = (props) => {
   };
 
   createEffect(() => {
-    const cleanup = initControls(canvas, props.mode());
-
-    onCleanup(cleanup);
+    const ctx = canvas.getContext('2d');
 
     onResize();
     window.addEventListener('resize', onResize);
@@ -48,7 +46,11 @@ const Board = (props) => {
       window.removeEventListener('resize', onResize);
     });
 
-    const ctx = canvas.getContext('2d');
+    if (props.paused()) {
+      draw(ctx, theme());
+
+      return;
+    }
 
     const gameLoop = () => {
       draw(ctx, theme());
@@ -57,6 +59,10 @@ const Board = (props) => {
     };
 
     window.requestAnimationFrame(gameLoop);
+
+    const cleanup = initControls(canvas, props.mode());
+
+    onCleanup(cleanup);
   });
 
   return (
