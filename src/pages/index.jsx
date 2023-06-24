@@ -32,8 +32,15 @@ const HomePage = () => {
     }
   }, 1000);
 
+  const autosave = setInterval(() => {
+    if (!paused()) {
+      setCells(state.cells);
+    }
+  }, 5000);
+
   onCleanup(() => {
     clearInterval(timer);
+    clearInterval(autosave);
   });
 
   const restartGame = () => {

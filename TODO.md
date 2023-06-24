@@ -5,7 +5,7 @@
 - [x] History
 - [x] Upload to github pages
 - [x] Board saving
-- [ ] FIX: doesn't save cell values
+- [x] FIX: doesn't save cell values
 - [x] FIX: reset timer on difficulty change
 - [ ] Cell hover animation
 - [ ] Row, col highlighting
