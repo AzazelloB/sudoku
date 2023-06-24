@@ -109,6 +109,8 @@ function handleKeyboardDown(e) {
     return;
   }
 
+  const ctrl = e.ctrlKey || e.metaKey;
+
   switch (e.code) {
     case 'Delete':
     case 'Backspace':
@@ -118,26 +120,26 @@ function handleKeyboardDown(e) {
 
     case 'ArrowUp':
       e.preventDefault();
-      moveSelectedCell('up', e.shiftKey, e.ctrlKey);
+      moveSelectedCell('up', e.shiftKey, ctrl);
       break;
 
     case 'ArrowDown':
       e.preventDefault();
-      moveSelectedCell('down', e.shiftKey, e.ctrlKey);
+      moveSelectedCell('down', e.shiftKey, ctrl);
       break;
 
     case 'ArrowLeft':
       e.preventDefault();
-      moveSelectedCell('left', e.shiftKey, e.ctrlKey);
+      moveSelectedCell('left', e.shiftKey, ctrl);
       break;
 
     case 'ArrowRight':
       e.preventDefault();
-      moveSelectedCell('right', e.shiftKey, e.ctrlKey);
+      moveSelectedCell('right', e.shiftKey, ctrl);
       break;
 
     case 'KeyZ':
-      if (e.ctrlKey) {
+      if (ctrl) {
         if (e.shiftKey) {
           handleRedo();
         } else {
@@ -147,7 +149,7 @@ function handleKeyboardDown(e) {
       break;
 
     case 'KeyA':
-      if (e.ctrlKey) {
+      if (ctrl) {
         e.preventDefault();
 
         selectAllCells();

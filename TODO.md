@@ -17,5 +17,5 @@
 - [ ] Hint system
 - [x] Scale board according to window size
 - [ ] Touch support
-- [ ] MacOS support
+- [x] MacOS support
 - [x] Ctrl + A
