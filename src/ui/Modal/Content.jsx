@@ -23,7 +23,7 @@ const Content = (props) => {
     >
       <Dialog
         isOpen
-        class="fixed inset-0 z-10 overflow-y-auto"
+        class="fixed inset-0 z-30 overflow-y-auto"
         onClose={closeModal}
       >
         <div class="h-full flex items-center justify-center">
