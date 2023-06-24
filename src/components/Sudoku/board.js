@@ -140,6 +140,14 @@ export const selectCell = (cell) => {
   state.selectedCells.push({ ...cell });
 };
 
+export const selectAllCells = () => {
+  for (let i = 0; i < state.cells.length; i += 1) {
+    const cell = state.cells[i];
+
+    selectCell(cell);
+  }
+};
+
 export const deselectCell = (cell) => {
   const index = state.selectedCells.findIndex(
     (c) => c.x === cell.x && c.y === cell.y,
@@ -257,7 +265,7 @@ export const moveSelectedCell = (direction, shiftPressed, ctrlPressed) => {
   }
 };
 
-export const clearSelectedCell = () => {
+export const clearSelectedCells = () => {
   state.selectedCells.forEach((cell) => {
     const cellInGrid = state.cells[cell.y * cellsInRow + cell.x];
 

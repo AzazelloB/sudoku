@@ -1,4 +1,4 @@
-import { createEffect, onCleanup } from 'solid-js';
+import { createEffect, onCleanup, onMount } from 'solid-js';
 
 import { useGlobalContext } from '~/context/GlobalContext';
 
@@ -12,13 +12,7 @@ import { state } from '~/components/Sudoku/state';
 const Board = (props) => {
   const { theme, cells, setCells } = useGlobalContext();
 
-  let canvas;
-
-  createEffect(() => {
-    const cleanup = initControls(canvas, props.mode());
-
-    onCleanup(cleanup);
-
+  onMount(() => {
     if (cells().length === 0) {
       generateGrid();
       revealCells(props.difficulty());
@@ -29,6 +23,14 @@ const Board = (props) => {
 
     clearHistory();
     saveSnapshot();
+  });
+
+  let canvas;
+
+  createEffect(() => {
+    const cleanup = initControls(canvas, props.mode());
+
+    onCleanup(cleanup);
 
     const ctx = canvas.getContext('2d');
 

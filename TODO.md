@@ -10,7 +10,7 @@
 - [ ] Cell hover animation
 - [ ] Row, col highlighting
 - [ ] Design generated with MidJouney
-- [ ] Interface for inputing digits, colors, switching input mode, delete, undo, redo
+- [x] Interface for inputing digits, colors, switching input mode, delete, undo, redo
 - [x] Double click to select cells with same didgit
 - [ ] Double click to select same color
 - [ ] Coloring the grid
@@ -18,4 +18,4 @@
 - [ ] Scale board according to window size
 - [ ] Touch support
 - [ ] MacOS support
-- [ ] Ctrl + A
+- [x] Ctrl + A

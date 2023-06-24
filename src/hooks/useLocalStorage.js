@@ -9,8 +9,9 @@ const useLocalStorage = (key, defaultValue) => {
 
   const setValueAndStore = ((newValue) => {
     try {
-      setValue(newValue);
-      window.localStorage.setItem(key, JSON.stringify(newValue));
+      const strignifiedValue = JSON.stringify(newValue);
+      setValue(JSON.parse(strignifiedValue));
+      window.localStorage.setItem(key, strignifiedValue);
     } catch (error) {
       console.log(error);
     }

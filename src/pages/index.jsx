@@ -12,13 +12,27 @@ import Play from '~/ui/icons/Play';
 import Modal from '~/ui/Modal';
 
 import Board from '~/components/Sudoku/Board';
-import { checkIfSolved, generateGrid, revealCells } from '~/components/Sudoku/board';
+import {
+  checkIfSolved,
+  clearSelectedCells,
+  generateGrid,
+  insertCorner,
+  insertMiddle,
+  insertValue,
+  revealCells,
+} from '~/components/Sudoku/board';
 import { state } from '~/components/Sudoku/state';
+import {
+  clearHistory,
+  handleRedo,
+  handleUndo,
+  saveSnapshot,
+} from '~/components/Sudoku/history';
 
 const HomePage = () => {
   const { setCells } = useGlobalContext();
 
-  const [mode] = createSignal('normal');
+  const [mode, setMode] = createSignal('middle');
 
   const [difficulty, setDifficulty] = useLocalStorage('difficulty', 'normal');
   const [paused, setPause] = createSignal(false);
@@ -48,12 +62,19 @@ const HomePage = () => {
     revealCells(difficulty());
     setCells(state.cells);
 
+    clearHistory();
+    saveSnapshot();
+
+    // this is here because click outside has an exception of buttons
+    // and it doesn't clear the selected cells on new game or difficulty change
+    state.selectedCells.length = 0;
+
     setTime(0);
     setTimerStopped(false);
     setPause(false);
   };
 
-  const handleDifficulty = (diff) => () => {
+  const handleDifficulty = (diff) => {
     setDifficulty(diff);
     restartGame();
   };
@@ -76,14 +97,44 @@ const HomePage = () => {
     }
   };
 
-  // eslint-disable-next-line solid/reactivity
-  const handleModalNewGame = (closeModal) => () => {
+  const handleModalNewGame = (closeModal) => {
     closeModal();
     handleNewGame();
   };
 
+  const handleMode = (mode) => {
+    setMode(mode);
+  };
+
+  const handleNumber = (number) => {
+    switch (mode()) {
+      case 'normal':
+        insertValue(number);
+        break;
+
+      case 'middle':
+        insertMiddle(number);
+        break;
+
+      case 'corner':
+        insertCorner(number);
+        break;
+
+      default:
+        insertMiddle(number);
+        break;
+    }
+
+    saveSnapshot();
+  };
+
+  const handleClear = () => {
+    clearSelectedCells();
+    saveSnapshot();
+  };
+
   return (
-    <div class="flex">
+    <div class="flex gap-12">
       <div>
         <h4 class="text-lg mb-1 font-bold">Difficulty</h4>
 
@@ -93,20 +144,20 @@ const HomePage = () => {
               <ButtonGroup.Button
                 first
                 active={difficulty() === 'easy'}
-                onClick={handleDifficulty('easy')}
+                onClick={[handleDifficulty, 'easy']}
               >
                 Easy
               </ButtonGroup.Button>
               <ButtonGroup.Button
                 active={difficulty() === 'normal'}
-                onClick={handleDifficulty('normal')}
+                onClick={[handleDifficulty, 'normal']}
               >
                 Normal
               </ButtonGroup.Button>
               <ButtonGroup.Button
                 last
                 active={difficulty() === 'hard'}
-                onClick={handleDifficulty('hard')}
+                onClick={[handleDifficulty, 'hard']}
               >
                 Hard
               </ButtonGroup.Button>
@@ -165,7 +216,7 @@ const HomePage = () => {
                       {solved() && (
                         <Button
                           class="mr-4"
-                          onClick={handleModalNewGame(closeModal)}
+                          onClick={[handleModalNewGame, closeModal]}
                         >
                           New Game
                         </Button>
@@ -213,6 +264,53 @@ const HomePage = () => {
               mode={mode}
             />
           </div>
+        </div>
+      </div>
+
+      <div>
+        {/* align with buttons in left col */}
+        <h4 class="text-lg mb-1 font-bold">&nbsp;</h4>
+
+        <div class="grid grid-cols-4 gap-4 text-6xl aspect-square">
+          <Button
+            class="text-lg"
+            active={mode() === 'normal'}
+            onClick={[handleMode, 'normal']}
+          >
+            Normal
+          </Button>
+          <Button
+            class="text-lg row-start-2"
+            active={mode() === 'middle'}
+            onClick={[handleMode, 'middle']}
+          >
+            Middle
+          </Button>
+          <Button
+            class="text-lg row-start-3"
+            active={mode() === 'corner'}
+            onClick={[handleMode, 'corner']}
+          >
+            Corner
+          </Button>
+
+          <Button onClick={[handleNumber, 7]}>7</Button>
+          <Button onClick={[handleNumber, 8]}>8</Button>
+          <Button onClick={[handleNumber, 9]}>9</Button>
+
+          <Button onClick={[handleNumber, 4]}>4</Button>
+          <Button onClick={[handleNumber, 5]}>5</Button>
+          <Button onClick={[handleNumber, 6]}>6</Button>
+
+          <Button onClick={[handleNumber, 1]}>1</Button>
+          <Button onClick={[handleNumber, 2]}>2</Button>
+          <Button onClick={[handleNumber, 3]}>3</Button>
+
+          <Button class="text-lg" onClick={handleClear}>Clear</Button>
+          <Button class="text-lg" onClick={handleUndo}>Undo</Button>
+          <Button class="text-lg" onClick={handleRedo}>Redo</Button>
+
+          <Button class="text-lg">Mode</Button>
         </div>
       </div>
     </div>

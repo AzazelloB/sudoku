@@ -1,10 +1,11 @@
 import {
-  clearSelectedCell,
+  clearSelectedCells,
   deselectCell,
   insertCorner,
   insertMiddle,
   insertValue,
   moveSelectedCell,
+  selectAllCells,
   selectCell,
 } from '~/components/Sudoku/board';
 import { handleRedo, handleUndo, saveSnapshot } from '~/components/Sudoku/history';
@@ -106,7 +107,7 @@ function handleKeyboardDown(e) {
   switch (e.code) {
     case 'Delete':
     case 'Backspace':
-      clearSelectedCell();
+      clearSelectedCells();
       saveSnapshot();
       break;
 
@@ -140,6 +141,14 @@ function handleKeyboardDown(e) {
       }
       break;
 
+    case 'KeyA':
+      if (e.ctrlKey) {
+        e.preventDefault();
+
+        selectAllCells();
+      }
+      break;
+
     case 'Slash':
       state.revealed = !state.revealed;
       break;
@@ -150,6 +159,10 @@ function handleKeyboardDown(e) {
 }
 
 function handleClickOutside(e) {
+  if (e.target.tagName === 'BUTTON') {
+    return;
+  }
+
   if (!this.canvas || this.canvas.contains(e.target)) {
     return;
   }
