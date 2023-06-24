@@ -15,7 +15,7 @@
 - [ ] Double click to select same color
 - [ ] Coloring the grid
 - [ ] Hint system
-- [ ] Scale board according to window size
+- [x] Scale board according to window size
 - [ ] Touch support
 - [ ] MacOS support
 - [x] Ctrl + A
