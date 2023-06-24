@@ -30,7 +30,7 @@ const Board = (props) => {
     const { top } = canvas.getBoundingClientRect();
     const padding = 24;
 
-    const min = Math.min(window.innerWidth, window.innerHeight - top - padding);
+    const min = Math.min(window.innerWidth / 2, window.innerHeight - top - padding);
 
     canvas.width = min;
     canvas.height = min;
