@@ -142,14 +142,18 @@ const drawHighlightedCell = (ctx, dt, theme, cellWidth, cellHeight) => {
 };
 
 const drawSelection = (ctx, theme, cellWidth, cellHeight) => {
+  const lineWidth = 5;
+
   ctx.strokeStyle = colors.secondary[theme === 'dark' ? 'light' : 'dark'];
   ctx.fillStyle = colors.background[theme === 'dark' ? 'light' : 'dark'];
+  ctx.lineWidth = lineWidth;
+
   state.selectedCells.forEach((cell) => {
     ctx.strokeRect(
-      cell.x * cellWidth,
-      cell.y * cellHeight,
-      cellWidth,
-      cellHeight,
+      cell.x * cellWidth + lineWidth / 2,
+      cell.y * cellHeight + lineWidth / 2,
+      cellWidth - lineWidth,
+      cellHeight - lineWidth,
     );
     ctx.globalAlpha = 0.2;
     ctx.fillRect(
