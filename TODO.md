@@ -12,7 +12,7 @@
 - [ ] Make pretty
 - [x] Interface for inputing digits, colors, switching input mode, delete, undo, redo
 - [x] Double click to select cells with same didgit
-- [ ] Coloring the grid
+- [x] Coloring the grid
 - [ ] Double click to select same color
 - [ ] Stop timer forever after solved
 - [ ] Hint system

@@ -166,21 +166,19 @@ function handleKeyboardDown(e) {
 }
 
 function handleClickOutside(e) {
-  if (e.target.tagName === 'BUTTON') {
-    return;
-  }
-
-  if (!this.canvas || this.canvas.contains(e.target)) {
+  if ((this.canvas && this.canvas.contains(e.target))
+   || (this.panel && this.panel.contains(e.target))
+  ) {
     return;
   }
 
   state.selectedCells.length = 0;
 }
 
-export const initControls = (canvas, mode) => {
+export const initControls = (canvas, panel, mode) => {
   const mouseMoveHandler = handleMouseMove.bind({ canvas });
   const keyboardDownHandler = handleKeyboardDown.bind({ mode });
-  const outiseClickHandler = handleClickOutside.bind({ canvas });
+  const outiseClickHandler = handleClickOutside.bind({ canvas, panel });
 
   canvas.addEventListener('mousedown', handleMouseDown);
   canvas.addEventListener('mouseup', handleMouseUp);

@@ -27,4 +27,15 @@ export const colors = {
     'dark-accent': '#293245',
     light: '#E5E7EB',
   },
+  cell: {
+    one: '#658b89', // TODO change color bad visibility
+    two: '#8b2f33',
+    tree: '#5b596c',
+    four: '#cb937f',
+    five: '#ecd4ac',
+    six: '#e8a87c',
+    seven: '#5b8b93', // TODO change color bad visibility
+    eight: '#8b6f4f',
+    nine: '#8b8b7a',
+  },
 };

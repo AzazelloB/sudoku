@@ -80,6 +80,7 @@ export const generateGrid = () => {
       middle: [],
       x: i % cellsInRow,
       y: Math.floor(i / cellsInRow),
+      colors: [],
     });
   }
 
@@ -307,6 +308,18 @@ export const insertMiddle = (value) => {
     } else {
       cellInGrid.middle.push(value);
       cellInGrid.middle.sort();
+    }
+  });
+};
+
+export const insertColor = (color) => {
+  state.selectedCells.forEach((cell) => {
+    const cellInGrid = state.cells[cell.y * cellsInRow + cell.x];
+
+    if (cellInGrid.colors.includes(color)) {
+      cellInGrid.colors = cellInGrid.colors.filter((c) => c !== color);
+    } else {
+      cellInGrid.colors.push(color);
     }
   });
 };

@@ -12,6 +12,10 @@ export const draw = (ctx, dt, theme) => {
   const cellWidth = width / cellsInRow;
   const cellHeight = height / cellsInColumn;
 
+  drawBackground(ctx, theme, width, height);
+
+  drawCellColors(ctx, cellWidth, cellHeight);
+
   drawGrid(ctx, theme, width, height, cellWidth, cellHeight);
 
   drawValues(ctx, theme, width, cellWidth, cellHeight);
@@ -21,10 +25,49 @@ export const draw = (ctx, dt, theme) => {
   drawSelection(ctx, theme, cellWidth, cellHeight);
 };
 
-const drawGrid = (ctx, theme, width, height, cellWidth, cellHeight) => {
+const drawBackground = (ctx, theme, width, height) => {
   ctx.fillStyle = colors.background[theme];
   ctx.fillRect(0, 0, width, height);
+};
 
+const drawCellColors = (ctx, cellWidth, cellHeight) => {
+  for (let i = 0; i < cellsInRow; i += 1) {
+    for (let j = 0; j < cellsInColumn; j += 1) {
+      const cell = state.cells[j * cellsInRow + i];
+
+      if (cell.colors.length === 0) {
+        continue;
+      }
+
+      const path = new Path2D();
+      path.rect(i * cellWidth, j * cellHeight, cellWidth, cellHeight);
+      ctx.save();
+      ctx.clip(path);
+
+      for (let k = 0; k < cell.colors.length; k += 1) {
+        const color = cell.colors[k];
+        ctx.fillStyle = color;
+
+        const x = i * cellWidth + cellWidth / 2;
+        const y = j * cellHeight + cellHeight / 2;
+        const radius = Math.max(cellWidth, cellHeight);
+        const startAngle = (k / cell.colors.length) * Math.PI * 2 + Math.PI / 3;
+        const endAngle = ((k + 1) / cell.colors.length) * Math.PI * 2 + Math.PI / 3;
+
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.arc(x, y, radius, startAngle, endAngle);
+        ctx.lineTo(x, y);
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      ctx.restore();
+    }
+  }
+};
+
+const drawGrid = (ctx, theme, width, height, cellWidth, cellHeight) => {
   ctx.strokeStyle = colors.background[theme === 'dark' ? 'light' : 'dark'];
   for (let i = 0; i < cellsInRow + 1; i += 1) {
     if (i % 3 === 0) {
@@ -53,7 +96,7 @@ const drawGrid = (ctx, theme, width, height, cellWidth, cellHeight) => {
 
     ctx.beginPath();
     ctx.moveTo(0, i * cellHeight);
-    ctx.lineTo(width, i * cellHeight);
+    ctx.lineTo(height, i * cellHeight);
     ctx.stroke();
     ctx.closePath();
   }
@@ -64,6 +107,8 @@ const drawGrid = (ctx, theme, width, height, cellWidth, cellHeight) => {
 const drawValues = (ctx, theme, width, cellWidth, cellHeight) => {
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
+  ctx.shadowColor = colors.background.dark;
+  ctx.shadowBlur = 15;
   const fontSize = width / cellsInRow / 1.5;
   for (let i = 0; i < cellsInRow; i += 1) {
     for (let j = 0; j < cellsInColumn; j += 1) {
@@ -109,6 +154,8 @@ const drawValues = (ctx, theme, width, cellWidth, cellHeight) => {
       }
     }
   }
+
+  ctx.shadowBlur = 0;
 };
 
 const speed = 25;
