@@ -22,3 +22,4 @@
 - [x] MacOS support
 - [x] Ctrl + A
 - [ ] Add save check and show notification if it's not compatible anymore
+- [ ] Increase canvas resolution
