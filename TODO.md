@@ -7,13 +7,14 @@
 - [x] Board saving
 - [x] FIX: doesn't save cell values
 - [x] FIX: reset timer on difficulty change
-- [ ] Cell hover animation
+- [x] Cell hover animation
 - [ ] Row, col highlighting
 - [ ] Make pretty
 - [x] Interface for inputing digits, colors, switching input mode, delete, undo, redo
 - [x] Double click to select cells with same didgit
-- [ ] Double click to select same color
 - [ ] Coloring the grid
+- [ ] Double click to select same color
+- [ ] Stop timer forever after solved
 - [ ] Hint system
 - [x] Scale board according to window size
 - [ ] Touch support

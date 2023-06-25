@@ -6,7 +6,7 @@ import {
 } from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
 
-export const draw = (ctx, theme) => {
+export const draw = (ctx, dt, theme) => {
   const { width, height } = ctx.canvas;
 
   const cellWidth = width / cellsInRow;
@@ -14,9 +14,9 @@ export const draw = (ctx, theme) => {
 
   drawGrid(ctx, theme, width, height, cellWidth, cellHeight);
 
-  drawValues(ctx, width, theme, cellWidth, cellHeight);
+  drawValues(ctx, theme, width, cellWidth, cellHeight);
 
-  drawHighlightedCell(ctx, theme, cellWidth, cellHeight);
+  drawHighlightedCell(ctx, dt, theme, cellWidth, cellHeight);
 
   drawSelection(ctx, theme, cellWidth, cellHeight);
 };
@@ -61,7 +61,7 @@ const drawGrid = (ctx, theme, width, height, cellWidth, cellHeight) => {
   ctx.globalAlpha = 1;
 };
 
-const drawValues = (ctx, width, theme, cellWidth, cellHeight) => {
+const drawValues = (ctx, theme, width, cellWidth, cellHeight) => {
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   const fontSize = width / cellsInRow / 1.5;
@@ -111,17 +111,33 @@ const drawValues = (ctx, width, theme, cellWidth, cellHeight) => {
   }
 };
 
-const drawHighlightedCell = (ctx, theme, cellWidth, cellHeight) => {
+const speed = 25;
+const animatedHighlightedCell = {
+  x: null,
+  y: null,
+};
+
+const drawHighlightedCell = (ctx, dt, theme, cellWidth, cellHeight) => {
   if (state.highlightedCell) {
+    animatedHighlightedCell.x += animatedHighlightedCell.x === null
+      ? state.highlightedCell.x
+      : (state.highlightedCell.x - animatedHighlightedCell.x) * speed * dt;
+    animatedHighlightedCell.y += animatedHighlightedCell.y === null
+      ? state.highlightedCell.y
+      : (state.highlightedCell.y - animatedHighlightedCell.y) * speed * dt;
+
     ctx.fillStyle = colors.background[theme === 'dark' ? 'light' : 'dark'];
     ctx.globalAlpha = 0.2;
     ctx.fillRect(
-      state.highlightedCell.x * cellWidth,
-      state.highlightedCell.y * cellHeight,
+      animatedHighlightedCell.x * cellWidth,
+      animatedHighlightedCell.y * cellHeight,
       cellWidth,
       cellHeight,
     );
     ctx.globalAlpha = 1;
+  } else {
+    animatedHighlightedCell.x = null;
+    animatedHighlightedCell.y = null;
   }
 };
 

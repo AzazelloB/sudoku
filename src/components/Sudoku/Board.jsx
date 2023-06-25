@@ -52,8 +52,13 @@ const Board = (props) => {
       return;
     }
 
-    const gameLoop = () => {
-      draw(ctx, theme());
+    let prevTimeStamp = 0;
+
+    const gameLoop = (timeStamp) => {
+      const dt = (timeStamp - prevTimeStamp) / 1000;
+      prevTimeStamp = timeStamp;
+
+      draw(ctx, dt, theme());
 
       window.requestAnimationFrame(gameLoop);
     };
