@@ -24,3 +24,4 @@
 - [ ] Add save check and show notification if it's not compatible anymore
 - [x] Increase canvas resolution
 - [ ] FIX: if spam pause with high resolution scale, everything starts to lag
+- [ ] Add excessive accessibility support
