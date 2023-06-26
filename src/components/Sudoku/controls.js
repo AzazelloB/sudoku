@@ -85,6 +85,16 @@ const handleDoubleClick = () => {
         selectCell(c);
       }
     }
+  } else if (cell.colors.length === 1) {
+    const colorToLookFor = cell.colors[0];
+
+    for (let i = 0; i < state.cells.length; i += 1) {
+      const c = state.cells[i];
+
+      if (c.colors.length === 1 && c.colors.includes(colorToLookFor)) {
+        selectCell(c);
+      }
+    }
   }
 };
 
