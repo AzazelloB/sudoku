@@ -40,6 +40,7 @@ const Board = (props) => {
 
     const size = Math.min(window.innerWidth / 2, window.innerHeight - top - padding);
 
+    // TODO if the game is on pause, this makes the canvas disappear
     setCanvasWidth(size);
     setCanvasHeight(size);
   };
@@ -55,12 +56,14 @@ const Board = (props) => {
     });
 
     if (props.paused()) {
-      draw(ctx, theme());
+      draw(ctx, 1, theme());
 
       return;
     }
 
     let prevTimeStamp = 0;
+
+    let frame;
 
     const gameLoop = (timeStamp) => {
       const dt = (timeStamp - prevTimeStamp) / 1000;
@@ -68,10 +71,13 @@ const Board = (props) => {
 
       draw(ctx, dt, theme());
 
-      window.requestAnimationFrame(gameLoop);
+      frame = window.requestAnimationFrame(gameLoop);
     };
 
-    window.requestAnimationFrame(gameLoop);
+    frame = window.requestAnimationFrame(gameLoop);
+    onCleanup(() => {
+      cancelAnimationFrame(frame);
+    });
 
     const cleanup = initControls({
       canvas,
