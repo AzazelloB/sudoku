@@ -1,17 +1,25 @@
-import { createEffect, onCleanup, onMount } from 'solid-js';
+import {
+  createEffect,
+  createSignal,
+  onCleanup,
+  onMount,
+} from 'solid-js';
 
 import { useGlobalContext } from '~/context/GlobalContext';
 
 import { initControls } from '~/components/Sudoku/controls';
 import { generateGrid, revealCells } from '~/components/Sudoku/board';
 import { draw } from '~/components/Sudoku/render';
-import { initialHeight, initialWidth } from '~/components/Sudoku/settings';
+import { initialHeight, initialWidth, scale } from '~/components/Sudoku/settings';
 import { clearHistory, saveSnapshot } from '~/components/Sudoku/history';
 import { state } from '~/components/Sudoku/state';
 
 const Board = (props) => {
   const { theme, cells, setCells } = useGlobalContext();
   let canvas;
+
+  const [canvasWidth, setCanvasWidth] = createSignal(initialWidth);
+  const [canvasHeight, setCanvasHeight] = createSignal(initialHeight);
 
   onMount(() => {
     if (cells().length === 0) {
@@ -30,10 +38,13 @@ const Board = (props) => {
     const { top } = canvas.getBoundingClientRect();
     const padding = 24;
 
-    const min = Math.min(window.innerWidth / 2, window.innerHeight - top - padding);
+    const size = Math.min(window.innerWidth / 2, window.innerHeight - top - padding);
 
-    canvas.width = min;
-    canvas.height = min;
+    setCanvasWidth(size * scale);
+    setCanvasHeight(size * scale);
+
+    // canvas.width = size * scale;
+    // canvas.height = size * scale;
   };
 
   createEffect(() => {
@@ -80,8 +91,12 @@ const Board = (props) => {
   return (
     <canvas
       ref={canvas}
-      width={initialWidth}
-      height={initialHeight}
+      width={canvasWidth()}
+      height={canvasHeight()}
+      style={{
+        width: `${canvasWidth() / scale}px`,
+        height: `${canvasHeight() / scale}px`,
+      }}
     />
   );
 };

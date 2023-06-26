@@ -3,6 +3,7 @@ import { colors } from '~/constants/theme';
 import {
   cellsInColumn,
   cellsInRow,
+  scale,
 } from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
 
@@ -71,11 +72,11 @@ const drawGrid = (ctx, theme, width, height, cellWidth, cellHeight) => {
   ctx.strokeStyle = colors.background[theme === 'dark' ? 'light' : 'dark'];
   for (let i = 0; i < cellsInRow + 1; i += 1) {
     if (i % 3 === 0) {
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 3 * scale;
       ctx.globalAlpha = 1;
     } else {
+      ctx.lineWidth = 1 * scale;
       ctx.globalAlpha = 0.4;
-      ctx.lineWidth = 1;
     }
 
     ctx.beginPath();
@@ -87,11 +88,11 @@ const drawGrid = (ctx, theme, width, height, cellWidth, cellHeight) => {
 
   for (let i = 0; i < cellsInColumn + 1; i += 1) {
     if (i % 3 === 0) {
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 3 * scale;
       ctx.globalAlpha = 1;
     } else {
       ctx.globalAlpha = 0.4;
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 1 * scale;
     }
 
     ctx.beginPath();
@@ -108,7 +109,7 @@ const drawValues = (ctx, theme, width, cellWidth, cellHeight) => {
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.shadowColor = colors.background.dark;
-  ctx.shadowBlur = 15;
+  ctx.shadowBlur = 15 * scale;
   const fontSize = width / cellsInRow / 1.5;
   for (let i = 0; i < cellsInRow; i += 1) {
     for (let j = 0; j < cellsInColumn; j += 1) {
@@ -189,7 +190,7 @@ const drawHighlightedCell = (ctx, dt, theme, cellWidth, cellHeight) => {
 };
 
 const drawSelection = (ctx, theme, cellWidth, cellHeight) => {
-  const lineWidth = 5;
+  const lineWidth = 5 * scale;
 
   ctx.strokeStyle = colors.secondary[theme === 'dark' ? 'light' : 'dark'];
   ctx.fillStyle = colors.background[theme === 'dark' ? 'light' : 'dark'];

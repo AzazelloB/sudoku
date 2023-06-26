@@ -12,7 +12,7 @@ import {
 } from '~/components/Sudoku/board';
 import { handleRedo, handleUndo, saveSnapshot } from '~/components/Sudoku/history';
 import {
-  cellsInColumn, cellsInRow,
+  cellsInColumn, cellsInRow, scale,
 } from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
 import { colors } from '~/constants/theme';
@@ -50,8 +50,8 @@ function handleMouseMove(e) {
   const cellHeight = this.canvas.height / cellsInColumn;
 
   const rect = this.canvas.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
+  const x = (e.clientX - rect.left) * scale;
+  const y = (e.clientY - rect.top) * scale;
 
   const cellX = Math.floor(x / cellWidth);
   const cellY = Math.floor(y / cellHeight);
