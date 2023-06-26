@@ -360,50 +360,32 @@ const HomePage = () => {
             when={tool() === 'colors'}
           >
             <Button onClick={[handleColor, colors.cell.seven]}>
-              <span class="sr-only">Blue</span>
-
               <div class="bg-cell-seven w-full aspect-square" />
             </Button>
             <Button onClick={[handleColor, colors.cell.eight]}>
-              <span class="sr-only">Brown</span>
-
               <div class="bg-cell-eight w-full aspect-square" />
             </Button>
             <Button onClick={[handleColor, colors.cell.nine]}>
-              <span class="sr-only">Gray</span>
-
               <div class="bg-cell-nine w-full aspect-square" />
             </Button>
 
             <Button onClick={[handleColor, colors.cell.four]}>
-              <span class="sr-only">Pink</span>
-
               <div class="bg-cell-four w-full aspect-square" />
             </Button>
             <Button onClick={[handleColor, colors.cell.five]}>
-              <span class="sr-only">Yellow</span>
-
               <div class="bg-cell-five w-full aspect-square" />
             </Button>
             <Button onClick={[handleColor, colors.cell.six]}>
-              <span class="sr-only">Orange</span>
-
               <div class="bg-cell-six w-full aspect-square" />
             </Button>
 
             <Button onClick={[handleColor, colors.cell.one]}>
-              <span class="sr-only">Green</span>
-
-              <div class="bg-cell-one w-full aspect-square" />
+              <div class="bg-background-light dark:bg-background-dark w-full aspect-square" />
             </Button>
             <Button onClick={[handleColor, colors.cell.two]}>
-              <span class="sr-only">Red</span>
-
               <div class="bg-cell-two w-full aspect-square" />
             </Button>
             <Button onClick={[handleColor, colors.cell.tree]}>
-              <span class="sr-only">Purple</span>
-
               <div class="bg-cell-tree w-full aspect-square" />
             </Button>
           </Show>
