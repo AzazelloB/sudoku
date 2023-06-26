@@ -20,14 +20,14 @@ import { colors } from '~/constants/theme';
 
 const tools = ['digits', 'colors'];
 
+export const getNextTool = (currentTool) => {
+  const index = tools.indexOf(currentTool);
+  const nextIndex = (index + 1) % tools.length;
+
+  return tools[nextIndex];
+};
+
 const Panel = (props) => {
-  const getNextTool = () => {
-    const index = tools.indexOf(props.tool());
-    const nextIndex = (index + 1) % tools.length;
-
-    return tools[nextIndex];
-  };
-
   const handleNumber = (number) => {
     switch (props.mode()) {
       case 'normal':
@@ -142,8 +142,8 @@ const Panel = (props) => {
       <Button class="text-lg" onClick={handleUndo}>Undo</Button>
       <Button class="text-lg" onClick={handleRedo}>Redo</Button>
 
-      <Button class="text-lg capitalize" onClick={[props.setTool, getNextTool()]}>
-        {getNextTool()}
+      <Button class="text-lg capitalize" onClick={[props.setTool, getNextTool(props.tool())]}>
+        {getNextTool(props.tool())}
       </Button>
     </div>
   );

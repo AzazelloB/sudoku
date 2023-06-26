@@ -250,6 +250,8 @@ const HomePage = () => {
               difficulty={difficulty}
               mode={mode}
               setMode={setMode}
+              tool={tool}
+              setTool={setTool}
               paused={paused}
             />
           </div>

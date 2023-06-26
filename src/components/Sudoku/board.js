@@ -125,7 +125,7 @@ export const checkIfSolved = () => {
       continue;
     }
 
-    if (cell.answer !== parseInt(cell.value, 10)) {
+    if (cell.answer !== cell.value) {
       return false;
     }
   }
@@ -320,6 +320,7 @@ export const insertColor = (color) => {
       cellInGrid.colors = cellInGrid.colors.filter((c) => c !== color);
     } else {
       cellInGrid.colors.push(color);
+      cellInGrid.colors.sort();
     }
   });
 };

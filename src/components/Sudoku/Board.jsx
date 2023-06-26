@@ -65,7 +65,14 @@ const Board = (props) => {
 
     window.requestAnimationFrame(gameLoop);
 
-    const cleanup = initControls(canvas, props.panel(), props.mode(), props.setMode);
+    const cleanup = initControls({
+      canvas,
+      panel: props.panel(),
+      mode: props.mode(),
+      setMode: props.setMode,
+      tool: props.tool(),
+      setTool: props.setTool,
+    });
 
     onCleanup(cleanup);
   });

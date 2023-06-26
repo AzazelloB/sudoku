@@ -1,6 +1,8 @@
+import { getNextTool } from '~/components/Sudoku/Panel';
 import {
   clearSelectedCells,
   deselectCell,
+  insertColor,
   insertCorner,
   insertMiddle,
   insertValue,
@@ -13,6 +15,7 @@ import {
   cellsInColumn, cellsInRow,
 } from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
+import { colors } from '~/constants/theme';
 
 const handleMouseDown = (e) => {
   state.mouseDown = true;
@@ -74,12 +77,12 @@ const handleDoubleClick = () => {
                                     && c.y === state.highlightedCell.y);
 
   if (cell.revealed || (!cell.revealed && cell.value)) {
-    const valueToLookFor = cell.revealed ? cell.answer : parseInt(cell.value, 10);
+    const valueToLookFor = cell.revealed ? cell.answer : cell.value;
 
     for (let i = 0; i < state.cells.length; i += 1) {
       const c = state.cells[i];
 
-      const valueToCompateTo = c.revealed ? c.answer : parseInt(c.value, 10);
+      const valueToCompateTo = c.revealed ? c.answer : c.value;
 
       if (valueToCompateTo === valueToLookFor) {
         selectCell(c);
@@ -102,16 +105,20 @@ function handleKeyboardDown(e) {
   const isNumber = e.keyCode >= 48 && e.keyCode <= 57;
 
   if (isNumber) {
-    const symbol = String.fromCharCode(e.keyCode);
+    const number = parseInt(String.fromCharCode(e.keyCode), 10);
 
-    if (e.shiftKey || this.mode === 'normal') {
-      insertValue(symbol);
-    } else if (e.altKey || this.mode === 'corner') {
-      e.preventDefault();
+    if (this.tool === 'digits') {
+      if (e.shiftKey || this.mode === 'normal') {
+        insertValue(number);
+      } else if (e.altKey || this.mode === 'corner') {
+        e.preventDefault();
 
-      insertCorner(symbol);
-    } else {
-      insertMiddle(symbol);
+        insertCorner(number);
+      } else {
+        insertMiddle(number);
+      }
+    } else if (this.tool === 'colors') {
+      insertColor(Object.values(colors.cell)[number - 1]);
     }
 
     saveSnapshot();
@@ -168,6 +175,10 @@ function handleKeyboardDown(e) {
       this.setMode('corner');
       break;
 
+    case 'KeyM':
+      this.setTool(getNextTool(this.tool));
+      break;
+
     case 'KeyA':
       if (ctrl) {
         e.preventDefault();
@@ -195,9 +206,21 @@ function handleClickOutside(e) {
   state.selectedCells.length = 0;
 }
 
-export const initControls = (canvas, panel, mode, setMode) => {
+export const initControls = ({
+  canvas,
+  panel,
+  mode,
+  setMode,
+  tool,
+  setTool,
+}) => {
   const mouseMoveHandler = handleMouseMove.bind({ canvas });
-  const keyboardDownHandler = handleKeyboardDown.bind({ mode, setMode });
+  const keyboardDownHandler = handleKeyboardDown.bind({
+    mode,
+    setMode,
+    tool,
+    setTool,
+  });
   const outiseClickHandler = handleClickOutside.bind({ canvas, panel });
 
   canvas.addEventListener('mousedown', handleMouseDown);
