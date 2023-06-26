@@ -40,11 +40,8 @@ const Board = (props) => {
 
     const size = Math.min(window.innerWidth / 2, window.innerHeight - top - padding);
 
-    setCanvasWidth(size * scale);
-    setCanvasHeight(size * scale);
-
-    // canvas.width = size * scale;
-    // canvas.height = size * scale;
+    setCanvasWidth(size);
+    setCanvasHeight(size);
   };
 
   createEffect(() => {
@@ -91,11 +88,11 @@ const Board = (props) => {
   return (
     <canvas
       ref={canvas}
-      width={canvasWidth()}
-      height={canvasHeight()}
+      width={canvasWidth() * scale}
+      height={canvasHeight() * scale}
       style={{
-        width: `${canvasWidth() / scale}px`,
-        height: `${canvasHeight() / scale}px`,
+        width: `${canvasWidth()}px`,
+        height: `${canvasHeight()}px`,
       }}
     />
   );
