@@ -25,3 +25,4 @@
 - [x] Increase canvas resolution
 - [x] FIX: if spam pause with high resolution scale, everything starts to lag
 - [ ] Add excessive accessibility support
+- [ ] Show keybinding on "?"
