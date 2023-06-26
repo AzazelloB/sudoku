@@ -104,7 +104,7 @@ function handleKeyboardDown(e) {
   if (isNumber) {
     const symbol = String.fromCharCode(e.keyCode);
 
-    if (e.shiftKey) {
+    if (e.shiftKey || this.mode === 'normal') {
       insertValue(symbol);
     } else if (e.altKey || this.mode === 'corner') {
       e.preventDefault();
@@ -155,7 +155,17 @@ function handleKeyboardDown(e) {
         } else {
           handleUndo();
         }
+      } else {
+        this.setMode('normal');
       }
+      break;
+
+    case 'KeyX':
+      this.setMode('middle');
+      break;
+
+    case 'KeyC':
+      this.setMode('corner');
       break;
 
     case 'KeyA':
@@ -185,9 +195,9 @@ function handleClickOutside(e) {
   state.selectedCells.length = 0;
 }
 
-export const initControls = (canvas, panel, mode) => {
+export const initControls = (canvas, panel, mode, setMode) => {
   const mouseMoveHandler = handleMouseMove.bind({ canvas });
-  const keyboardDownHandler = handleKeyboardDown.bind({ mode });
+  const keyboardDownHandler = handleKeyboardDown.bind({ mode, setMode });
   const outiseClickHandler = handleClickOutside.bind({ canvas, panel });
 
   canvas.addEventListener('mousedown', handleMouseDown);

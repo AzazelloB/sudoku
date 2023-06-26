@@ -307,6 +307,7 @@ const HomePage = () => {
               panel={panelRef}
               difficulty={difficulty}
               mode={mode}
+              setMode={setMode}
               paused={paused}
             />
           </div>
