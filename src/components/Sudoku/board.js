@@ -283,10 +283,16 @@ export const insertValue = (value) => {
 };
 
 export const insertCorner = (value) => {
+  let areWeRemoving = null;
+
   state.selectedCells.forEach((cell) => {
     const cellInGrid = state.cells[cell.y * cellsInRow + cell.x];
 
-    if (cellInGrid.corner.includes(value)) {
+    if (areWeRemoving === null) {
+      areWeRemoving = cellInGrid.corner.includes(value);
+    }
+
+    if (areWeRemoving) {
       cellInGrid.corner = cellInGrid.corner.filter((c) => c !== value);
     } else {
       if (cellInGrid.corner.length === 4) {
@@ -300,10 +306,16 @@ export const insertCorner = (value) => {
 };
 
 export const insertMiddle = (value) => {
+  let areWeRemoving = null;
+
   state.selectedCells.forEach((cell) => {
     const cellInGrid = state.cells[cell.y * cellsInRow + cell.x];
 
-    if (cellInGrid.middle.includes(value)) {
+    if (areWeRemoving === null) {
+      areWeRemoving = cellInGrid.middle.includes(value);
+    }
+
+    if (areWeRemoving) {
       cellInGrid.middle = cellInGrid.middle.filter((c) => c !== value);
     } else {
       cellInGrid.middle.push(value);
@@ -313,10 +325,16 @@ export const insertMiddle = (value) => {
 };
 
 export const insertColor = (color) => {
+  let areWeRemoving = null;
+
   state.selectedCells.forEach((cell) => {
     const cellInGrid = state.cells[cell.y * cellsInRow + cell.x];
 
-    if (cellInGrid.colors.includes(color)) {
+    if (areWeRemoving === null) {
+      areWeRemoving = cellInGrid.colors.includes(color);
+    }
+
+    if (areWeRemoving) {
       cellInGrid.colors = cellInGrid.colors.filter((c) => c !== color);
     } else {
       cellInGrid.colors.push(color);
