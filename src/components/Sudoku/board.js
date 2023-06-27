@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import { difficultyLevels } from '~/constants/difficulty';
 
 import { cellsInColumn, cellsInRow } from '~/components/Sudoku/settings';
