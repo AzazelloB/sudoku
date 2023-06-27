@@ -1,5 +1,6 @@
 import { getNextTool } from '~/components/Sudoku/Panel';
 import {
+  checkBoundaries,
   clearSelectedCells,
   deselectCell,
   insertColor,
@@ -20,8 +21,10 @@ import { colors } from '~/constants/theme';
 const handleMouseDown = (e) => {
   state.mouseDown = true;
 
-  const selected = state.selectedCells.find((c) => c.x === state.highlightedCell.x
-                                                && c.y === state.highlightedCell.y);
+  const selected = state.selectedCells.find(
+    (c) => c.x === state.highlightedCell.x
+        && c.y === state.highlightedCell.y,
+  );
 
   if (selected) {
     if (e.ctrlKey) {
@@ -56,12 +59,19 @@ function handleMouseMove(e) {
   const cellX = Math.floor(x / cellWidth);
   const cellY = Math.floor(y / cellHeight);
 
+  if (state.highlightedCell && state.highlightedCell.x === cellX && state.highlightedCell.y === cellY) {
+    return;
+  }
+
+  if (!checkBoundaries(cellX, cellY)) {
+    return;
+  }
+
   state.highlightedCell = {
     x: cellX,
     y: cellY,
   };
 
-  // TODO if you move mouse when trying to deselect, it will select again
   if (state.mouseDown) {
     selectCell(state.highlightedCell);
   }

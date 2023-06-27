@@ -161,7 +161,7 @@ export const deselectCell = (cell) => {
   state.selectedCells.splice(index, 1);
 };
 
-const checkBoundaries = (x, y) => {
+export const checkBoundaries = (x, y) => {
   if (x < 0 || x > cellsInRow - 1 || y < 0 || y > cellsInColumn - 1) {
     return false;
   }
