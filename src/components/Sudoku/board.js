@@ -1,3 +1,6 @@
+/* eslint-disable no-param-reassign */
+import { difficultyLevels } from '~/constants/difficulty';
+
 import { cellsInColumn, cellsInRow } from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
 
@@ -85,13 +88,6 @@ export const generateGrid = () => {
   }
 
   populateSudoku(0);
-};
-
-const difficultyLevels = {
-  easy: 38,
-  normal: 30,
-  hard: 23,
-  expert: 17, // 17 is the minimum number of revealed cells for a sudoku to have a unique solution
 };
 
 export const revealCells = (difficulty) => {
