@@ -14,7 +14,7 @@
 - [x] Double click to select cells with same didgit
 - [x] Coloring the grid
 - [x] Double click to select same color
-- [ ] Stop timer forever after solved
+- [x] Stop timer forever after solved
 - [ ] Hint system
 - [ ] Restrict features to lvl of difficulty
 - [x] Scale board according to window size
