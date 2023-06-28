@@ -10,7 +10,7 @@ const Header = () => {
       'bg-primary text-white px-8 py-4 drop-shadow-lg',
       'flex justify-between items-center',
     )}>
-      <img src={logo} alt="logo" width={50} />
+      <img src={logo} alt="logo" width={50} height={50} />
 
       <div>
         <DarkModeToggle />
