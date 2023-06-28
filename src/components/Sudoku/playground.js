@@ -1,46 +1,38 @@
 /* eslint-disable no-param-reassign */
-import { cellsInColumn, cellsInRow } from '~/components/Sudoku/settings';
+import { cellsInRow } from '~/components/Sudoku/settings';
 import { difficultyLevels } from '~/constants/difficulty';
+import BoardGenerator from '~/workers/boardGenerator?worker';
 
 const isValid = (cells, number, index) => {
   const col = index % cellsInRow;
   const row = Math.floor(index / cellsInRow);
 
-  // check row
-  const rowStart = row * cellsInRow;
-  for (let i = rowStart; i < rowStart + cellsInRow; i++) {
-    if (i === index) {
-      continue;
-    }
+  // check row and col
+  for (let i = 0; i < cellsInRow; i++) {
+    const rowIndex = row * cellsInRow + i;
+    const colIndex = col + i * cellsInRow;
 
-    if (cells[i] === number) {
+    if (rowIndex !== index && cells[rowIndex] === number) {
       return false;
     }
-  }
 
-  // check col
-  for (let i = col; i < cells.length; i += cellsInRow) {
-    if (i === index) {
-      continue;
-    }
-
-    if (cells[i] === number) {
+    if (colIndex !== index && cells[colIndex] === number) {
       return false;
     }
   }
 
   // check sudoku area
   // assuming area is 3x3
-  const areaStart = Math.floor(row / 3) * 3 * cellsInRow + Math.floor(col / 3) * 3;
-  for (let i = areaStart; i < areaStart + 3; i++) {
-    for (let j = 0; j < 3; j++) {
-      const areaIndex = i + j * cellsInRow;
+  const areaStartRow = Math.floor(row / 3) * 3;
+  const areaStartCol = Math.floor(col / 3) * 3;
+  const areaEndRow = areaStartRow + 3;
+  const areaEndCol = areaStartCol + 3;
 
-      if (areaIndex === index) {
-        continue;
-      }
+  for (let i = areaStartRow; i < areaEndRow; i++) {
+    for (let j = areaStartCol; j < areaEndCol; j++) {
+      const areaIndex = i * cellsInRow + j;
 
-      if (cells[areaIndex] === number) {
+      if (areaIndex !== index && cells[areaIndex] === number) {
         return false;
       }
     }
@@ -49,7 +41,7 @@ const isValid = (cells, number, index) => {
   return true;
 };
 
-const solve = (cells, i = 0) => {
+export const solve = (cells, i = 0) => {
   if (i === cells.length) {
     return true;
   }
@@ -64,11 +56,11 @@ const solve = (cells, i = 0) => {
     return false;
   }
 
-  const avaliable = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const available = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-  while (avaliable.length) {
-    const [value] = avaliable.splice(
-      Math.floor(Math.random() * avaliable.length),
+  while (available.length) {
+    const [value] = available.splice(
+      Math.floor(Math.random() * available.length),
       1,
     );
 
@@ -85,9 +77,17 @@ const solve = (cells, i = 0) => {
   return false;
 };
 
+let iter = 0;
 const countSolutions = (cells, i = 0, count = 0) => {
+  iter++;
+
+  if (iter > 100_000_000) {
+    console.log(count, cells);
+    throw new Error('enough');
+  }
+
   // stop at two since we use this function as a sudoku validator
-  if (count >= 2) {
+  if (count > 1) {
     return count;
   }
 
@@ -99,10 +99,10 @@ const countSolutions = (cells, i = 0, count = 0) => {
     return countSolutions(cells, i + 1, count);
   }
 
-  const avaliable = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const available = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-  while (avaliable.length) {
-    const value = avaliable.pop();
+  while (available.length) {
+    const value = available.pop();
 
     if (isValid(cells, value, i)) {
       cells[i] = value;
@@ -115,24 +115,28 @@ const countSolutions = (cells, i = 0, count = 0) => {
   return count;
 };
 
-const reveal = (cells) => {
-  const indexes = [...cells.keys()];
-  const masked = [...cells];
+export const reveal = (cells) => {
+  iter = 0;
 
-  for (let revealed = 0; revealed <= masked.length - 1 - difficultyLevels.normal;) {
-    const [randomIndex] = indexes.splice(
-      Math.floor(Math.random() * indexes.length),
-      1,
-    );
+  const indexes = [...cells.keys()];
+  const masked = cells.slice();
+
+  const max = masked.length - 1 - difficultyLevels.hard;
+  for (let revealed = 0; revealed <= max;) {
+    const randomIndexOfIndex = Math.floor(Math.random() * indexes.length);
+    const [randomIndex] = indexes.slice(randomIndexOfIndex, randomIndexOfIndex + 1);
+
+    if (masked[randomIndex] === null) {
+      continue;
+    }
 
     const value = masked[randomIndex];
 
     masked[randomIndex] = null;
 
-    if (countSolutions([...masked]) === 1) {
+    if (countSolutions(masked.slice()) === 1) {
       revealed++;
     } else {
-      indexes.push(randomIndex);
       masked[randomIndex] = value;
     }
   }
@@ -141,31 +145,38 @@ const reveal = (cells) => {
 };
 
 export const doStuff = () => {
-  const cells = new Array(cellsInRow * cellsInColumn).fill(null);
+  if (window.Worker) {
+    const worker = new BoardGenerator();
 
-  // const cells = '.78..5..91..4.3..8..3.987.1..6324..7.......462.7.86....6.....1.3...49672924...385'
-  //   .split('')
-  //   .map((v) => (v === '.' ? null : parseInt(v, 10)));
+    worker.postMessage({});
 
-  solve(cells);
-
-  // const solved = [...cells];
-
-  console.log('\n');
-  console.log('----------------------------------------');
-  console.log('\n');
-
-  console.time();
-  for (let i = 0; i < 100; i++) {
-    reveal(cells);
+    worker.addEventListener('message', () => {
+      // console.log(message.data);
+    });
   }
-  console.timeEnd();
 
-  // console.log('amount of revealed cells:', masked.filter(Boolean).length);
+  // const cells = new Array(cellsInRow * cellsInColumn).fill(null);
 
-  console.log('\n');
-  console.log('----------------------------------------');
-  console.log('\n');
+  // solve(cells);
+
+  // // const solved = [...cells];
+
+  // console.log('\n');
+  // console.log('----------------------------------------');
+  // console.log('\n');
+
+  // console.time();
+  // for (let i = 0; i < 1; i++) {
+  //   reveal(cells);
+  // }
+  // console.timeEnd();
+  // // (12963.27001953125 + 9250.694091796875 + 10774.684814453125) / 3
+  // // average: 10996.2163086
+  // // console.log('amount of revealed cells:', masked.filter(Boolean).length);
+
+  // console.log('\n');
+  // console.log('----------------------------------------');
+  // console.log('\n');
 
   // console.log('solved', solved);
   // console.log('masked', masked);
@@ -176,9 +187,4 @@ export const doStuff = () => {
   //   if (i % 9 === 0) {
   //     result += '\n';
   //   }
-
-  //   result += `${masked[i] === null ? 0 : masked[i]},`;
-  // }
-
-  // console.log(result);
 };
