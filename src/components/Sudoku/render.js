@@ -8,6 +8,10 @@ import {
 import { state } from '~/components/Sudoku/state';
 
 export const draw = (ctx, dt, theme) => {
+  if (state.cells.length === 0) {
+    return;
+  }
+
   const { width, height } = ctx.canvas;
 
   const cellWidth = width / cellsInRow;

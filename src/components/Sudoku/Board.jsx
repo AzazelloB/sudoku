@@ -21,9 +21,9 @@ const Board = (props) => {
   const [canvasWidth, setCanvasWidth] = createSignal(initialWidth);
   const [canvasHeight, setCanvasHeight] = createSignal(initialHeight);
 
-  onMount(() => {
+  onMount(async () => {
     if (cells().length === 0) {
-      generateGrid(props.difficulty());
+      await generateGrid(props.difficulty());
       setCells(state.cells);
     } else {
       state.cells = cells();

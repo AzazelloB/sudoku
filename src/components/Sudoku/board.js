@@ -4,6 +4,8 @@ import { difficultyLevels } from '~/constants/difficulty';
 import { cellsInColumn, cellsInRow } from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
 
+import BoardGenerator from '~/workers/boardGenerator?worker';
+
 // TODO factor out
 const deepCopy = (array) => {
   return JSON.parse(JSON.stringify(array));
@@ -47,7 +49,7 @@ const isValid = (cells, number, index) => {
   return true;
 };
 
-const solve = (cells, i = 0) => {
+export const solve = (cells, i = 0) => {
   if (i === cells.length) {
     return true;
   }
@@ -140,33 +142,25 @@ export const reveal = (cells, difficulty) => {
   return masked;
 };
 
-export const generateGrid = (difficulty) => {
-  state.cells.length = 0;
+let worker;
 
-  for (let i = 0; i < cellsInRow * cellsInColumn; i += 1) {
-    state.cells.push({
-      value: null,
-      answer: null,
-      revealed: false,
-      corner: [],
-      middle: [],
-      x: i % cellsInRow,
-      y: Math.floor(i / cellsInRow),
-      colors: [],
-    });
-  }
+export const generateGrid = async (difficulty) => {
+  return new Promise((resolve, reject) => {
+    if (window.Worker) {
+      worker = worker instanceof Worker ? worker : new BoardGenerator();
 
-  solve(state.cells);
+      worker.postMessage({
+        difficulty,
+      });
 
-  const masked = reveal(state.cells, difficulty);
-
-  for (let i = 0; i < cellsInRow * cellsInColumn; i += 1) {
-    const cell = masked[i];
-
-    if (cell.answer !== null) {
-      state.cells[i].revealed = true;
+      worker.addEventListener('message', (message) => {
+        state.cells = message.data;
+        resolve();
+      });
+    } else {
+      reject(new Error('No worker object'));
     }
-  }
+  });
 };
 
 export const checkIfSolved = () => {
