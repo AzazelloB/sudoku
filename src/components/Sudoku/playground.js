@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { cellsInRow } from '~/components/Sudoku/settings';
 import { difficultyLevels } from '~/constants/difficulty';
-import BoardGenerator from '~/workers/boardGenerator?worker';
+import BoardGenerator from '~/workers/boardGeneratorTest?worker';
 
 const isValid = (cells, number, index) => {
   const col = index % cellsInRow;
