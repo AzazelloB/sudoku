@@ -1,76 +1,146 @@
+/* eslint-disable no-param-reassign */
 import { difficultyLevels } from '~/constants/difficulty';
 
 import { cellsInColumn, cellsInRow } from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
 
-const populateSudoku = (i) => {
-  if (i === state.cells.length) {
-    return true;
-  }
+// TODO factor out
+const deepCopy = (array) => {
+  return JSON.parse(JSON.stringify(array));
+};
 
-  const cell = state.cells[i];
+const isValid = (cells, number, index) => {
+  const col = index % cellsInRow;
+  const row = Math.floor(index / cellsInRow);
 
-  const avaliableValues = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  // check row and col
+  for (let i = 0; i < cellsInRow; i++) {
+    const rowIndex = row * cellsInRow + i;
+    const colIndex = col + i * cellsInRow;
 
-  while (avaliableValues.length) {
-    const value = avaliableValues.splice(
-      Math.floor(Math.random() * avaliableValues.length),
-      1,
-    )[0];
+    if (rowIndex !== index && cells[rowIndex].answer === number) {
+      return false;
+    }
 
-    cell.answer = value;
-
-    if (isValidSudoku()) {
-      if (populateSudoku(i + 1)) {
-        return true;
-      }
+    if (colIndex !== index && cells[colIndex].answer === number) {
+      return false;
     }
   }
 
-  cell.answer = null;
-  return false;
-};
+  // check sudoku area
+  // assuming area is 3x3
+  const areaStartRow = Math.floor(row / 3) * 3;
+  const areaStartCol = Math.floor(col / 3) * 3;
+  const areaEndRow = areaStartRow + 3;
+  const areaEndCol = areaStartCol + 3;
 
-const isValidSudoku = () => {
-  const rows = [];
-  const columns = [];
-  const squares = [];
+  for (let i = areaStartRow; i < areaEndRow; i++) {
+    for (let j = areaStartCol; j < areaEndCol; j++) {
+      const areaIndex = i * cellsInRow + j;
 
-  for (let i = 0; i < cellsInRow; i += 1) {
-    rows.push([]);
-    columns.push([]);
-    squares.push([]);
-  }
-
-  for (let i = 0; i < state.cells.length; i += 1) {
-    const cell = state.cells[i];
-
-    if (cell.answer) {
-      if (rows[cell.y].includes(cell.answer)) {
+      if (areaIndex !== index && cells[areaIndex].answer === number) {
         return false;
       }
-
-      rows[cell.y].push(cell.answer);
-
-      if (columns[cell.x].includes(cell.answer)) {
-        return false;
-      }
-
-      columns[cell.x].push(cell.answer);
-
-      const squareIndex = Math.floor(cell.x / 3) + Math.floor(cell.y / 3) * 3;
-      if (squares[squareIndex].includes(cell.answer)) {
-        return false;
-      }
-
-      squares[squareIndex].push(cell.answer);
     }
   }
 
   return true;
 };
 
-export const generateGrid = () => {
+const solve = (cells, i = 0) => {
+  if (i === cells.length) {
+    return true;
+  }
+
+  if (cells[i].answer !== null) {
+    if (isValid(cells, cells[i].answer, i)) {
+      if (solve(cells, i + 1)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  const available = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+  while (available.length) {
+    const [value] = available.splice(
+      Math.floor(Math.random() * available.length),
+      1,
+    );
+
+    if (isValid(cells, value, i)) {
+      cells[i].answer = value;
+
+      if (solve(cells, i + 1)) {
+        return true;
+      }
+    }
+  }
+
+  cells[i].answer = null;
+  return false;
+};
+
+const countSolutions = (cells, i = 0, count = 0) => {
+  // stop at two since we use this function as a sudoku validator
+  if (count > 1) {
+    return count;
+  }
+
+  if (i === cells.length) {
+    return 1 + count;
+  }
+
+  if (cells[i].answer !== null) {
+    return countSolutions(cells, i + 1, count);
+  }
+
+  const available = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+  while (available.length) {
+    const value = available.pop();
+
+    if (isValid(cells, value, i)) {
+      cells[i].answer = value;
+
+      count = countSolutions(cells, i + 1, count);
+    }
+  }
+
+  cells[i].answer = null;
+  return count;
+};
+
+export const reveal = (cells, difficulty) => {
+  const indexes = [...cells.keys()];
+  const masked = deepCopy(cells);
+
+  const max = masked.length - 1 - difficultyLevels[difficulty];
+  for (let revealed = 0; revealed <= max;) {
+    const randomIndexOfIndex = Math.floor(Math.random() * indexes.length);
+    const [randomIndex] = indexes.slice(randomIndexOfIndex, randomIndexOfIndex + 1);
+
+    if (masked[randomIndex].answer === null) {
+      continue;
+    }
+
+    const value = masked[randomIndex].answer;
+
+    masked[randomIndex].answer = null;
+
+    if (countSolutions(deepCopy(masked)) === 1) {
+      revealed++;
+    } else {
+      masked[randomIndex].answer = value;
+    }
+  }
+
+  return masked;
+};
+
+export const generateGrid = (difficulty) => {
   state.cells.length = 0;
 
   for (let i = 0; i < cellsInRow * cellsInColumn; i += 1) {
@@ -86,29 +156,16 @@ export const generateGrid = () => {
     });
   }
 
-  populateSudoku(0);
-};
+  solve(state.cells);
 
-export const revealCells = (difficulty) => {
-  const revealedCells = [];
+  const masked = reveal(state.cells, difficulty);
 
-  while (revealedCells.length < difficultyLevels[difficulty]) {
-    const cell = state.cells[
-      Math.floor(Math.random() * state.cells.length)
-    ];
+  for (let i = 0; i < cellsInRow * cellsInColumn; i += 1) {
+    const cell = masked[i];
 
-    if (cell.revealed) {
-      continue;
+    if (cell.answer !== null) {
+      state.cells[i].revealed = true;
     }
-
-    cell.revealed = true;
-
-    if (!isValidSudoku()) {
-      cell.revealed = false;
-      continue;
-    }
-
-    revealedCells.push(cell);
   }
 };
 

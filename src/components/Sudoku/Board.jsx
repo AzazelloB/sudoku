@@ -8,7 +8,7 @@ import {
 import { useGlobalContext } from '~/context/GlobalContext';
 
 import { initControls } from '~/components/Sudoku/controls';
-import { generateGrid, revealCells } from '~/components/Sudoku/board';
+import { generateGrid } from '~/components/Sudoku/board';
 import { draw } from '~/components/Sudoku/render';
 import { initialHeight, initialWidth, scale } from '~/components/Sudoku/settings';
 import { clearHistory, saveSnapshot } from '~/components/Sudoku/history';
@@ -23,8 +23,7 @@ const Board = (props) => {
 
   onMount(() => {
     if (cells().length === 0) {
-      generateGrid();
-      revealCells(props.difficulty());
+      generateGrid(props.difficulty());
       setCells(state.cells);
     } else {
       state.cells = cells();

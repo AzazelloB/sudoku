@@ -14,6 +14,7 @@ const Button = (props) => {
           'bg-transparent': props.variant === 'tertiary' && !props.active,
           'text-white': !props.variant,
           'text-black dark:text-white': props.variant === 'tertiary',
+          'bg-gray-600 hover:bg-gray-600': props.disabled,
         },
       )}
       />

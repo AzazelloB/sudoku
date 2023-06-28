@@ -19,7 +19,6 @@ import Board from '~/components/Sudoku/Board';
 import {
   checkIfSolved,
   generateGrid,
-  revealCells,
 } from '~/components/Sudoku/board';
 import { state } from '~/components/Sudoku/state';
 import {
@@ -27,7 +26,6 @@ import {
   saveSnapshot,
 } from '~/components/Sudoku/history';
 import Panel from '~/components/Sudoku/Panel';
-import { doStuff } from '~/components/Sudoku/playground';
 
 const HomePage = () => {
   const { setCells } = useGlobalContext();
@@ -80,11 +78,8 @@ const HomePage = () => {
   });
 
   const restartGame = () => {
-    generateGrid();
-    revealCells(difficulty());
+    generateGrid(difficulty());
     setCells(state.cells);
-
-    doStuff();
 
     clearHistory();
     saveSnapshot();
@@ -144,6 +139,7 @@ const HomePage = () => {
                 Normal
               </ButtonGroup.Button>
               <ButtonGroup.Button
+                disabled
                 last
                 active={difficulty() === 'hard'}
                 onClick={[handleDifficulty, 'hard']}
