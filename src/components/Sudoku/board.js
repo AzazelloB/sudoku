@@ -4,7 +4,7 @@ import { difficultyLevels } from '~/constants/difficulty';
 import { cellsInColumn, cellsInRow } from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
 
-import BoardGenerator from '~/workers/boardGenerator?worker';
+import boardGeneratorURL from '~/workers/boardGenerator?worker&url';
 
 // TODO factor out
 const deepCopy = (array) => {
@@ -147,7 +147,7 @@ let worker;
 export const generateGrid = async (difficulty) => {
   return new Promise((resolve, reject) => {
     if (window.Worker) {
-      worker = worker instanceof Worker ? worker : new BoardGenerator();
+      worker = worker instanceof Worker ? worker : new Worker(boardGeneratorURL, { type: 'module' });
 
       worker.postMessage({
         difficulty,
