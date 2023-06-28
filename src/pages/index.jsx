@@ -27,6 +27,7 @@ import {
   saveSnapshot,
 } from '~/components/Sudoku/history';
 import Panel from '~/components/Sudoku/Panel';
+import { doStuff } from '~/components/Sudoku/playground';
 
 const HomePage = () => {
   const { setCells } = useGlobalContext();
@@ -82,6 +83,8 @@ const HomePage = () => {
     generateGrid();
     revealCells(difficulty());
     setCells(state.cells);
+
+    doStuff();
 
     clearHistory();
     saveSnapshot();
