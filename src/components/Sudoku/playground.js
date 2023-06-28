@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { cellsInColumn, cellsInRow } from '~/components/Sudoku/settings';
 import { difficultyLevels } from '~/constants/difficulty';
 
@@ -72,7 +73,6 @@ const solve = (cells, i = 0) => {
     );
 
     if (isValid(cells, value, i)) {
-      // eslint-disable-next-line no-param-reassign
       cells[i] = value;
 
       if (solve(cells, i + 1)) {
@@ -81,7 +81,6 @@ const solve = (cells, i = 0) => {
     }
   }
 
-  // eslint-disable-next-line no-param-reassign
   cells[i] = null;
   return false;
 };
@@ -103,21 +102,15 @@ const countSolutions = (cells, i = 0, count = 0) => {
   const avaliable = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   while (avaliable.length) {
-    const [value] = avaliable.splice(
-      Math.floor(Math.random() * avaliable.length),
-      1,
-    );
+    const value = avaliable.pop();
 
     if (isValid(cells, value, i)) {
-      // eslint-disable-next-line no-param-reassign
       cells[i] = value;
 
-      // eslint-disable-next-line no-param-reassign
       count = countSolutions(cells, i + 1, count);
     }
   }
 
-  // eslint-disable-next-line no-param-reassign
   cells[i] = null;
   return count;
 };
@@ -126,17 +119,13 @@ const reveal = (cells) => {
   const indexes = [...cells.keys()];
   const masked = [...cells];
 
-  for (let revealed = 0; revealed <= cells.length - 1 - difficultyLevels.normal;) {
+  for (let revealed = 0; revealed <= masked.length - 1 - difficultyLevels.normal;) {
     const [randomIndex] = indexes.splice(
       Math.floor(Math.random() * indexes.length),
       1,
     );
 
     const value = masked[randomIndex];
-
-    if (masked[randomIndex] === null) {
-      continue;
-    }
 
     masked[randomIndex] = null;
 
@@ -160,16 +149,27 @@ export const doStuff = () => {
 
   solve(cells);
 
-  const solved = [...cells];
+  // const solved = [...cells];
 
-  const masked = reveal(cells);
+  console.log('\n');
+  console.log('----------------------------------------');
+  console.log('\n');
 
-  console.log('amount of revealed cells:', masked.filter(Boolean).length);
+  console.time();
+  for (let i = 0; i < 100; i++) {
+    reveal(cells);
+  }
+  console.timeEnd();
 
-  console.log('solved', solved);
-  console.log('masked', masked);
+  // console.log('amount of revealed cells:', masked.filter(Boolean).length);
 
-  console.log(masked.map((v) => (v === null ? '.' : v)).join(''));
+  console.log('\n');
+  console.log('----------------------------------------');
+  console.log('\n');
+
+  // console.log('solved', solved);
+  // console.log('masked', masked);
+  // console.log(masked.map((v) => (v === null ? '.' : v)).join(''));
   // let result = '';
 
   // for (let i = 0; i < masked.length; i++) {
