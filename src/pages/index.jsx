@@ -2,10 +2,10 @@ import {
   createEffect,
   createSignal,
   onCleanup,
+  onMount,
 } from 'solid-js';
 import classNames from 'classnames';
 
-import { useGlobalContext } from '~/context/GlobalContext';
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { formatTime } from '~/utils/datetime';
 
@@ -28,7 +28,7 @@ import {
 import Panel from '~/components/Sudoku/Panel';
 
 const HomePage = () => {
-  const { setCells } = useGlobalContext();
+  const [cells, setCells] = useLocalStorage('cells', []);
 
   const [panelRef, setPanelRef] = createSignal(null);
 
@@ -38,7 +38,6 @@ const HomePage = () => {
   const [difficulty, setDifficulty] = useLocalStorage('difficulty', 'normal');
   const [paused, setPause] = createSignal(false);
   const [time, setTime] = useLocalStorage('time', 0);
-  const [timerStopped, setTimerStopped] = createSignal(false);
   const [solved, setSolved] = createSignal(false);
 
   const handleKeyboardDown = (e) => {
@@ -61,7 +60,7 @@ const HomePage = () => {
   });
 
   const timer = setInterval(() => {
-    if (!timerStopped()) {
+    if (!solved() && !paused()) {
       setTime(time() + 1);
     }
   }, 1000);
@@ -77,6 +76,19 @@ const HomePage = () => {
     clearInterval(autosave);
   });
 
+  onMount(async () => {
+    if (cells().length === 0) {
+      await generateGrid(difficulty());
+      setCells(state.cells);
+    } else {
+      state.cells = cells();
+      handleCheck();
+    }
+
+    clearHistory();
+    saveSnapshot();
+  });
+
   const restartGame = () => {
     generateGrid(difficulty());
     setCells(state.cells);
@@ -85,7 +97,7 @@ const HomePage = () => {
     saveSnapshot();
 
     setTime(0);
-    setTimerStopped(false);
+    setSolved(false);
     setPause(false);
   };
 
@@ -95,7 +107,6 @@ const HomePage = () => {
   };
 
   const handlePausePlay = () => {
-    setTimerStopped(!paused());
     setPause(!paused());
   };
 
@@ -104,12 +115,7 @@ const HomePage = () => {
   };
 
   const handleCheck = () => {
-    if (checkIfSolved()) {
-      setTimerStopped(true);
-      setSolved(true);
-    } else {
-      setSolved(false);
-    }
+    setSolved(checkIfSolved());
   };
 
   const handleModalNewGame = (closeModal) => {
