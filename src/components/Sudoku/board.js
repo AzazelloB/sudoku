@@ -4,7 +4,7 @@ import { difficultyLevels } from '~/constants/difficulty';
 import { cellsInColumn, cellsInRow } from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
 
-import boardGeneratorURL from '~/workers/boardGenerator?worker&url';
+// import BoardGenerator from '~/workers/boardGenerator?worker';
 
 // TODO factor out
 const deepCopy = (array) => {
@@ -142,24 +142,54 @@ export const reveal = (cells, difficulty) => {
   return masked;
 };
 
-let worker;
+// let worker;
 
 export const generateGrid = async (difficulty) => {
-  return new Promise((resolve, reject) => {
-    if (window.Worker) {
-      worker = worker instanceof Worker ? worker : new Worker(boardGeneratorURL, { type: 'module' });
+  // return new Promise((resolve, reject) => {
+  //   if (window.Worker) {
+  //     worker = worker instanceof Worker ? worker : new BoardGenerator();
 
-      worker.postMessage({
-        difficulty,
-      });
+  //     worker.postMessage({
+  //       difficulty,
+  //     });
 
-      worker.addEventListener('message', (message) => {
-        state.cells = message.data;
-        resolve();
+  //     worker.addEventListener('message', (message) => {
+  //       state.cells = message.data;
+  //       resolve();
+  //     });
+  //   } else {
+  //     reject(new Error('No worker object'));
+  //   }
+  // });
+  return new Promise((resolve) => {
+    state.cells.length = 0;
+
+    for (let i = 0; i < cellsInRow * cellsInColumn; i += 1) {
+      state.cells.push({
+        value: null,
+        answer: null,
+        revealed: false,
+        corner: [],
+        middle: [],
+        x: i % cellsInRow,
+        y: Math.floor(i / cellsInRow),
+        colors: [],
       });
-    } else {
-      reject(new Error('No worker object'));
     }
+
+    solve(state.cells);
+
+    const masked = reveal(state.cells, difficulty);
+
+    for (let i = 0; i < cellsInRow * cellsInColumn; i += 1) {
+      const cell = masked[i];
+
+      if (cell.answer !== null) {
+        state.cells[i].revealed = true;
+      }
+    }
+
+    resolve();
   });
 };
 
