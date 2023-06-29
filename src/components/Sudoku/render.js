@@ -27,6 +27,8 @@ export const draw = (ctx, dt, theme) => {
 
   drawHighlightedCell(ctx, dt, theme, cellWidth, cellHeight);
 
+  drawHighlightedRowColArea(ctx, dt, theme, cellWidth, cellHeight);
+
   drawSelection(ctx, theme, cellWidth, cellHeight);
 };
 
@@ -166,7 +168,7 @@ const drawValues = (ctx, theme, width, cellWidth, cellHeight) => {
   ctx.shadowBlur = 0;
 };
 
-const speed = 25;
+const hightlightedCellSpeed = 25;
 const animatedHighlightedCell = {
   x: null,
   y: null,
@@ -176,10 +178,10 @@ const drawHighlightedCell = (ctx, dt, theme, cellWidth, cellHeight) => {
   if (state.highlightedCell) {
     animatedHighlightedCell.x += animatedHighlightedCell.x === null
       ? state.highlightedCell.x
-      : (state.highlightedCell.x - animatedHighlightedCell.x) * speed * dt;
+      : (state.highlightedCell.x - animatedHighlightedCell.x) * hightlightedCellSpeed * dt;
     animatedHighlightedCell.y += animatedHighlightedCell.y === null
       ? state.highlightedCell.y
-      : (state.highlightedCell.y - animatedHighlightedCell.y) * speed * dt;
+      : (state.highlightedCell.y - animatedHighlightedCell.y) * hightlightedCellSpeed * dt;
 
     ctx.fillStyle = colors.background[theme === 'dark' ? 'light' : 'dark'];
     ctx.globalAlpha = 0.2;
@@ -193,6 +195,56 @@ const drawHighlightedCell = (ctx, dt, theme, cellWidth, cellHeight) => {
   } else {
     animatedHighlightedCell.x = null;
     animatedHighlightedCell.y = null;
+  }
+};
+
+const animatedArea = {
+  x: null,
+  y: null,
+};
+
+const drawHighlightedRowColArea = (ctx, dt, theme, cellWidth, cellHeight) => {
+  if (animatedHighlightedCell.x !== null && animatedHighlightedCell.y !== null) {
+    animatedArea.x += animatedArea.x === null
+      ? Math.floor(state.highlightedCell.x / 3) * 3
+      : (Math.floor(state.highlightedCell.x / 3) * 3 - animatedArea.x) * hightlightedCellSpeed * dt;
+    animatedArea.y += animatedArea.y === null
+      ? Math.floor(state.highlightedCell.y / 3) * 3
+      : (Math.floor(state.highlightedCell.y / 3) * 3 - animatedArea.y) * hightlightedCellSpeed * dt;
+
+    ctx.fillStyle = colors.background[theme === 'dark' ? 'light' : 'dark'];
+    ctx.globalAlpha = 0.1;
+
+    for (let i = 0; i < cellsInRow; i += 1) {
+      ctx.fillRect(
+        i * cellWidth,
+        animatedHighlightedCell.y * cellHeight,
+        cellWidth,
+        cellHeight,
+      );
+    }
+
+    for (let i = 0; i < cellsInColumn; i += 1) {
+      ctx.fillRect(
+        animatedHighlightedCell.x * cellWidth,
+        i * cellHeight,
+        cellWidth,
+        cellHeight,
+      );
+    }
+
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        ctx.fillRect(
+          (animatedArea.x + i) * cellWidth,
+          (animatedArea.y + j) * cellHeight,
+          cellWidth,
+          cellHeight,
+        );
+      }
+    }
+
+    ctx.globalAlpha = 1;
   }
 };
 

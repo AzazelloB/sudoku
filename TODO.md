@@ -8,7 +8,7 @@
 - [x] FIX: doesn't save cell values
 - [x] FIX: reset timer on difficulty change
 - [x] Cell hover animation
-- [ ] Row, col highlighting
+- [x] Row, col highlighting
 - [ ] Make pretty
 - [x] Interface for inputing digits, colors, switching input mode, delete, undo, redo
 - [x] Double click to select cells with same didgit
