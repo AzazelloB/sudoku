@@ -2,6 +2,7 @@ import {
   Show,
 } from 'solid-js';
 
+import classNames from 'classnames';
 import Button from '~/ui/Button';
 
 import {
@@ -61,27 +62,29 @@ const Panel = (props) => {
     saveSnapshot();
   };
 
+  const className = 'text-lg';
+
   return (
     <div
       ref={props.ref}
-      class="grid grid-cols-4 gap-4 text-6xl aspect-square mt-8 select-none"
+      class="grid grid-cols-3 lg:grid-cols-4 gap-4 text-6xl aspect-square mt-8 select-none"
     >
       <Button
-        class="text-lg"
+        class={classNames(className, 'row-start-4 lg:row-start-auto')}
         active={props.mode() === 'normal'}
         onClick={[props.setMode, 'normal']}
       >
         Normal
       </Button>
       <Button
-        class="text-lg row-start-2"
+        class={classNames(className, 'row-start-4 col-start-2 lg:row-start-2 lg:col-start-auto')}
         active={props.mode() === 'middle'}
         onClick={[props.setMode, 'middle']}
       >
         Middle
       </Button>
       <Button
-        class="text-lg row-start-3"
+        class={classNames(className, 'row-start-4 col-start-3 lg:row-start-3 lg:col-start-auto')}
         active={props.mode() === 'corner'}
         onClick={[props.setMode, 'corner']}
       >
@@ -138,9 +141,9 @@ const Panel = (props) => {
         </Button>
       </Show>
 
-      <Button class="text-lg" onClick={handleClear}>Clear</Button>
-      <Button class="text-lg" onClick={handleUndo}>Undo</Button>
-      <Button class="text-lg" onClick={handleRedo}>Redo</Button>
+      <Button class={className} onClick={handleClear}>Clear</Button>
+      <Button class={className} onClick={handleUndo}>Undo</Button>
+      <Button class={className} onClick={handleRedo}>Redo</Button>
 
       <Button class="text-lg capitalize" onClick={[props.setTool, getNextTool(props.tool())]}>
         {getNextTool(props.tool())}

@@ -124,11 +124,11 @@ const HomePage = () => {
   };
 
   return (
-    <div class="flex justify-center gap-12">
+    <div class="flex justify-center lg:gap-12 gap-4 lg:flex-row flex-col">
       <div>
         <h4 class="text-lg mb-1 font-bold">Difficulty</h4>
 
-        <div class="flex justify-between items-center mb-6">
+        <div class="flex justify-between lg:items-center mb-6 lg:flex-row flex-col">
           <div>
             <ButtonGroup>
               <ButtonGroup.Button
@@ -155,7 +155,7 @@ const HomePage = () => {
             </ButtonGroup>
           </div>
 
-          <div class="flex items-center">
+          <div class="hidden lg:flex items-center mx-4">
             <span>{formatTime(time())}</span>
 
             <Button
@@ -167,13 +167,25 @@ const HomePage = () => {
             </Button>
           </div>
 
-          <div>
+          <div class="flex mt-4 lg:mt-0 justify-between">
             <Button
               class="mr-4"
               onClick={handleNewGame}
             >
-              New Game
+              Restart
             </Button>
+
+            <div class="flex lg:hidden items-center mx-4">
+              <span>{formatTime(time())}</span>
+
+              <Button
+                class="ml-4"
+                variant="tertiary"
+                onClick={handlePausePlay}
+              >
+                {paused() ? <Play class="h-4" /> : <Pause class="h-4" />}
+              </Button>
+            </div>
 
             <Modal>
               <Modal.Button

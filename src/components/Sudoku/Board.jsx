@@ -18,10 +18,13 @@ const Board = (props) => {
   const [canvasHeight, setCanvasHeight] = createSignal(initialHeight);
 
   const onResize = () => {
-    const { top } = canvas.getBoundingClientRect();
+    const { top, left } = canvas.getBoundingClientRect();
     const padding = 24;
 
-    const size = Math.min(window.innerWidth / 2, window.innerHeight - top - padding);
+    const size = Math.min(
+      window.innerWidth > 1024 ? window.innerWidth / 2 : window.innerWidth - (left * 2),
+      window.innerHeight - top - padding,
+    );
 
     // TODO if the game is on pause, this makes the canvas disappear
     setCanvasWidth(size);
