@@ -110,10 +110,13 @@ const drawGrid = (ctx, theme, width, height, cellWidth, cellHeight) => {
 };
 
 const drawValues = (ctx, theme, width, cellWidth, cellHeight) => {
+  if (theme === 'dark') {
+    ctx.shadowColor = colors.background.dark;
+    ctx.shadowBlur = 15 * scale;
+  }
+
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.shadowColor = colors.background.dark;
-  ctx.shadowBlur = 15 * scale;
   const fontSize = width / cellsInRow / 1.5;
   for (let i = 0; i < cellsInRow; i += 1) {
     for (let j = 0; j < cellsInColumn; j += 1) {
