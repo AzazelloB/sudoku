@@ -17,6 +17,12 @@ const Board = (props) => {
   const [canvasWidth, setCanvasWidth] = createSignal(initialWidth);
   const [canvasHeight, setCanvasHeight] = createSignal(initialHeight);
 
+  const drawCanvas = (dt = 1) => {
+    const ctx = canvas.getContext('2d');
+
+    draw(ctx, dt, theme());
+  };
+
   const onResize = () => {
     const { top, left } = canvas.getBoundingClientRect();
     const padding = 24;
@@ -26,14 +32,14 @@ const Board = (props) => {
       window.innerHeight - top - padding,
     );
 
-    // TODO if the game is on pause, this makes the canvas disappear
+    // TODO this somehow makes canvas go blank if on pause
     setCanvasWidth(size);
     setCanvasHeight(size);
+
+    drawCanvas();
   };
 
   createEffect(() => {
-    const ctx = canvas.getContext('2d');
-
     onResize();
     window.addEventListener('resize', onResize);
 
@@ -42,7 +48,7 @@ const Board = (props) => {
     });
 
     if (props.paused()) {
-      draw(ctx, 1, theme());
+      drawCanvas();
 
       return;
     }
@@ -55,7 +61,7 @@ const Board = (props) => {
       const dt = (timeStamp - prevTimeStamp) / 1000;
       prevTimeStamp = timeStamp;
 
-      draw(ctx, dt, theme());
+      drawCanvas(dt);
 
       frame = window.requestAnimationFrame(gameLoop);
     };
