@@ -86,8 +86,6 @@ export const solve = (cells, i = 0) => {
   return false;
 };
 
-let iter = 0;
-
 // const countSolutions = (cells, i = 0, count = 0) => {
 //   iter++;
 
@@ -136,38 +134,48 @@ const getEmptyCellIndex = (cells) => {
   return null;
 };
 
-const countSolutions = (cells, count = 0) => {
-  // stop at two since we use this function as a sudoku validator
-  if (count > 1) {
-    return count;
-  }
+const createSolutionCounter = () => {
+  let iter = 0;
 
-  const i = getEmptyCellIndex(cells);
+  return function countSolutions(cells, count = 0) {
+    iter++;
 
-  if (i !== null) {
-    for (let num = 1; num <= 9; num++) {
-      if (isValid(cells, num, i)) {
-        cells[i] = num;
-        count = countSolutions(cells, count);
-        cells[i] = null;
-      }
+    if (iter > 1_000_000) {
+      throw new Error('enough');
     }
-  } else {
-    count++;
-  }
 
-  return count;
+    // stop at two since we use this function as a sudoku validator
+    if (count > 1) {
+      return count;
+    }
+
+    const i = getEmptyCellIndex(cells);
+
+    if (i !== null) {
+      for (let num = 1; num <= 9; num++) {
+        if (isValid(cells, num, i)) {
+          cells[i] = num;
+          count = countSolutions(cells, count);
+          cells[i] = null;
+        }
+      }
+    } else {
+      count++;
+    }
+
+    return count;
+  };
 };
 
 export const reveal = (cells) => {
   try {
-    iter = 0;
+    const countSolutions = createSolutionCounter();
 
     const indexes = [...cells.keys()];
     shuffleArray(indexes);
     const masked = cells.slice();
 
-    const max = masked.length - 1 - difficultyLevels.normal;
+    const max = masked.length - 1 - difficultyLevels.hard;
     for (let revealed = 0; revealed <= max;) {
       const randomIndex = indexes.pop();
 
@@ -176,7 +184,7 @@ export const reveal = (cells) => {
       masked[randomIndex] = null;
 
       if (countSolutions(masked.slice()) === 1) {
-        // console.log('revealed', revealed, 'of', max);
+        console.log('revealed', revealed, 'of', max);
         revealed++;
       } else {
         masked[randomIndex] = value;
@@ -186,6 +194,7 @@ export const reveal = (cells) => {
 
     return masked;
   } catch (e) {
+    console.log('failed');
     return reveal(cells);
   }
 };
