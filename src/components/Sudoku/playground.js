@@ -88,69 +88,106 @@ export const solve = (cells, i = 0) => {
 
 let iter = 0;
 
-const countSolutions = (cells, i = 0, count = 0) => {
-  iter++;
+// const countSolutions = (cells, i = 0, count = 0) => {
+//   iter++;
 
-  if (iter > 10_000_000) {
-    console.log(count, cells);
-    throw new Error('enough');
+//   if (iter > 10_000_000) {
+//     // console.log(count, cells);
+//     // console.trace();
+//     throw new Error('enough');
+//   }
+
+//   // stop at two since we use this function as a sudoku validator
+//   if (count > 1) {
+//     return count;
+//   }
+
+//   if (i === cells.length) {
+//     return 1 + count;
+//   }
+
+//   if (cells[i] !== null) {
+//     return countSolutions(cells, i + 1, count);
+//   }
+
+//   const available = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+//   while (available.length) {
+//     const value = available.pop();
+
+//     if (isValid(cells, value, i)) {
+//       cells[i] = value;
+
+//       count = countSolutions(cells, i + 1, count);
+//     }
+//   }
+
+//   cells[i] = null;
+//   return count;
+// };
+
+const getEmptyCellIndex = (cells) => {
+  for (let i = 0; i < cells.length; i++) {
+    if (cells[i] === null) {
+      return i;
+    }
   }
 
+  return null;
+};
+
+const countSolutions = (cells, count = 0) => {
   // stop at two since we use this function as a sudoku validator
   if (count > 1) {
     return count;
   }
 
-  if (i === cells.length) {
-    return 1 + count;
-  }
+  const i = getEmptyCellIndex(cells);
 
-  if (cells[i] !== null) {
-    return countSolutions(cells, i + 1, count);
-  }
-
-  const available = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-  while (available.length) {
-    const value = available.pop();
-
-    if (isValid(cells, value, i)) {
-      cells[i] = value;
-
-      count = countSolutions(cells, i + 1, count);
+  if (i !== null) {
+    for (let num = 1; num <= 9; num++) {
+      if (isValid(cells, num, i)) {
+        cells[i] = num;
+        count = countSolutions(cells, count);
+        cells[i] = null;
+      }
     }
+  } else {
+    count++;
   }
 
-  cells[i] = null;
   return count;
 };
 
 export const reveal = (cells) => {
-  iter = 0;
+  try {
+    iter = 0;
 
-  const indexes = [...cells.keys()];
-  shuffleArray(indexes);
-  const masked = cells.slice();
+    const indexes = [...cells.keys()];
+    shuffleArray(indexes);
+    const masked = cells.slice();
 
-  const max = masked.length - 1 - difficultyLevels.hard;
-  for (let revealed = 0; revealed <= max;) {
-    const randomIndex = indexes.pop();
+    const max = masked.length - 1 - difficultyLevels.normal;
+    for (let revealed = 0; revealed <= max;) {
+      const randomIndex = indexes.pop();
 
-    const value = masked[randomIndex];
+      const value = masked[randomIndex];
 
-    masked[randomIndex] = null;
+      masked[randomIndex] = null;
 
-    if (countSolutions(masked.slice()) === 1) {
-      // console.log(masked);
-      console.log('revealed', revealed, 'of', max);
-      revealed++;
-    } else {
-      masked[randomIndex] = value;
-      indexes.unshift(randomIndex);
+      if (countSolutions(masked.slice()) === 1) {
+        // console.log('revealed', revealed, 'of', max);
+        revealed++;
+      } else {
+        masked[randomIndex] = value;
+        indexes.unshift(randomIndex);
+      }
     }
-  }
 
-  return masked;
+    return masked;
+  } catch (e) {
+    return reveal(cells);
+  }
 };
 
 export const doStuff = () => {
