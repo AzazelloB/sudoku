@@ -39,6 +39,7 @@ const HomePage = () => {
   const [paused, setPause] = createSignal(false);
   const [time, setTime] = useLocalStorage('time', 0);
   const [solved, setSolved] = createSignal(false);
+  const [generatingNewBoard, setGeneratingNewBoard] = createSignal(false);
 
   const handleKeyboardDown = (e) => {
     switch (e.code) {
@@ -60,7 +61,7 @@ const HomePage = () => {
   });
 
   const timer = setInterval(() => {
-    if (!solved() && !paused()) {
+    if (!solved() && !paused() && !generatingNewBoard()) {
       setTime(time() + 1);
     }
   }, 1000);
@@ -78,19 +79,20 @@ const HomePage = () => {
 
   onMount(async () => {
     if (cells().length === 0) {
-      await generateGrid(difficulty());
-      setCells(state.cells);
+      restartGame();
     } else {
       state.cells = cells();
       handleCheck();
-    }
 
-    clearHistory();
-    saveSnapshot();
+      clearHistory();
+      saveSnapshot();
+    }
   });
 
-  const restartGame = () => {
-    generateGrid(difficulty());
+  const restartGame = async () => {
+    setGeneratingNewBoard(true);
+
+    await generateGrid(difficulty());
     setCells(state.cells);
 
     clearHistory();
@@ -99,6 +101,7 @@ const HomePage = () => {
     setTime(0);
     setSolved(false);
     setPause(false);
+    setGeneratingNewBoard(false);
   };
 
   const handleDifficulty = (diff) => {
@@ -145,7 +148,6 @@ const HomePage = () => {
                 Normal
               </ButtonGroup.Button>
               <ButtonGroup.Button
-                disabled
                 last
                 active={difficulty() === 'hard'}
                 onClick={[handleDifficulty, 'hard']}
@@ -170,6 +172,7 @@ const HomePage = () => {
           <div class="flex mt-4 lg:mt-0 justify-between">
             <Button
               class="mr-4"
+              loading={generatingNewBoard()}
               onClick={handleNewGame}
             >
               Restart

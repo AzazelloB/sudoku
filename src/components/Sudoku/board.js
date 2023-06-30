@@ -1,15 +1,11 @@
 /* eslint-disable no-param-reassign */
 import { difficultyLevels } from '~/constants/difficulty';
+import { shuffleArray } from '~/utils/array';
 
 import { cellsInColumn, cellsInRow } from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
 
-// import BoardGenerator from '~/workers/boardGenerator?worker';
-
-// TODO factor out
-const deepCopy = (array) => {
-  return JSON.parse(JSON.stringify(array));
-};
+import BoardGenerator from '~/workers/boardGenerator?worker';
 
 const isValid = (cells, number, index) => {
   const col = index % cellsInRow;
@@ -20,11 +16,11 @@ const isValid = (cells, number, index) => {
     const rowIndex = row * cellsInRow + i;
     const colIndex = col + i * cellsInRow;
 
-    if (rowIndex !== index && cells[rowIndex].answer === number) {
+    if (rowIndex !== index && cells[rowIndex] === number) {
       return false;
     }
 
-    if (colIndex !== index && cells[colIndex].answer === number) {
+    if (colIndex !== index && cells[colIndex] === number) {
       return false;
     }
   }
@@ -40,7 +36,7 @@ const isValid = (cells, number, index) => {
     for (let j = areaStartCol; j < areaEndCol; j++) {
       const areaIndex = i * cellsInRow + j;
 
-      if (areaIndex !== index && cells[areaIndex].answer === number) {
+      if (areaIndex !== index && cells[areaIndex] === number) {
         return false;
       }
     }
@@ -49,19 +45,10 @@ const isValid = (cells, number, index) => {
   return true;
 };
 
+// expects an array filled with nulls only
 export const solve = (cells, i = 0) => {
   if (i === cells.length) {
     return true;
-  }
-
-  if (cells[i].answer !== null) {
-    if (isValid(cells, cells[i].answer, i)) {
-      if (solve(cells, i + 1)) {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   const available = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -73,7 +60,7 @@ export const solve = (cells, i = 0) => {
     );
 
     if (isValid(cells, value, i)) {
-      cells[i].answer = value;
+      cells[i] = value;
 
       if (solve(cells, i + 1)) {
         return true;
@@ -81,116 +68,101 @@ export const solve = (cells, i = 0) => {
     }
   }
 
-  cells[i].answer = null;
+  cells[i] = null;
   return false;
 };
 
-const countSolutions = (cells, i = 0, count = 0) => {
-  // stop at two since we use this function as a sudoku validator
-  if (count > 1) {
-    return count;
-  }
-
-  if (i === cells.length) {
-    return 1 + count;
-  }
-
-  if (cells[i].answer !== null) {
-    return countSolutions(cells, i + 1, count);
-  }
-
-  const available = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-  while (available.length) {
-    const value = available.pop();
-
-    if (isValid(cells, value, i)) {
-      cells[i].answer = value;
-
-      count = countSolutions(cells, i + 1, count);
+const getEmptyCellIndex = (cells) => {
+  for (let i = 0; i < cells.length; i++) {
+    if (cells[i] === null) {
+      return i;
     }
   }
 
-  cells[i].answer = null;
-  return count;
+  return null;
 };
 
-// TODO rename to mask or something
-export const reveal = (cells, difficulty) => {
-  const indexes = [...cells.keys()];
-  const masked = deepCopy(cells);
+const createSolutionCounter = () => {
+  let iter = 0;
 
-  const max = masked.length - 1 - difficultyLevels[difficulty];
-  for (let revealed = 0; revealed <= max;) {
-    const randomIndexOfIndex = Math.floor(Math.random() * indexes.length);
-    const [randomIndex] = indexes.slice(randomIndexOfIndex, randomIndexOfIndex + 1);
+  return function countSolutions(cells, count = 0) {
+    iter++;
 
-    if (masked[randomIndex].answer === null) {
-      continue;
+    if (iter > 1_000_000) {
+      throw new Error('enough');
     }
 
-    const value = masked[randomIndex].answer;
+    // stop at two since we use this function as a sudoku validator
+    if (count > 1) {
+      return count;
+    }
 
-    masked[randomIndex].answer = null;
+    const i = getEmptyCellIndex(cells);
 
-    if (countSolutions(deepCopy(masked)) === 1) {
-      revealed++;
+    if (i !== null) {
+      for (let num = 1; num <= 9; num++) {
+        if (isValid(cells, num, i)) {
+          cells[i] = num;
+          count = countSolutions(cells, count);
+          cells[i] = null;
+        }
+      }
     } else {
-      masked[randomIndex].answer = value;
+      count++;
     }
-  }
 
-  return masked;
+    return count;
+  };
 };
 
-// let worker;
+export const mask = (cells, difficulty) => {
+  try {
+    const countSolutions = createSolutionCounter();
 
-export const generateGrid = async (difficulty) => {
-  // return new Promise((resolve, reject) => {
-  //   if (window.Worker) {
-  //     worker = worker instanceof Worker ? worker : new BoardGenerator();
+    const masked = cells.slice();
+    const indexes = [...masked.keys()];
+    shuffleArray(indexes);
 
-  //     worker.postMessage({
-  //       difficulty,
-  //     });
+    const max = masked.length - 1 - difficultyLevels[difficulty];
+    for (let maskedCount = 0; maskedCount <= max;) {
+      const randomIndex = indexes.pop();
 
-  //     worker.addEventListener('message', (message) => {
-  //       state.cells = message.data;
-  //       resolve();
-  //     });
-  //   } else {
-  //     reject(new Error('No worker object'));
-  //   }
-  // });
-  return new Promise((resolve) => {
-    state.cells.length = 0;
+      const value = masked[randomIndex];
 
-    for (let i = 0; i < cellsInRow * cellsInColumn; i += 1) {
-      state.cells.push({
-        value: null,
-        answer: null,
-        revealed: false,
-        corner: [],
-        middle: [],
-        x: i % cellsInRow,
-        y: Math.floor(i / cellsInRow),
-        colors: [],
-      });
-    }
+      masked[randomIndex] = null;
 
-    solve(state.cells);
-
-    const masked = reveal(state.cells, difficulty);
-
-    for (let i = 0; i < cellsInRow * cellsInColumn; i += 1) {
-      const cell = masked[i];
-
-      if (cell.answer !== null) {
-        state.cells[i].revealed = true;
+      if (countSolutions(masked.slice()) === 1) {
+        maskedCount++;
+      } else {
+        masked[randomIndex] = value;
+        indexes.unshift(randomIndex);
       }
     }
 
-    resolve();
+    return masked;
+  } catch (e) {
+    return mask(cells, difficulty);
+  }
+};
+
+let worker;
+
+export const generateGrid = async (difficulty) => {
+  return new Promise((resolve, reject) => {
+    if (window.Worker) {
+      worker = worker instanceof Worker ? worker : new BoardGenerator();
+
+      worker.postMessage({
+        difficulty,
+      });
+
+      worker.addEventListener('message', (message) => {
+        state.cells = message.data;
+        resolve();
+      });
+    } else {
+      reject(new Error('No worker object'));
+    }
   });
 };
 
