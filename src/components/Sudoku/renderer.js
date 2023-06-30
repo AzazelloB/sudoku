@@ -34,8 +34,6 @@ export class Renderer {
   }
 
   draw(dt) {
-    this.updateDimensions();
-
     this.drawBackground();
 
     this.drawCellColors();
