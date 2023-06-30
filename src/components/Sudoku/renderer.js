@@ -8,7 +8,7 @@ import {
 import { state } from '~/components/Sudoku/state';
 
 export class Renderer {
-  hightlightedCellSpeed = 25;
+  static hightlightedCellSpeed = 25;
 
   animatedHighlightedCell = {
     x: null,
@@ -51,9 +51,7 @@ export class Renderer {
     this.drawSelection();
   }
 
-  updateDimensions() {
-    const { width, height } = this.ctx.canvas;
-
+  resize(width, height) {
     const cellWidth = width / cellsInRow;
     const cellHeight = height / cellsInColumn;
 
@@ -203,10 +201,10 @@ export class Renderer {
     if (state.highlightedCell) {
       this.animatedHighlightedCell.x += this.animatedHighlightedCell.x === null
         ? state.highlightedCell.x
-        : (state.highlightedCell.x - this.animatedHighlightedCell.x) * this.hightlightedCellSpeed * dt;
+        : (state.highlightedCell.x - this.animatedHighlightedCell.x) * Renderer.hightlightedCellSpeed * dt;
       this.animatedHighlightedCell.y += this.animatedHighlightedCell.y === null
         ? state.highlightedCell.y
-        : (state.highlightedCell.y - this.animatedHighlightedCell.y) * this.hightlightedCellSpeed * dt;
+        : (state.highlightedCell.y - this.animatedHighlightedCell.y) * Renderer.hightlightedCellSpeed * dt;
 
       this.ctx.fillStyle = colors.background[this.theme === 'dark' ? 'light' : 'dark'];
       this.ctx.globalAlpha = 0.2;
@@ -227,10 +225,10 @@ export class Renderer {
     if (this.animatedHighlightedCell.x !== null && this.animatedHighlightedCell.y !== null) {
       this.animatedArea.x += this.animatedArea.x === null
         ? Math.floor(state.highlightedCell.x / 3) * 3
-        : (Math.floor(state.highlightedCell.x / 3) * 3 - this.animatedArea.x) * this.hightlightedCellSpeed * dt;
+        : (Math.floor(state.highlightedCell.x / 3) * 3 - this.animatedArea.x) * Renderer.hightlightedCellSpeed * dt;
       this.animatedArea.y += this.animatedArea.y === null
         ? Math.floor(state.highlightedCell.y / 3) * 3
-        : (Math.floor(state.highlightedCell.y / 3) * 3 - this.animatedArea.y) * this.hightlightedCellSpeed * dt;
+        : (Math.floor(state.highlightedCell.y / 3) * 3 - this.animatedArea.y) * Renderer.hightlightedCellSpeed * dt;
 
       this.ctx.fillStyle = colors.background[this.theme === 'dark' ? 'light' : 'dark'];
       this.ctx.globalAlpha = 0.1;

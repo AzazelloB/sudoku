@@ -22,32 +22,33 @@ const Board = (props) => {
 
   onMount(() => {
     renderer = renderer instanceof Renderer ? renderer : new Renderer(canvas, theme());
-  });
 
-  const onResize = () => {
-    const { top, left } = canvas.getBoundingClientRect();
-    const padding = 24;
+    const onResize = () => {
+      const { top, left } = canvas.getBoundingClientRect();
+      const padding = 24;
 
-    const size = Math.min(
-      window.innerWidth > 1024 ? window.innerWidth / 2 : window.innerWidth - (left * 2),
-      window.innerHeight - top - padding,
-    );
+      const size = Math.min(
+        window.innerWidth > 1024 ? window.innerWidth / 2 : window.innerWidth - (left * 2),
+        window.innerHeight - top - padding,
+      );
 
-    // TODO this somehow makes canvas go blank if on pause
-    setCanvasWidth(size);
-    setCanvasHeight(size);
+      // TODO this somehow makes canvas go blank if on pause
+      setCanvasWidth(size);
+      setCanvasHeight(size);
 
-    renderer.draw(1);
-  };
+      renderer.resize(size * scale, size * scale);
+      renderer.draw(1);
+    };
 
-  createEffect(() => {
     onResize();
     window.addEventListener('resize', onResize);
 
     onCleanup(() => {
       window.removeEventListener('resize', onResize);
     });
+  });
 
+  createEffect(() => {
     if (props.paused()) {
       renderer.draw(1);
 
