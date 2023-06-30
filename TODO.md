@@ -26,5 +26,5 @@
 - [x] FIX: if spam pause with high resolution scale, everything starts to lag
 - [ ] Add excessive accessibility support
 - [ ] Show keybinding on "?"
-- [ ] FIX: Use worker to generate board
+- [x] FIX: Use worker to generate board
 - [ ] FIX: FPS drops when a lot of "Normal" cells are filled
