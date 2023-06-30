@@ -47,6 +47,8 @@ export class Renderer {
     this.drawHighlightedRowColArea(dt);
 
     this.drawSelection();
+
+    this.drawFPS(dt);
   }
 
   resize(width, height) {
@@ -57,6 +59,23 @@ export class Renderer {
     this.height = height;
     this.cellWidth = cellWidth;
     this.cellHeight = cellHeight;
+  }
+
+  setTheme(theme) {
+    this.theme = theme;
+  }
+
+  drawFPS(dt) {
+    if (!state.debug) {
+      return;
+    }
+
+    this.ctx.fillStyle = colors.background['dark-accent'];
+    this.ctx.fillRect(0, 0, 200, 75);
+
+    this.ctx.fillStyle = colors.background.light;
+    this.ctx.font = `${12 * scale}px Arial`;
+    this.ctx.fillText(`FPS: ${Math.round(1 / dt)}`, 25 * scale, 10 * scale);
   }
 
   drawBackground() {

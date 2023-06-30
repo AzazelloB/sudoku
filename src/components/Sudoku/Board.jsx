@@ -18,7 +18,6 @@ const Board = (props) => {
 
   const [canvasWidth, setCanvasWidth] = createSignal(initialWidth);
   const [canvasHeight, setCanvasHeight] = createSignal(initialHeight);
-  const [fps, setFPS] = createSignal(0);
 
   onMount(() => {
     renderer = renderer instanceof Renderer ? renderer : new Renderer(canvas, theme());
@@ -68,11 +67,6 @@ const Board = (props) => {
       const dt = (timeStamp - prevTimeStamp) / 1000;
       prevTimeStamp = timeStamp;
 
-      if (start + 1000 < timeStamp) {
-        start = timeStamp;
-        setFPS((1 / dt).toFixed(0));
-      }
-
       renderer.draw(dt);
 
       frame = window.requestAnimationFrame(gameLoop);
@@ -95,9 +89,11 @@ const Board = (props) => {
     onCleanup(cleanup);
   });
 
+  createEffect(() => {
+    renderer.setTheme(theme());
+  });
+
   return (
-    <>
-    <div>FPS: {fps()}</div>
     <canvas
       ref={canvas}
       width={canvasWidth() * scale}
@@ -107,7 +103,6 @@ const Board = (props) => {
         height: `${canvasHeight()}px`,
       }}
     />
-    </>
   );
 };
 

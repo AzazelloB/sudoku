@@ -201,6 +201,10 @@ function handleKeyboardDown(e) {
       state.revealed = !state.revealed;
       break;
 
+    case 'KeyD':
+      state.debug = !state.debug;
+      break;
+
     default:
       break;
   }
