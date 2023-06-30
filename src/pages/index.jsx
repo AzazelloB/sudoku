@@ -136,12 +136,14 @@ const HomePage = () => {
             <ButtonGroup>
               <ButtonGroup.Button
                 first
+                loading={generatingNewBoard()}
                 active={difficulty() === 'easy'}
                 onClick={[handleDifficulty, 'easy']}
               >
                 Easy
               </ButtonGroup.Button>
               <ButtonGroup.Button
+                loading={generatingNewBoard()}
                 active={difficulty() === 'normal'}
                 onClick={[handleDifficulty, 'normal']}
               >
@@ -149,6 +151,7 @@ const HomePage = () => {
               </ButtonGroup.Button>
               <ButtonGroup.Button
                 last
+                loading={generatingNewBoard()}
                 active={difficulty() === 'hard'}
                 onClick={[handleDifficulty, 'hard']}
               >
