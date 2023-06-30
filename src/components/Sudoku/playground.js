@@ -3,6 +3,15 @@ import { cellsInRow } from '~/components/Sudoku/settings';
 import { difficultyLevels } from '~/constants/difficulty';
 import BoardGenerator from '~/workers/boardGeneratorTest?worker';
 
+const shuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+};
+
 const isValid = (cells, number, index) => {
   const col = index % cellsInRow;
   const row = Math.floor(index / cellsInRow);
@@ -78,10 +87,11 @@ export const solve = (cells, i = 0) => {
 };
 
 let iter = 0;
+
 const countSolutions = (cells, i = 0, count = 0) => {
   iter++;
 
-  if (iter > 100_000_000) {
+  if (iter > 10_000_000) {
     console.log(count, cells);
     throw new Error('enough');
   }
@@ -119,25 +129,24 @@ export const reveal = (cells) => {
   iter = 0;
 
   const indexes = [...cells.keys()];
+  shuffleArray(indexes);
   const masked = cells.slice();
 
   const max = masked.length - 1 - difficultyLevels.hard;
   for (let revealed = 0; revealed <= max;) {
-    const randomIndexOfIndex = Math.floor(Math.random() * indexes.length);
-    const [randomIndex] = indexes.slice(randomIndexOfIndex, randomIndexOfIndex + 1);
-
-    if (masked[randomIndex] === null) {
-      continue;
-    }
+    const randomIndex = indexes.pop();
 
     const value = masked[randomIndex];
 
     masked[randomIndex] = null;
 
     if (countSolutions(masked.slice()) === 1) {
+      // console.log(masked);
+      console.log('revealed', revealed, 'of', max);
       revealed++;
     } else {
       masked[randomIndex] = value;
+      indexes.unshift(randomIndex);
     }
   }
 
