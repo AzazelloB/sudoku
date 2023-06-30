@@ -2,26 +2,27 @@ import {
   createEffect,
   createSignal,
   onCleanup,
+  onMount,
 } from 'solid-js';
 
 import { useGlobalContext } from '~/context/GlobalContext';
 
 import { initControls } from '~/components/Sudoku/controls';
-import { draw } from '~/components/Sudoku/render';
+import { Renderer } from '~/components/Sudoku/renderer';
 import { initialHeight, initialWidth, scale } from '~/components/Sudoku/settings';
 
 const Board = (props) => {
   const { theme } = useGlobalContext();
   let canvas;
+  let renderer;
 
   const [canvasWidth, setCanvasWidth] = createSignal(initialWidth);
   const [canvasHeight, setCanvasHeight] = createSignal(initialHeight);
+  const [fps, setFPS] = createSignal(0);
 
-  const drawCanvas = (dt = 1) => {
-    const ctx = canvas.getContext('2d');
-
-    draw(ctx, dt, theme());
-  };
+  onMount(() => {
+    renderer = renderer instanceof Renderer ? renderer : new Renderer(canvas, theme());
+  });
 
   const onResize = () => {
     const { top, left } = canvas.getBoundingClientRect();
@@ -36,7 +37,7 @@ const Board = (props) => {
     setCanvasWidth(size);
     setCanvasHeight(size);
 
-    drawCanvas();
+    renderer.draw(1);
   };
 
   createEffect(() => {
@@ -48,20 +49,30 @@ const Board = (props) => {
     });
 
     if (props.paused()) {
-      drawCanvas();
+      renderer.draw(1);
 
       return;
     }
 
+    let start = null;
     let prevTimeStamp = 0;
 
     let frame;
 
     const gameLoop = (timeStamp) => {
+      if (!start) {
+        start = timeStamp;
+      }
+
       const dt = (timeStamp - prevTimeStamp) / 1000;
       prevTimeStamp = timeStamp;
 
-      drawCanvas(dt);
+      if (start + 1000 < timeStamp) {
+        start = timeStamp;
+        setFPS((1 / dt).toFixed(0));
+      }
+
+      renderer.draw(dt);
 
       frame = window.requestAnimationFrame(gameLoop);
     };
@@ -84,6 +95,8 @@ const Board = (props) => {
   });
 
   return (
+    <>
+    <div>FPS: {fps()}</div>
     <canvas
       ref={canvas}
       width={canvasWidth() * scale}
@@ -93,6 +106,7 @@ const Board = (props) => {
         height: `${canvasHeight()}px`,
       }}
     />
+    </>
   );
 };
 

@@ -31,5 +31,6 @@ rules: {
   no-unreachable: off,
   no-continue: off,
   no-plusplus: off,
+  class-methods-use-this: off,
 }
 
