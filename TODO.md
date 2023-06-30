@@ -27,3 +27,4 @@
 - [ ] Add excessive accessibility support
 - [ ] Show keybinding on "?"
 - [ ] FIX: Use worker to generate board
+- [ ] FIX: FPS drops when a lot of "Normal" cells are filled
