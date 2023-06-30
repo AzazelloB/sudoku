@@ -115,6 +115,7 @@ const countSolutions = (cells, i = 0, count = 0) => {
   return count;
 };
 
+// TODO rename to mask or something
 export const reveal = (cells, difficulty) => {
   const indexes = [...cells.keys()];
   const masked = deepCopy(cells);
