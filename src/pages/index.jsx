@@ -4,6 +4,7 @@ import {
   onMount,
 } from 'solid-js';
 import classNames from 'classnames';
+import { Transition, TransitionChild } from 'solid-headless';
 
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { canRedefineControls } from '~/utils/controls';
@@ -194,25 +195,30 @@ const HomePage = () => {
           </div>
         </div>
 
-        <div class={classNames(
-          'relative',
-        )}>
-          <div class="overflow-hidden absolute inset-0">
-            <div class={classNames(
-              'absolute z-10 inset-0 flex items-center justify-center',
-              'transition-all duration-200',
-              {
-                '-translate-y-full': !paused(),
-              },
-            )}>
-              <div class={classNames(
-                'bg-background dark:bg-background-dark-accent rounded-md shadow-lg px-12 py-5',
-                'text-4xl',
-              )}>
-                Paused
+        <div class="relative">
+          <Transition
+            show={paused()}
+            class="absolute z-10 inset-0 overflow-hidden"
+          >
+            <TransitionChild
+              class="h-full"
+              enter="transition ease-in-out duration-200 transform"
+              enterFrom="-translate-y-full"
+              enterTo="translate-y-0"
+              leave="transition ease-in-out duration-200 transform"
+              leaveFrom="translate-y-0"
+              leaveTo="-translate-y-full"
+            >
+              <div class="h-full flex items-center justify-center">
+                <div class={classNames(
+                  'bg-background dark:bg-background-dark-accent rounded-md shadow-lg px-12 py-5',
+                  'text-4xl',
+                )}>
+                  Paused
+                </div>
               </div>
-            </div>
-          </div>
+            </TransitionChild>
+          </Transition>
 
           <div class={classNames(
             'transition-all duration-200',
