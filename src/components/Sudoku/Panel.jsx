@@ -1,5 +1,5 @@
 import {
-  Show,
+  Show, onCleanup, onMount,
 } from 'solid-js';
 import classNames from 'classnames';
 
@@ -23,7 +23,7 @@ import {
 
 const tools = ['digits', 'colors'];
 
-export const getNextTool = (currentTool) => {
+const getNextTool = (currentTool) => {
   const index = tools.indexOf(currentTool);
   const nextIndex = (index + 1) % tools.length;
 
@@ -31,6 +31,37 @@ export const getNextTool = (currentTool) => {
 };
 
 const Panel = (props) => {
+  const handleKeyboardDown = (e) => {
+    switch (e.code) {
+      case 'KeyZ':
+        props.setMode('normal');
+        break;
+
+      case 'KeyX':
+        props.setMode('middle');
+        break;
+
+      case 'KeyC':
+        props.setMode('corner');
+        break;
+
+      case 'KeyM':
+        props.setTool(getNextTool(props.tool()));
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  onMount(() => {
+    document.addEventListener('keydown', handleKeyboardDown);
+
+    onCleanup(() => {
+      document.removeEventListener('keydown', handleKeyboardDown);
+    });
+  });
+
   const handleNumber = (number) => {
     switch (props.mode()) {
       case 'normal':

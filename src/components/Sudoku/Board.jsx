@@ -81,9 +81,7 @@ const Board = (props) => {
       canvas,
       panel: props.panel(),
       mode: props.mode(),
-      setMode: props.setMode,
       tool: props.tool(),
-      setTool: props.setTool,
     });
 
     onCleanup(cleanup);

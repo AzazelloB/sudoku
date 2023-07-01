@@ -275,9 +275,7 @@ const HomePage = () => {
               panel={panelRef}
               difficulty={difficulty}
               mode={mode}
-              setMode={setMode}
               tool={tool}
-              setTool={setTool}
               paused={paused}
             />
           </div>

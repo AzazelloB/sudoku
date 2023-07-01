@@ -1,4 +1,3 @@
-import { getNextTool } from '~/components/Sudoku/Panel';
 import {
   checkBoundaries,
   clearSelectedCells,
@@ -173,21 +172,7 @@ function handleKeyboardDown(e) {
         } else {
           handleUndo();
         }
-      } else {
-        this.setMode('normal');
       }
-      break;
-
-    case 'KeyX':
-      this.setMode('middle');
-      break;
-
-    case 'KeyC':
-      this.setMode('corner');
-      break;
-
-    case 'KeyM':
-      this.setTool(getNextTool(this.tool));
       break;
 
     case 'KeyA':
@@ -246,16 +231,12 @@ export const initControls = ({
   canvas,
   panel,
   mode,
-  setMode,
   tool,
-  setTool,
 }) => {
   const mouseMoveHandler = handleMouseMove.bind({ canvas });
   const keyboardDownHandler = handleKeyboardDown.bind({
     mode,
-    setMode,
     tool,
-    setTool,
   });
   const outiseClickHandler = handleClickOutside.bind({ canvas, panel });
 
