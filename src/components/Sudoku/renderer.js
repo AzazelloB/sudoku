@@ -8,6 +8,62 @@ import {
 import { state } from '~/components/Sudoku/state';
 
 export class Renderer {
+  static controlBoxPadding = 15;
+
+  static controlSections = [
+    {
+      title: 'Movement',
+      controls: [
+        {
+          shortcut: '⬆',
+          description: 'Move one cell up',
+        },
+        {
+          shortcut: '➡',
+          description: 'Move one cell right',
+        },
+        {
+          shortcut: '⬇',
+          description: 'Move one cell down',
+        },
+        {
+          shortcut: '⬅',
+          description: 'Move one cell left',
+        },
+        {
+          shortcut: 'Ctrl + ⬆➡⬇⬅',
+          description: 'Move to the end of the row/column',
+        },
+      ],
+    },
+    {
+      title: 'Selection',
+      controls: [
+        {
+          shortcut: 'Shift + ⬆➡⬇⬅',
+          description: 'Select multiple cells',
+        },
+      ],
+    },
+    {
+      title: 'Number insertion',
+      controls: [
+        {
+          shortcut: '<number>',
+          description: 'Add note in the middle of the cell',
+        },
+        {
+          shortcut: 'Alt + <number>',
+          description: 'Add note in the corenr of the cell',
+        },
+        {
+          shortcut: 'Shift + <number>',
+          description: 'Insert number',
+        },
+      ],
+    },
+  ];
+
   static hightlightedCellSpeed = 25;
 
   animatedHighlightedCell = {
@@ -34,19 +90,23 @@ export class Renderer {
   }
 
   draw(dt) {
-    this.drawBackground();
+    if (state.showControls) {
+      this.drawControlSchema();
+    } else {
+      this.drawBackground();
 
-    this.drawCellColors();
+      this.drawCellColors();
 
-    this.drawGrid();
+      this.drawGrid();
 
-    this.drawValues();
+      this.drawValues();
 
-    this.drawHighlightedCell(dt);
+      this.drawHighlightedCell(dt);
 
-    this.drawHighlightedRowColArea(dt);
+      this.drawHighlightedRowColArea(dt);
 
-    this.drawSelection();
+      this.drawSelection();
+    }
 
     if (state.debug) {
       this.drawFPS(dt);
@@ -67,9 +127,83 @@ export class Renderer {
     this.theme = theme;
   }
 
+  drawControlSchema() {
+    const boxX = Renderer.controlBoxPadding * scale;
+    const boxY = Renderer.controlBoxPadding * scale;
+    const boxWidth = this.width - Renderer.controlBoxPadding * 2 * scale;
+    const boxHeight = this.width - Renderer.controlBoxPadding * 2 * scale;
+
+    this.ctx.fillStyle = colors.background['dark-accent'];
+    this.ctx.roundRect(
+      boxX,
+      boxY,
+      boxWidth,
+      boxHeight,
+      [20 * scale],
+    );
+    this.ctx.fill();
+
+    const fontSize = this.width / cellsInRow / 1.5;
+    this.ctx.textAlign = 'left';
+    this.ctx.textBaseline = 'middle';
+    this.ctx.fillStyle = 'white';
+    this.ctx.font = `${fontSize}px Arial`;
+
+    const titleY = boxY + fontSize / 2 + 20 * scale;
+
+    this.ctx.fillText(
+      'Controls',
+      boxWidth / 2 - fontSize * 1.5,
+      titleY,
+    );
+
+    const sectionFontSize = fontSize * 0.6;
+    const shortcutFontSize = fontSize * 0.4;
+
+    let y = titleY + sectionFontSize * 2;
+
+    for (let i = 0; i < Renderer.controlSections.length; i += 1) {
+      const section = Renderer.controlSections[i];
+
+      this.ctx.textAlign = 'left';
+      this.ctx.font = `${sectionFontSize}px Arial`;
+      this.ctx.fillText(
+        section.title,
+        boxX + 20 * scale,
+        y,
+      );
+
+      y += sectionFontSize + 10 * scale;
+
+      for (let j = 0; j < section.controls.length; j += 1) {
+        const control = section.controls[j];
+
+        this.ctx.textAlign = 'left';
+        this.ctx.font = `${shortcutFontSize}px Arial`;
+        this.ctx.fillText(
+          control.shortcut,
+          boxX + 40 * scale,
+          y,
+        );
+
+        this.ctx.textAlign = 'right';
+        this.ctx.font = `${shortcutFontSize}px Arial`;
+        this.ctx.fillText(
+          control.description,
+          boxWidth,
+          y,
+        );
+
+        y += shortcutFontSize + 10 * scale;
+      }
+
+      y += sectionFontSize + 10 * scale;
+    }
+  }
+
   drawFPS(dt) {
     this.ctx.fillStyle = colors.background['dark-accent'];
-    this.ctx.fillRect(0, 0, 200, 75);
+    this.ctx.fillRect(0, 0, 55 * scale, 17 * scale);
 
     this.ctx.fillStyle = colors.background.light;
     this.ctx.font = `${12 * scale}px Arial`;

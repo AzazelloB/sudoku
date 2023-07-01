@@ -104,15 +104,7 @@ const Panel = (props) => {
     >
       <Control
         as={Button}
-        alternatives={[
-          {
-            key: 'Z',
-          },
-          {
-            key: '<number>',
-            alt: true,
-          },
-        ]}
+        key="Z"
         class={classNames(className, 'row-start-4 lg:row-start-auto')}
         active={props.mode() === 'normal'}
         onClick={[props.setMode, 'normal']}
@@ -130,15 +122,7 @@ const Panel = (props) => {
       </Control>
       <Control
         as={Button}
-        alternatives={[
-          {
-            key: 'C',
-          },
-          {
-            key: '<number>',
-            alt: true,
-          },
-        ]}
+        key="C"
         class={classNames(className, 'row-start-4 col-start-3 lg:row-start-3 lg:col-start-auto')}
         active={props.mode() === 'corner'}
         onClick={[props.setMode, 'corner']}
