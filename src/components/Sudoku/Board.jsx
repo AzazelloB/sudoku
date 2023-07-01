@@ -4,6 +4,7 @@ import {
   onCleanup,
   onMount,
 } from 'solid-js';
+import { twMerge } from 'tailwind-merge';
 
 import { useGlobalContext } from '~/context/GlobalContext';
 
@@ -94,6 +95,11 @@ const Board = (props) => {
   return (
     <canvas
       ref={canvas}
+      tabIndex={0}
+      class={twMerge(
+        'focus:outline-none focus:ring-4 focus:ring-offset-4',
+        'focus:ring-white dark:focus:ring-offset-background-dark',
+      )}
       width={canvasWidth() * scale}
       height={canvasHeight() * scale}
       style={{

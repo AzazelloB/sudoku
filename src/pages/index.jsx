@@ -195,20 +195,22 @@ const HomePage = () => {
         </div>
 
         <div class={classNames(
-          'relative overflow-hidden',
+          'relative',
         )}>
-          <div class={classNames(
-            'absolute z-10 inset-0 flex items-center justify-center',
-            'transition-all duration-200',
-            {
-              '-translate-y-full': !paused(),
-            },
-          )}>
+          <div class="overflow-hidden absolute inset-0">
             <div class={classNames(
-              'bg-background dark:bg-background-dark-accent rounded-md shadow-lg px-12 py-5',
-              'text-4xl',
+              'absolute z-10 inset-0 flex items-center justify-center',
+              'transition-all duration-200',
+              {
+                '-translate-y-full': !paused(),
+              },
             )}>
-              Paused
+              <div class={classNames(
+                'bg-background dark:bg-background-dark-accent rounded-md shadow-lg px-12 py-5',
+                'text-4xl',
+              )}>
+                Paused
+              </div>
             </div>
           </div>
 
