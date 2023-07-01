@@ -3,6 +3,7 @@ export const state = {
   mouseDown: false,
   revealed: false,
   debug: false,
+  showControls: false,
   selectedCells: [],
   cells: [],
   historyCursor: 0,

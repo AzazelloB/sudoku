@@ -14,6 +14,7 @@ import ButtonGroup from '~/ui/ButtonGroup';
 import Pause from '~/ui/icons/Pause';
 import Play from '~/ui/icons/Play';
 import Modal from '~/ui/Modal';
+import Control from '~/ui/Control';
 
 import Board from '~/components/Sudoku/Board';
 import {
@@ -163,13 +164,15 @@ const HomePage = () => {
           <div class="hidden lg:flex items-center mx-4">
             <span>{formatTime(time())}</span>
 
-            <Button
+            <Control
+              as={Button}
+              key="Space"
               class="ml-4"
               variant="tertiary"
               onClick={handlePausePlay}
             >
               {paused() ? <Play class="h-4" /> : <Pause class="h-4" />}
-            </Button>
+            </Control>
           </div>
 
           <div class="flex mt-4 lg:mt-0 justify-between">

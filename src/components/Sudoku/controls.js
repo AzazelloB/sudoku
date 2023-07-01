@@ -17,6 +17,7 @@ import {
 } from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
 import { colors } from '~/constants/theme';
+import { publish } from '~/utils/pubSub';
 
 const handleMouseDown = (e) => {
   state.mouseDown = true;
@@ -198,7 +199,14 @@ function handleKeyboardDown(e) {
       break;
 
     case 'Slash':
-      state.revealed = !state.revealed;
+      if (e.shiftKey) {
+        if (!state.showControls) {
+          state.showControls = true;
+          publish('showControls', state.showControls);
+        }
+      } else {
+        state.revealed = !state.revealed;
+      }
       break;
 
     case 'KeyD':
@@ -209,6 +217,20 @@ function handleKeyboardDown(e) {
       break;
   }
 }
+
+const handleKeyboardUp = (e) => {
+  switch (e.code) {
+    case 'Slash':
+      if (state.showControls) {
+        state.showControls = false;
+        publish('showControls', state.showControls);
+      }
+      break;
+
+    default:
+      break;
+  }
+};
 
 function handleClickOutside(e) {
   if ((this.canvas && this.canvas.contains(e.target))
@@ -244,6 +266,7 @@ export const initControls = ({
   canvas.addEventListener('dblclick', handleDoubleClick);
 
   document.addEventListener('keydown', keyboardDownHandler);
+  document.addEventListener('keyup', handleKeyboardUp);
   document.addEventListener('mousedown', outiseClickHandler);
 
   return () => {
@@ -254,6 +277,7 @@ export const initControls = ({
     canvas.removeEventListener('dblclick', handleDoubleClick);
 
     document.removeEventListener('keydown', keyboardDownHandler);
+    document.removeEventListener('keyup', handleKeyboardUp);
     document.removeEventListener('mousedown', outiseClickHandler);
   };
 };

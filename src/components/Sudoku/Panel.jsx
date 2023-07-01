@@ -1,9 +1,12 @@
 import {
   Show,
 } from 'solid-js';
-
 import classNames from 'classnames';
+
+import { colors } from '~/constants/theme';
+
 import Button from '~/ui/Button';
+import Control from '~/ui/Control';
 
 import {
   clearSelectedCells,
@@ -17,7 +20,6 @@ import {
   handleUndo,
   saveSnapshot,
 } from '~/components/Sudoku/history';
-import { colors } from '~/constants/theme';
 
 const tools = ['digits', 'colors'];
 
@@ -69,85 +71,254 @@ const Panel = (props) => {
       ref={props.ref}
       class="grid grid-cols-3 lg:grid-cols-4 gap-4 text-6xl aspect-square mt-8 select-none"
     >
-      <Button
+      <Control
+        as={Button}
+        alternatives={[
+          {
+            key: 'Z',
+          },
+          {
+            key: '<number>',
+            alt: true,
+          },
+        ]}
         class={classNames(className, 'row-start-4 lg:row-start-auto')}
         active={props.mode() === 'normal'}
         onClick={[props.setMode, 'normal']}
       >
         Normal
-      </Button>
-      <Button
+      </Control>
+      <Control
+        as={Button}
+        key="X"
         class={classNames(className, 'row-start-4 col-start-2 lg:row-start-2 lg:col-start-auto')}
         active={props.mode() === 'middle'}
         onClick={[props.setMode, 'middle']}
       >
         Middle
-      </Button>
-      <Button
+      </Control>
+      <Control
+        as={Button}
+        alternatives={[
+          {
+            key: 'C',
+          },
+          {
+            key: '<number>',
+            alt: true,
+          },
+        ]}
         class={classNames(className, 'row-start-4 col-start-3 lg:row-start-3 lg:col-start-auto')}
         active={props.mode() === 'corner'}
         onClick={[props.setMode, 'corner']}
       >
         Corner
-      </Button>
+      </Control>
 
       <Show
         when={props.tool() === 'digits'}
       >
-        <Button onClick={[handleNumber, 7]}>7</Button>
-        <Button onClick={[handleNumber, 8]}>8</Button>
-        <Button onClick={[handleNumber, 9]}>9</Button>
+        <Control
+          as={Button}
+          key="7"
+          corenr={3}
+          onClick={[handleNumber, 7]}
+        >
+          7
+        </Control>
+        <Control
+          as={Button}
+          key="8"
+          corenr={3}
+          onClick={[handleNumber, 8]}
+        >
+          8
+        </Control>
+        <Control
+          as={Button}
+          key="9"
+          corenr={3}
+          onClick={[handleNumber, 9]}
+        >
+          9
+        </Control>
 
-        <Button onClick={[handleNumber, 4]}>4</Button>
-        <Button onClick={[handleNumber, 5]}>5</Button>
-        <Button onClick={[handleNumber, 6]}>6</Button>
+        <Control
+          as={Button}
+          key="4"
+          corenr={3}
+          onClick={[handleNumber, 4]}
+        >
+          4
+        </Control>
+        <Control
+          as={Button}
+          key="5"
+          corenr={3}
+          onClick={[handleNumber, 5]}
+        >
+          5
+        </Control>
+        <Control
+          as={Button}
+          key="6"
+          corenr={3}
+          onClick={[handleNumber, 6]}
+        >
+          6
+        </Control>
 
-        <Button onClick={[handleNumber, 1]}>1</Button>
-        <Button onClick={[handleNumber, 2]}>2</Button>
-        <Button onClick={[handleNumber, 3]}>3</Button>
+        <Control
+          as={Button}
+          key="1"
+          corenr={3}
+          onClick={[handleNumber, 1]}
+        >
+          1
+        </Control>
+        <Control
+          as={Button}
+          key="2"
+          corenr={3}
+          onClick={[handleNumber, 2]}
+        >
+          2
+        </Control>
+        <Control
+          as={Button}
+          key="3"
+          corenr={3}
+          onClick={[handleNumber, 3]}
+        >
+          3
+        </Control>
       </Show>
 
       <Show
         when={props.tool() === 'colors'}
       >
-        <Button onClick={[handleColor, colors.cell.seven]}>
+        <Control
+          as={Button}
+          key="7"
+          corenr={3}
+          onClick={[handleColor, colors.cell.seven]}
+        >
           <div class="bg-cell-seven w-full aspect-square" />
-        </Button>
-        <Button onClick={[handleColor, colors.cell.eight]}>
+        </Control>
+        <Control
+          as={Button}
+          key="8"
+          corenr={3}
+          onClick={[handleColor, colors.cell.eight]}
+        >
           <div class="bg-cell-eight w-full aspect-square" />
-        </Button>
-        <Button onClick={[handleColor, colors.cell.nine]}>
+        </Control>
+        <Control
+          as={Button}
+          key="9"
+          corenr={3}
+          onClick={[handleColor, colors.cell.nine]}
+        >
           <div class="bg-cell-nine w-full aspect-square" />
-        </Button>
+        </Control>
 
-        <Button onClick={[handleColor, colors.cell.four]}>
+        <Control
+          as={Button}
+          key="4"
+          corenr={3}
+          onClick={[handleColor, colors.cell.four]}
+        >
           <div class="bg-cell-four w-full aspect-square" />
-        </Button>
-        <Button onClick={[handleColor, colors.cell.five]}>
+        </Control>
+        <Control
+          as={Button}
+          key="5"
+          corenr={3}
+          onClick={[handleColor, colors.cell.five]}
+        >
           <div class="bg-cell-five w-full aspect-square" />
-        </Button>
-        <Button onClick={[handleColor, colors.cell.six]}>
+        </Control>
+        <Control
+          as={Button}
+          key="6"
+          corenr={3}
+          onClick={[handleColor, colors.cell.six]}
+        >
           <div class="bg-cell-six w-full aspect-square" />
-        </Button>
+        </Control>
 
-        <Button onClick={[handleColor, colors.cell.one]}>
+        <Control
+          as={Button}
+          key="1"
+          corenr={3}
+          onClick={[handleColor, colors.cell.one]}
+        >
           <div class="bg-background-light dark:bg-background-dark w-full aspect-square" />
-        </Button>
-        <Button onClick={[handleColor, colors.cell.two]}>
+        </Control>
+        <Control
+          as={Button}
+          key="2"
+          corenr={3}
+          onClick={[handleColor, colors.cell.two]}
+        >
           <div class="bg-cell-two w-full aspect-square" />
-        </Button>
-        <Button onClick={[handleColor, colors.cell.tree]}>
+        </Control>
+        <Control
+          as={Button}
+          key="3"
+          corenr={3}
+          onClick={[handleColor, colors.cell.tree]}
+        >
           <div class="bg-cell-tree w-full aspect-square" />
-        </Button>
+        </Control>
       </Show>
 
-      <Button class={className} onClick={handleClear}>Clear</Button>
-      <Button class={className} onClick={handleUndo}>Undo</Button>
-      <Button class={className} onClick={handleRedo}>Redo</Button>
+      <Control
+        as={Button}
+        alternatives={[
+          {
+            key: 'Backspace',
+          },
+          {
+            key: 'Delete',
+          },
+        ]}
+        class={className}
+        onClick={handleClear}
+      >
+        Clear
+      </Control>
+      <Control
+        as={Button}
+        key="Z"
+        ctrl
+        corenr={3}
+        class={className}
+        onClick={handleUndo}
+      >
+        Undo
+      </Control>
+      <Control
+        as={Button}
+        key="Z"
+        ctrl
+        shift
+        corenr={3}
+        class={className}
+        onClick={handleRedo}
+      >
+        Redo
+      </Control>
 
-      <Button class="text-lg capitalize" onClick={[props.setTool, getNextTool(props.tool())]}>
+      <Control
+        as={Button}
+        key="M"
+        corenr={3}
+        class="text-lg capitalize"
+        onClick={[props.setTool, getNextTool(props.tool())]}
+      >
         {getNextTool(props.tool())}
-      </Button>
+      </Control>
     </div>
   );
 };
