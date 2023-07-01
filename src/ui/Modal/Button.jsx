@@ -15,6 +15,7 @@ const Button = (props) => {
 
   return (
     <ButtonUI
+      {...props}
       onClick={openModal}
     >
       {props.children}
