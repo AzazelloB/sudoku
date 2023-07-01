@@ -25,6 +25,6 @@
 - [x] Increase canvas resolution
 - [x] FIX: if spam pause with high resolution scale, everything starts to lag
 - [ ] Add excessive accessibility support (Look into solid-headless)
-- [ ] Show keybinding on "?"
+- [x] Show keybinding on "?"
 - [x] FIX: Use worker to generate board
 - [ ] FIX: FPS drops when a lot of "Normal" cells are filled
