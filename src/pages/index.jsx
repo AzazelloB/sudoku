@@ -6,13 +6,10 @@ import {
 import classNames from 'classnames';
 
 import useLocalStorage from '~/hooks/useLocalStorage';
-import { formatTime } from '~/utils/datetime';
 import { canRedefineControls } from '~/utils/controls';
 
 import Button from '~/ui/Button';
 import ButtonGroup from '~/ui/ButtonGroup';
-import Pause from '~/ui/icons/Pause';
-import Play from '~/ui/icons/Play';
 import Control from '~/ui/Control';
 
 import Board from '~/components/Sudoku/Board';
@@ -27,6 +24,7 @@ import {
 } from '~/components/Sudoku/history';
 import Panel from '~/components/Sudoku/Panel';
 import CheckModal from '~/components/Sudoku/CheckModal';
+import Timer from '~/components/Sudoku/Timer';
 
 const HomePage = () => {
   const [cells, setCells] = useLocalStorage('cells', []);
@@ -162,19 +160,12 @@ const HomePage = () => {
             </ButtonGroup>
           </div>
 
-          <div class="hidden lg:flex items-center mx-4">
-            <span>{formatTime(time())}</span>
-
-            <Control
-              as={Button}
-              key="Space"
-              class="ml-4"
-              variant="tertiary"
-              onClick={handlePausePlay}
-            >
-              {paused() ? <Play class="h-4" /> : <Pause class="h-4" />}
-            </Control>
-          </div>
+          <Timer
+            time={time}
+            paused={paused}
+            onPausePlay={handlePausePlay}
+            class="hidden lg:flex mx-4"
+          />
 
           <div class="flex mt-4 lg:mt-0 justify-between">
             <Control
@@ -187,17 +178,12 @@ const HomePage = () => {
               Restart
             </Control>
 
-            <div class="flex lg:hidden items-center mx-4">
-              <span>{formatTime(time())}</span>
-
-              <Button
-                class="ml-4"
-                variant="tertiary"
-                onClick={handlePausePlay}
-              >
-                {paused() ? <Play class="h-4" /> : <Pause class="h-4" />}
-              </Button>
-            </div>
+            <Timer
+              time={time}
+              paused={paused}
+              onPausePlay={handlePausePlay}
+              class="flex lg:hidden mx-4"
+            />
 
             <CheckModal
               solved={solved}
