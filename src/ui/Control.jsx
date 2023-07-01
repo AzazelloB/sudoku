@@ -6,8 +6,9 @@ import {
   onMount,
   splitProps,
 } from 'solid-js';
-
+import { Dynamic } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
+
 import { subscribe, unsubscribe } from '~/utils/pubSub';
 
 import Button from '~/ui/Button';
@@ -33,10 +34,6 @@ const Control = (props) => {
     });
   });
 
-  // Probably shouldn't be reactive anyway
-  // eslint-disable-next-line solid/reactivity
-  const Component = local.as || Button;
-
   const alternatives = () => {
     return [
       {
@@ -50,7 +47,8 @@ const Control = (props) => {
   };
 
   return (
-    <Component
+    <Dynamic
+      component={local.as || Button}
       {...others}
       class={twMerge(
         others.class,
@@ -94,7 +92,7 @@ const Control = (props) => {
           </For>
         </div>
       </Show>
-    </Component>
+    </Dynamic>
   );
 };
 
