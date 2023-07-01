@@ -21,7 +21,7 @@ const Content = (props) => {
     <Portal>
       <Transition
         appear
-        show={console.log(isOpen()) || isOpen()}
+        show={isOpen()}
       >
         <Dialog
           isOpen

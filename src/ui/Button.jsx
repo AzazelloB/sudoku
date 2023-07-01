@@ -5,6 +5,7 @@ const Button = (props) => {
     <button
       {...props}
       type="button"
+      // TODO button looses focus when clicked
       disabled={props.disabled || props.loading}
       class={twMerge(
         'px-4 py-2 rounded-md transition-colors duration-200',

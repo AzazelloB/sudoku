@@ -1,5 +1,4 @@
 import {
-  createEffect,
   createSignal,
   onCleanup,
   onMount,
@@ -8,12 +7,12 @@ import classNames from 'classnames';
 
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { formatTime } from '~/utils/datetime';
+import { canRedefineControls } from '~/utils/controls';
 
 import Button from '~/ui/Button';
 import ButtonGroup from '~/ui/ButtonGroup';
 import Pause from '~/ui/icons/Pause';
 import Play from '~/ui/icons/Play';
-import Modal from '~/ui/Modal';
 import Control from '~/ui/Control';
 
 import Board from '~/components/Sudoku/Board';
@@ -27,6 +26,7 @@ import {
   saveSnapshot,
 } from '~/components/Sudoku/history';
 import Panel from '~/components/Sudoku/Panel';
+import CheckModal from '~/components/Sudoku/CheckModal';
 
 const HomePage = () => {
   const [cells, setCells] = useLocalStorage('cells', []);
@@ -45,7 +45,13 @@ const HomePage = () => {
   const handleKeyboardDown = (e) => {
     switch (e.code) {
       case 'Space':
-        handlePausePlay();
+        if (canRedefineControls()) {
+          handlePausePlay();
+        }
+        break;
+
+      case 'KeyR':
+        restartGame();
         break;
 
       default:
@@ -53,7 +59,7 @@ const HomePage = () => {
     }
   };
 
-  createEffect(() => {
+  onMount(() => {
     document.addEventListener('keydown', handleKeyboardDown);
 
     onCleanup(() => {
@@ -122,11 +128,6 @@ const HomePage = () => {
     setSolved(checkIfSolved());
   };
 
-  const handleModalNewGame = (closeModal) => {
-    closeModal();
-    handleNewGame();
-  };
-
   return (
     <div class="flex justify-center lg:gap-12 gap-4 lg:flex-row flex-col">
       <div>
@@ -176,13 +177,15 @@ const HomePage = () => {
           </div>
 
           <div class="flex mt-4 lg:mt-0 justify-between">
-            <Button
+            <Control
+              as={Button}
+              key="R"
               class="mr-4"
               loading={generatingNewBoard()}
               onClick={handleNewGame}
             >
               Restart
-            </Button>
+            </Control>
 
             <div class="flex lg:hidden items-center mx-4">
               <span>{formatTime(time())}</span>
@@ -196,54 +199,12 @@ const HomePage = () => {
               </Button>
             </div>
 
-            <Modal>
-              <Modal.Button
-                onClick={handleCheck}
-              >
-                Check
-              </Modal.Button>
-
-              <Modal.Content>
-                {({ closeModal }) => (
-                  <div class="flex flex-col w-60">
-                    <Modal.Title>
-                      {solved() ? 'Congratulations!' : 'Sorry!'}
-                    </Modal.Title>
-
-                    <p class="text-black dark:text-white opacity-60">
-                      {solved() ? (
-                        <>
-                          Your time: {formatTime(time())}
-                          <br />
-                          You solved the puzzle!
-                        </>
-                      ) : (
-                        <>
-                          You have not solved the puzzle yet.
-                        </>
-                      )}
-                    </p>
-
-                    <div class="ml-auto mt-6">
-                      {solved() && (
-                        <Button
-                          class="mr-4"
-                          onClick={[handleModalNewGame, closeModal]}
-                        >
-                          New Game
-                        </Button>
-                      )}
-
-                      <Button
-                        onClick={closeModal}
-                      >
-                        Close
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </Modal.Content>
-            </Modal>
+            <CheckModal
+              solved={solved}
+              time={time}
+              onCheck={handleCheck}
+              onNewGame={handleNewGame}
+            />
           </div>
         </div>
 
