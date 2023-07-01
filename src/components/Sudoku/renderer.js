@@ -48,7 +48,9 @@ export class Renderer {
 
     this.drawSelection();
 
-    this.drawFPS(dt);
+    if (state.debug) {
+      this.drawFPS(dt);
+    }
   }
 
   resize(width, height) {
@@ -66,10 +68,6 @@ export class Renderer {
   }
 
   drawFPS(dt) {
-    if (!state.debug) {
-      return;
-    }
-
     this.ctx.fillStyle = colors.background['dark-accent'];
     this.ctx.fillRect(0, 0, 200, 75);
 
