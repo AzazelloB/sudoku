@@ -93,7 +93,7 @@ export class Renderer {
     // create offscreen canvas
   }
 
-  draw(dt: number) {
+  draw(dt: number = 1) {
     if (state.showControls) {
       this.drawControlSchema();
     } else {

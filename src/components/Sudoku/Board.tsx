@@ -46,7 +46,7 @@ const Board: Component<BoardProps> = (props) => {
       setCanvasHeight(size);
 
       renderer.resize(size * scale, size * scale);
-      renderer.draw(1);
+      renderer.draw();
     };
 
     onResize();
@@ -59,7 +59,7 @@ const Board: Component<BoardProps> = (props) => {
 
   createEffect(() => {
     if (props.paused()) {
-      renderer.draw(1);
+      renderer.draw();
 
       return;
     }

@@ -94,10 +94,10 @@ const handleDoubleClick = () => {
   if (state.highlightedCell == null) {
     return;
   }
-  
+
   const cell = state.cells.find(
     (c) => c.x === state.highlightedCell!.x
-        && c.y === state.highlightedCell!.y
+        && c.y === state.highlightedCell!.y,
   )!;
 
   if (cell.revealed || (!cell.revealed && cell.value)) {
