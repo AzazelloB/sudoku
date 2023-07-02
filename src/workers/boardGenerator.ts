@@ -1,10 +1,12 @@
 /* eslint-disable no-param-reassign */
-import { difficultyLevels } from '~/constants/difficulty';
+import { DifficultyLevel, difficultyLevels } from '~/constants/difficulty';
 import { shuffleArray } from '~/utils/array';
 
 import { cellsInColumn, cellsInRow } from '~/components/Sudoku/settings';
 
-const isValid = (cells, number, index) => {
+type Cells = (number | null)[];
+
+const isValid = (cells: Cells, number: number, index: number) => {
   const col = index % cellsInRow;
   const row = Math.floor(index / cellsInRow);
 
@@ -43,7 +45,7 @@ const isValid = (cells, number, index) => {
 };
 
 // expects an array filled with nulls only
-const solve = (cells, i = 0) => {
+const solve = (cells: Cells, i = 0) => {
   if (i === cells.length) {
     return true;
   }
@@ -69,7 +71,7 @@ const solve = (cells, i = 0) => {
   return false;
 };
 
-const getEmptyCellIndex = (cells) => {
+const getEmptyCellIndex = (cells: Cells) => {
   for (let i = 0; i < cells.length; i++) {
     if (cells[i] === null) {
       return i;
@@ -82,7 +84,7 @@ const getEmptyCellIndex = (cells) => {
 const createSolutionCounter = () => {
   let iter = 0;
 
-  return function countSolutions(cells, count = 0) {
+  return function countSolutions(cells: Cells, count = 0) {
     iter++;
 
     if (iter > 1_000_000) {
@@ -112,7 +114,7 @@ const createSolutionCounter = () => {
   };
 };
 
-const mask = (cells, difficulty) => {
+const mask = (cells: Cells, difficulty: DifficultyLevel): Cells => {
   try {
     const countSolutions = createSolutionCounter();
 
@@ -122,7 +124,7 @@ const mask = (cells, difficulty) => {
 
     const max = masked.length - 1 - difficultyLevels[difficulty];
     for (let maskedCount = 0; maskedCount <= max;) {
-      const randomIndex = indexes.pop();
+      const randomIndex = indexes.pop()!;
 
       const value = masked[randomIndex];
 
@@ -143,12 +145,12 @@ const mask = (cells, difficulty) => {
 };
 
 onmessage = ({ data: { difficulty } }) => {
-  const solved = new Array(cellsInRow * cellsInColumn).fill();
+  const solved = new Array(cellsInRow * cellsInColumn).fill(null);
   solve(solved);
 
   const masked = mask(solved, difficulty);
 
-  const cells = [];
+  const cells: Cell[] = [];
 
   for (let i = 0; i < solved.length; i += 1) {
     cells.push({
@@ -157,8 +159,8 @@ onmessage = ({ data: { difficulty } }) => {
       revealed: masked[i] !== null,
       corner: [],
       middle: [],
-      x: i % cellsInRow,
-      y: Math.floor(i / cellsInRow),
+      col: i % cellsInRow,
+      row: Math.floor(i / cellsInRow),
       colors: [],
     });
   }
