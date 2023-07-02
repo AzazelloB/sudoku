@@ -112,11 +112,11 @@ export class Renderer {
 
       this.drawGrid();
 
-      this.drawSelection();
-
       this.drawHighlightedCell(dt);
 
       this.drawHighlightedRowColArea(dt);
+
+      this.drawSelection();
 
       this.drawValues();
     }
