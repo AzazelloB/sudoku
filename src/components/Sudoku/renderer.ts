@@ -318,16 +318,16 @@ export class Renderer {
           this.ctx.font = `${fontSize}px Arial`;
           this.ctx.fillText(
             cell.answer.toString(),
-            i * this.cellWidth + this.cellWidth / 2,
-            j * this.cellHeight + this.cellHeight / 2,
+            i * this.cellWidth + this.cellWidth / 2 | 0,
+            j * this.cellHeight + this.cellHeight / 2 | 0,
           );
         } else if (value) {
           this.ctx.fillStyle = colors.secondary[this.theme === 'dark' ? 'light' : 'dark'];
           this.ctx.font = `${fontSize}px Arial`;
           this.ctx.fillText(
             value.toString(),
-            i * this.cellWidth + this.cellWidth / 2,
-            j * this.cellHeight + this.cellHeight / 2,
+            i * this.cellWidth + this.cellWidth / 2 | 0,
+            j * this.cellHeight + this.cellHeight / 2 | 0,
           );
         } else {
           this.ctx.fillStyle = colors.secondary[this.theme === 'dark' ? 'light' : 'dark'];
@@ -335,8 +335,8 @@ export class Renderer {
           cell.corner.forEach((value, valueI) => {
             this.ctx.fillText(
               value.toString(),
-              i * this.cellWidth + (this.cellWidth / 4) * (valueI % 2 === 0 ? 1 : 3),
-              j * this.cellHeight + (this.cellHeight / 4) * (valueI < 2 ? 1 : 3),
+              i * this.cellWidth + (this.cellWidth / 4) * (valueI % 2 === 0 ? 1 : 3) | 0,
+              j * this.cellHeight + (this.cellHeight / 4) * (valueI < 2 ? 1 : 3) | 0,
             );
           });
 
@@ -345,8 +345,8 @@ export class Renderer {
             : `${fontSize / 2.4}px Arial`;
           this.ctx.fillText(
             cell.middle.join(''),
-            i * this.cellWidth + (this.cellWidth / 2),
-            j * this.cellHeight + (this.cellHeight / 2),
+            i * this.cellWidth + (this.cellWidth / 2) | 0,
+            j * this.cellHeight + (this.cellHeight / 2) | 0,
           );
         }
       }
