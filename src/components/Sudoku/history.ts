@@ -15,7 +15,7 @@ export const saveSnapshot = () => {
     state.history.shift();
   }
 
-  const snapshot = JSON.parse(JSON.stringify(state.cells));
+  const snapshot = JSON.stringify(state.cells);
 
   state.history.push(snapshot);
   state.historyCursor = state.history.length;
@@ -28,7 +28,7 @@ export const handleUndo = () => {
 
   const snapshot = state.history[--state.historyCursor - 1];
 
-  state.cells = JSON.parse(JSON.stringify(snapshot));
+  state.cells = JSON.parse(snapshot);
 };
 
 export const handleRedo = () => {
@@ -38,5 +38,5 @@ export const handleRedo = () => {
 
   const snapshot = state.history[state.historyCursor++];
 
-  state.cells = JSON.parse(JSON.stringify(snapshot));
+  state.cells = JSON.parse(snapshot);
 };
