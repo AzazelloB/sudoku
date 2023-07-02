@@ -9,6 +9,7 @@ import { Transition, TransitionChild } from 'solid-headless';
 import { DifficultyLevel } from '~/constants/difficulty';
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { canRedefineControls } from '~/utils/controls';
+import { publish } from '~/utils/pubSub';
 
 import Button from '~/ui/Button';
 import ButtonGroup from '~/ui/ButtonGroup';
@@ -42,8 +43,19 @@ const HomePage = () => {
   const [solved, setSolved] = createSignal(false);
   const [generatingNewBoard, setGeneratingNewBoard] = createSignal(false);
 
+  const [checkModalOpen, setCheckModalOpen] = createSignal(false);
+
   const handleKeyboardDown = (e: KeyboardEvent) => {
     switch (e.code) {
+      case 'Slash':
+        if (e.shiftKey) {
+          if (!state.showControls) {
+            state.showControls = true;
+            publish('showControls', state.showControls);
+          }
+        }
+        break;
+      
       case 'Space':
         if (canRedefineControls()) {
           handlePausePlay();
@@ -54,6 +66,28 @@ const HomePage = () => {
         restartGame();
         break;
 
+      case 'Enter':
+        if (canRedefineControls()) {
+          e.preventDefault();
+          setCheckModalOpen(true);
+          handleCheck();
+        }
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  const handleKeyboardUp = (e: KeyboardEvent) => {
+    switch (e.code) {
+      case 'Slash':
+        if (state.showControls) {
+          state.showControls = false;
+          publish('showControls', state.showControls);
+        }
+        break;
+  
       default:
         break;
     }
@@ -61,9 +95,11 @@ const HomePage = () => {
 
   onMount(() => {
     document.addEventListener('keydown', handleKeyboardDown);
+    document.addEventListener('keyup', handleKeyboardUp);
 
     onCleanup(() => {
       document.removeEventListener('keydown', handleKeyboardDown);
+      document.removeEventListener('keyup', handleKeyboardUp);
     });
   });
 
@@ -188,6 +224,8 @@ const HomePage = () => {
             />
 
             <CheckModal
+              open={checkModalOpen}
+              setOpen={setCheckModalOpen}
               solved={solved}
               time={time}
               onCheck={handleCheck}

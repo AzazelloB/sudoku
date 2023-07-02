@@ -203,12 +203,7 @@ function handleKeyboardDown(this: handleKeyboardDownThis, e: KeyboardEvent) {
       break;
 
     case 'Slash':
-      if (e.shiftKey) {
-        if (!state.showControls) {
-          state.showControls = true;
-          publish('showControls', state.showControls);
-        }
-      } else {
+      if (!e.shiftKey) {
         state.revealed = !state.revealed;
       }
       break;
@@ -221,20 +216,6 @@ function handleKeyboardDown(this: handleKeyboardDownThis, e: KeyboardEvent) {
       break;
   }
 }
-
-const handleKeyboardUp = (e: KeyboardEvent) => {
-  switch (e.code) {
-    case 'Slash':
-      if (state.showControls) {
-        state.showControls = false;
-        publish('showControls', state.showControls);
-      }
-      break;
-
-    default:
-      break;
-  }
-};
 
 interface handleClickOutsideThis {
   canvas: HTMLCanvasElement;
@@ -278,7 +259,6 @@ export const initControls = ({
   canvas.addEventListener('dblclick', handleDoubleClick);
 
   document.addEventListener('keydown', keyboardDownHandler);
-  document.addEventListener('keyup', handleKeyboardUp);
   document.addEventListener('mousedown', outiseClickHandler);
 
   return () => {
@@ -289,7 +269,6 @@ export const initControls = ({
     canvas.removeEventListener('dblclick', handleDoubleClick);
 
     document.removeEventListener('keydown', keyboardDownHandler);
-    document.removeEventListener('keyup', handleKeyboardUp);
     document.removeEventListener('mousedown', outiseClickHandler);
   };
 };

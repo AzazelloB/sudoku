@@ -4,10 +4,10 @@ import { useModalContext } from '~/context/ModalContext';
 import ButtonUI from '~/ui/Button';
 
 const Button: Component<ComponentProps<typeof ButtonUI>> = (props) => {
-  const { setIsOpen } = useModalContext();
+  const { setOpen } = useModalContext();
 
   const openModal = (e: any) => {
-    setIsOpen(true);
+    setOpen(true);
 
     if (typeof props.onClick === 'function') {
       props.onClick(e);

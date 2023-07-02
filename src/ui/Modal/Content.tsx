@@ -16,17 +16,17 @@ interface ContentProps {
 }
 
 const Content: Component<ContentProps> = (props) => {
-  const { isOpen, setIsOpen } = useModalContext();
+  const { open, setOpen } = useModalContext();
 
   const closeModal = () => {
-    setIsOpen(false);
+    setOpen(false);
   };
 
   return (
     <Portal>
       <Transition
         appear
-        show={isOpen()}
+        show={open()}
       >
         <Dialog
           isOpen
