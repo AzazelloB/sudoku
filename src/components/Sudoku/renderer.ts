@@ -107,13 +107,13 @@ export class Renderer {
 
       this.drawGrid();
 
-      this.drawValues();
-
       this.drawSelection();
 
       this.drawHighlightedCell(dt);
 
       this.drawHighlightedRowColArea(dt);
+
+      this.drawValues();
     }
 
     if (state.debug) {
