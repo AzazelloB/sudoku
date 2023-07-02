@@ -183,7 +183,7 @@ export class Renderer {
       this.ctx.fillText(
         section.title,
         boxX + 20 * scale,
-        y,
+        y | 0,
       );
 
       y += sectionFontSize + 10 * scale;
@@ -196,7 +196,7 @@ export class Renderer {
         this.ctx.fillText(
           control.shortcut,
           boxX + 40 * scale,
-          y,
+          y | 0,
         );
 
         this.ctx.textAlign = 'right';
@@ -204,7 +204,7 @@ export class Renderer {
         this.ctx.fillText(
           control.description,
           boxWidth,
-          y,
+          y | 0,
         );
 
         y += shortcutFontSize + 10 * scale;
