@@ -98,6 +98,7 @@ export class Renderer {
   }
 
   draw(dt: number = 1) {
+    // TODO maybe introduce pause to renderer and not check for cells.length
     if (state.cells.length === 0) {
       return;
     }
