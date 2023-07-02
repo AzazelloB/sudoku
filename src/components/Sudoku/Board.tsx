@@ -106,8 +106,8 @@ const Board: Component<BoardProps> = (props) => {
       ref={canvas!}
       tabIndex={0}
       class={twMerge(
-        'focus:outline-none focus:ring-4 focus:ring-offset-4',
-        'focus:ring-white dark:focus:ring-offset-background-dark',
+        'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-4',
+        'focus-visible:ring-white dark:focus-visible:ring-offset-background-dark',
       )}
       width={canvasWidth() * scale}
       height={canvasHeight() * scale}
