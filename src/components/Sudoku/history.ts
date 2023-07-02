@@ -28,6 +28,7 @@ export const handleUndo = () => {
 
   const snapshot = state.history[--state.historyCursor - 1];
 
+  console.log('cell, assignment');
   state.cells = JSON.parse(snapshot);
 };
 

@@ -107,16 +107,16 @@ export class Renderer {
       this.drawControlSchema();
     } else {
       this.drawBackground();
-
+      
       this.drawCellColors();
-
+      
       this.drawGrid();
-
-      this.drawSelection();
 
       this.drawHighlightedCell(dt);
 
       this.drawHighlightedRowColArea(dt);
+
+      this.drawSelection();
 
       this.drawValues();
     }
@@ -357,7 +357,7 @@ export class Renderer {
       }
     }
 
-    this.ctx.shadowBlur = 0;
+    // this.ctx.shadowBlur = 0;
   }
 
   drawHighlightedCell(dt:number) {
