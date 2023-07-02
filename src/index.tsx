@@ -20,4 +20,4 @@ render(() => (
       <App />
     </GlobalProvider>
   </Router>
-), root);
+), root!);

@@ -357,8 +357,8 @@ export class Renderer {
 
   drawHighlightedCell(dt:number) {
     if (state.highlightedCell) {
-      const x = state.highlightedCell.x * this.cellWidth;
-      const y = state.highlightedCell.y * this.cellHeight;
+      const x = state.highlightedCell.col * this.cellWidth;
+      const y = state.highlightedCell.row * this.cellHeight;
 
       if (this.animatedHighlightedCell === null) {
         this.animatedHighlightedCell = { x, y };
@@ -383,8 +383,8 @@ export class Renderer {
 
   drawHighlightedRowColArea(dt: number) {
     if (state.highlightedCell !== null && this.animatedHighlightedCell !== null) {
-      const x = Math.floor(state.highlightedCell.x / 3) * 3;
-      const y = Math.floor(state.highlightedCell.y / 3) * 3;
+      const x = Math.floor(state.highlightedCell.col / 3) * 3;
+      const y = Math.floor(state.highlightedCell.row / 3) * 3;
       
       if (this.animatedArea === null) {
         this.animatedArea = { x, y };
@@ -440,15 +440,15 @@ export class Renderer {
 
     state.selectedCells.forEach((cell) => {
       this.ctx.strokeRect(
-        cell.x * this.cellWidth + lineWidth / 2,
-        cell.y * this.cellHeight + lineWidth / 2,
+        cell.col * this.cellWidth + lineWidth / 2,
+        cell.row * this.cellHeight + lineWidth / 2,
         this.cellWidth - lineWidth,
         this.cellHeight - lineWidth,
       );
       this.ctx.globalAlpha = 0.2;
       this.ctx.fillRect(
-        cell.x * this.cellWidth,
-        cell.y * this.cellHeight,
+        cell.col * this.cellWidth,
+        cell.row * this.cellHeight,
         this.cellWidth,
         this.cellHeight,
       );

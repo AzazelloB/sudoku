@@ -42,8 +42,8 @@ export const checkIfSolved = () => {
   return true;
 };
 
-export const selectCell = (cell: Point) => {
-  if (state.selectedCells.find((c) => c.x === cell.x && c.y === cell.y)) {
+export const selectCell = (cell: CellPosition) => {
+  if (state.selectedCells.find((c) => c.col === cell.col && c.row === cell.row)) {
     return;
   }
 
@@ -58,9 +58,9 @@ export const selectAllCells = () => {
   }
 };
 
-export const deselectCell = (cell: Point) => {
+export const deselectCell = (cell: CellPosition) => {
   const index = state.selectedCells.findIndex(
-    (c) => c.x === cell.x && c.y === cell.y,
+    (c) => c.col === cell.col && c.row === cell.row,
   );
 
   if (index === -1) {
@@ -82,7 +82,7 @@ type Direction = 'up' | 'down' | 'left' | 'right';
 
 export const moveSelectedCell = (direction: Direction, shiftPressed: boolean, ctrlPressed: boolean) => {
   if (state.selectedCells.length === 0) {
-    selectCell({ x: 0, y: 0 });
+    selectCell({ col: 0, row: 0 });
   }
 
   let currentCell = state.selectedCells[state.selectedCells.length - 1];
@@ -93,10 +93,10 @@ export const moveSelectedCell = (direction: Direction, shiftPressed: boolean, ct
   switch (direction) {
     case 'up':
       if (ctrlPressed) {
-        if (currentCell.y % 3 === 0) {
+        if (currentCell.row % 3 === 0) {
           dy = -3;
         } else {
-          dy = -currentCell.y % 3;
+          dy = -currentCell.row % 3;
         }
       } else {
         dy = -1;
@@ -105,10 +105,10 @@ export const moveSelectedCell = (direction: Direction, shiftPressed: boolean, ct
 
     case 'down':
       if (ctrlPressed) {
-        if (currentCell.y % 3 === 2) {
+        if (currentCell.row % 3 === 2) {
           dy = 3;
         } else {
-          dy = 3 - (currentCell.y % 3) - 1;
+          dy = 3 - (currentCell.row % 3) - 1;
         }
       } else {
         dy = 1;
@@ -117,10 +117,10 @@ export const moveSelectedCell = (direction: Direction, shiftPressed: boolean, ct
 
     case 'left':
       if (ctrlPressed) {
-        if (currentCell.x % 3 === 0) {
+        if (currentCell.col % 3 === 0) {
           dx = -3;
         } else {
-          dx = -currentCell.x % 3;
+          dx = -currentCell.col % 3;
         }
       } else {
         dx = -1;
@@ -129,10 +129,10 @@ export const moveSelectedCell = (direction: Direction, shiftPressed: boolean, ct
 
     case 'right':
       if (ctrlPressed) {
-        if (currentCell.x % 3 === 2) {
+        if (currentCell.col % 3 === 2) {
           dx = 3;
         } else {
-          dx = 3 - (currentCell.x % 3) - 1;
+          dx = 3 - (currentCell.col % 3) - 1;
         }
       } else {
         dx = 1;
@@ -145,29 +145,29 @@ export const moveSelectedCell = (direction: Direction, shiftPressed: boolean, ct
 
   const lastCell = { ...currentCell };
 
-  if (checkBoundaries(currentCell.x + dx, currentCell.y + dy)) {
+  if (checkBoundaries(currentCell.col + dx, currentCell.row + dy)) {
     currentCell = {
-      x: currentCell.x + dx,
-      y: currentCell.y + dy,
+      col: currentCell.col + dx,
+      row: currentCell.row + dy,
     };
   }
 
   if (shiftPressed) {
-    const minX = Math.min(lastCell.x, currentCell.x);
-    const maxX = Math.max(lastCell.x, currentCell.x);
-    const minY = Math.min(lastCell.y, currentCell.y);
-    const maxY = Math.max(lastCell.y, currentCell.y);
+    const minX = Math.min(lastCell.col, currentCell.col);
+    const maxX = Math.max(lastCell.col, currentCell.col);
+    const minY = Math.min(lastCell.row, currentCell.row);
+    const maxY = Math.max(lastCell.row, currentCell.row);
 
     if (dx < 0 || dy < 0) {
       for (let i = maxX; i >= minX; i -= 1) {
         for (let j = maxY; j >= minY; j -= 1) {
-          selectCell({ x: i, y: j });
+          selectCell({ col: i, row: j });
         }
       }
     } else {
       for (let i = minX; i <= maxX; i += 1) {
         for (let j = minY; j <= maxY; j += 1) {
-          selectCell({ x: i, y: j });
+          selectCell({ col: i, row: j });
         }
       }
     }
@@ -179,7 +179,7 @@ export const moveSelectedCell = (direction: Direction, shiftPressed: boolean, ct
 
 export const clearSelectedCells = () => {
   state.selectedCells.forEach((cell) => {
-    const cellInGrid = state.cells[cell.y * cellsInRow + cell.x];
+    const cellInGrid = state.cells[cell.row * cellsInRow + cell.col];
 
     cellInGrid.value = null;
     cellInGrid.corner.length = 0;
@@ -189,7 +189,7 @@ export const clearSelectedCells = () => {
 
 export const insertValue = (value: number) => {
   state.selectedCells.forEach((cell) => {
-    state.cells[cell.y * cellsInRow + cell.x].value = value;
+    state.cells[cell.row * cellsInRow + cell.col].value = value;
   });
 };
 
@@ -197,7 +197,7 @@ export const insertCorner = (value: number) => {
   let areWeRemoving: boolean | null = null;
 
   state.selectedCells.forEach((cell) => {
-    const cellInGrid = state.cells[cell.y * cellsInRow + cell.x];
+    const cellInGrid = state.cells[cell.row * cellsInRow + cell.col];
 
     if (areWeRemoving === null) {
       areWeRemoving = cellInGrid.corner.includes(value);
@@ -220,7 +220,7 @@ export const insertMiddle = (value: number) => {
   let areWeRemoving: boolean | null = null;
 
   state.selectedCells.forEach((cell) => {
-    const cellInGrid = state.cells[cell.y * cellsInRow + cell.x];
+    const cellInGrid = state.cells[cell.row * cellsInRow + cell.col];
 
     if (areWeRemoving === null) {
       areWeRemoving = cellInGrid.middle.includes(value);
@@ -239,7 +239,7 @@ export const insertColor = (color: string) => {
   let areWeRemoving: boolean | null = null;
 
   state.selectedCells.forEach((cell) => {
-    const cellInGrid = state.cells[cell.y * cellsInRow + cell.x];
+    const cellInGrid = state.cells[cell.row * cellsInRow + cell.col];
 
     if (areWeRemoving === null) {
       areWeRemoving = cellInGrid.colors.includes(color);

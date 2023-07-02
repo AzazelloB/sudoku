@@ -26,8 +26,8 @@ const handleMouseDown = (e: MouseEvent) => {
   }
 
   const selected = state.selectedCells.find(
-    (c) => c.x === state.highlightedCell!.x
-        && c.y === state.highlightedCell!.y,
+    (c) => c.col === state.highlightedCell!.col
+        && c.row === state.highlightedCell!.row,
   );
 
   if (selected) {
@@ -64,20 +64,20 @@ function handleMouseMove(this: handleMouseMoveThis, e: MouseEvent) {
   const x = (e.clientX - rect.left) * scale;
   const y = (e.clientY - rect.top) * scale;
 
-  const cellX = Math.floor(x / cellWidth);
-  const cellY = Math.floor(y / cellHeight);
+  const col = Math.floor(x / cellWidth);
+  const row = Math.floor(y / cellHeight);
 
-  if (state.highlightedCell && state.highlightedCell.x === cellX && state.highlightedCell.y === cellY) {
+  if (state.highlightedCell && state.highlightedCell.col === col && state.highlightedCell.row === row) {
     return;
   }
 
-  if (!checkBoundaries(cellX, cellY)) {
+  if (!checkBoundaries(col, row)) {
     return;
   }
 
   state.highlightedCell = {
-    x: cellX,
-    y: cellY,
+    col,
+    row,
   };
 
   if (state.mouseDown) {
@@ -96,8 +96,8 @@ const handleDoubleClick = () => {
   }
 
   const cell = state.cells.find(
-    (c) => c.x === state.highlightedCell!.x
-        && c.y === state.highlightedCell!.y,
+    (c) => c.col === state.highlightedCell!.col
+        && c.row === state.highlightedCell!.row,
   )!;
 
   if (cell.revealed || (!cell.revealed && cell.value)) {

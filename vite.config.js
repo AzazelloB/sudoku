@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { defineConfig } from 'vite';
 import solidPlugin from 'vite-plugin-solid';
+import checker from 'vite-plugin-checker';
 // import devtools from 'solid-devtools/vite';
 import path from 'path';
 
@@ -13,6 +14,9 @@ export default defineConfig({
     */
     // devtools(),
     solidPlugin(),
+    checker({
+      typescript: true,
+    }),
   ],
   server: {
     port: 3000,

@@ -1,29 +1,32 @@
 type Tool = 'digits' | 'colors';
 type InsertionMode = 'normal' | 'corner' | 'middle';
 
-interface Cell {
-  value: number | null;
-  answer: number,
-  revealed: boolean,
-  corner: number[],
-  middle: number[],
-  x: number,
-  y: number,
-  colors: string[],
-}
-
 interface Point {
   x: number;
   y: number;
 }
 
+interface CellPosition {
+  col: number;
+  row: number;
+}
+
+interface Cell extends CellPosition {
+  value: number | null;
+  answer: number,
+  revealed: boolean,
+  corner: number[],
+  middle: number[],
+  colors: string[],
+}
+
 interface State {
-  highlightedCell: Point | null;
+  highlightedCell: CellPosition | null;
   mouseDown: boolean;
   revealed: boolean;
   debug: boolean;
   showControls: boolean;
-  selectedCells: Point[];
+  selectedCells: CellPosition[];
   cells: Cell[];
   historyCursor: number;
   history: string[];
