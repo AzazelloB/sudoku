@@ -209,9 +209,10 @@ export class Renderer {
     this.ctx.fillStyle = colors.background['dark-accent'];
     this.ctx.fillRect(0, 0, 55 * scale, 17 * scale);
 
+    this.ctx.textAlign = 'left';
     this.ctx.fillStyle = colors.background.light;
     this.ctx.font = `${12 * scale}px Arial`;
-    this.ctx.fillText(`FPS: ${Math.round(1 / dt)}`, 25 * scale, 10 * scale);
+    this.ctx.fillText(`FPS: ${Math.round(1 / dt)}`, 2 * scale, 10 * scale);
   }
 
   drawBackground() {
