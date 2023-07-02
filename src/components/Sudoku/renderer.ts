@@ -352,7 +352,7 @@ export class Renderer {
       }
     }
 
-    // this.ctx.shadowBlur = 0;
+    this.ctx.shadowBlur = 0;
   }
 
   drawHighlightedCell(dt:number) {
