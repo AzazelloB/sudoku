@@ -16,6 +16,7 @@ export default defineConfig({
     solidPlugin(),
     checker({
       typescript: true,
+      terminal: false,
     }),
   ],
   server: {
