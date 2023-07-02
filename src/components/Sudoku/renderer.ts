@@ -1,4 +1,5 @@
 import { colors } from '~/constants/theme';
+import { lerp } from '~/utils/math';
 
 import {
   cellsInColumn,
@@ -71,8 +72,11 @@ export class Renderer {
   theme: Theme;
 
   width!: number;
+
   height!: number;
+
   cellWidth!: number;
+
   cellHeight!: number;
 
   animatedHighlightedCell: Point | null = null;
@@ -105,11 +109,11 @@ export class Renderer {
 
       this.drawValues();
 
+      this.drawSelection();
+
       this.drawHighlightedCell(dt);
 
       this.drawHighlightedRowColArea(dt);
-
-      this.drawSelection();
     }
 
     if (state.debug) {
@@ -118,8 +122,8 @@ export class Renderer {
   }
 
   resize(width: number, height: number) {
-    const cellWidth = width / cellsInRow;
-    const cellHeight = height / cellsInColumn;
+    const cellWidth = width / cellsInRow | 0;
+    const cellHeight = height / cellsInColumn | 0;
 
     this.width = width;
     this.height = height;
@@ -216,8 +220,7 @@ export class Renderer {
   }
 
   drawBackground() {
-    this.ctx.fillStyle = colors.background[this.theme];
-    this.ctx.fillRect(0, 0, this.width, this.height);
+    this.ctx.clearRect(0, 0, this.width, this.height);
   }
 
   drawCellColors() {
@@ -296,6 +299,7 @@ export class Renderer {
 
   drawValues() {
     if (this.theme === 'dark') {
+      // TODO big performance hit
       this.ctx.shadowColor = colors.background.dark;
       this.ctx.shadowBlur = 15 * scale;
     }
@@ -348,26 +352,26 @@ export class Renderer {
       }
     }
 
-    this.ctx.shadowBlur = 0;
+    // this.ctx.shadowBlur = 0;
   }
 
   drawHighlightedCell(dt:number) {
     if (state.highlightedCell) {
+      const x = state.highlightedCell.x * this.cellWidth;
+      const y = state.highlightedCell.y * this.cellHeight;
+
       if (this.animatedHighlightedCell === null) {
-        this.animatedHighlightedCell = {
-          x: state.highlightedCell.x,
-          y: state.highlightedCell.y,
-        };
+        this.animatedHighlightedCell = { x, y };
       } else {
-        this.animatedHighlightedCell.x += (state.highlightedCell.x - this.animatedHighlightedCell.x) * Renderer.hightlightedCellSpeed * dt;
-        this.animatedHighlightedCell.y += (state.highlightedCell.y - this.animatedHighlightedCell.y) * Renderer.hightlightedCellSpeed * dt;
+        this.animatedHighlightedCell.x = lerp(this.animatedHighlightedCell.x, x, Renderer.hightlightedCellSpeed * dt);
+        this.animatedHighlightedCell.y = lerp(this.animatedHighlightedCell.y, y, Renderer.hightlightedCellSpeed * dt);
       }
 
       this.ctx.fillStyle = colors.background[this.theme === 'dark' ? 'light' : 'dark'];
       this.ctx.globalAlpha = 0.2;
       this.ctx.fillRect(
-        this.animatedHighlightedCell.x * this.cellWidth,
-        this.animatedHighlightedCell.y * this.cellHeight,
+        this.animatedHighlightedCell.x | 0,
+        this.animatedHighlightedCell.y | 0,
         this.cellWidth,
         this.cellHeight,
       );
@@ -379,15 +383,15 @@ export class Renderer {
 
   drawHighlightedRowColArea(dt: number) {
     if (state.highlightedCell !== null && this.animatedHighlightedCell !== null) {
+      const x = Math.floor(state.highlightedCell.x / 3) * 3;
+      const y = Math.floor(state.highlightedCell.y / 3) * 3;
+      
       if (this.animatedArea === null) {
-        this.animatedArea = {
-          x: Math.floor(state.highlightedCell.x / 3) * 3,
-          y: Math.floor(state.highlightedCell.y / 3) * 3,
-        };
+        this.animatedArea = { x, y };
+      } else {
+        this.animatedArea.x = lerp(this.animatedArea.x, x, Renderer.hightlightedCellSpeed * dt);
+        this.animatedArea.y = lerp(this.animatedArea.y, y, Renderer.hightlightedCellSpeed * dt);
       }
-
-      this.animatedArea.x += (Math.floor(state.highlightedCell.x / 3) * 3 - this.animatedArea.x) * Renderer.hightlightedCellSpeed * dt;
-      this.animatedArea.y += (Math.floor(state.highlightedCell.y / 3) * 3 - this.animatedArea.y) * Renderer.hightlightedCellSpeed * dt;
 
       this.ctx.fillStyle = colors.background[this.theme === 'dark' ? 'light' : 'dark'];
       this.ctx.globalAlpha = 0.1;
@@ -395,7 +399,7 @@ export class Renderer {
       for (let i = 0; i < cellsInRow; i += 1) {
         this.ctx.fillRect(
           i * this.cellWidth,
-          this.animatedHighlightedCell.y * this.cellHeight,
+          this.animatedHighlightedCell.y | 0,
           this.cellWidth,
           this.cellHeight,
         );
@@ -403,7 +407,7 @@ export class Renderer {
 
       for (let i = 0; i < cellsInColumn; i += 1) {
         this.ctx.fillRect(
-          this.animatedHighlightedCell.x * this.cellWidth,
+          this.animatedHighlightedCell.x | 0,
           i * this.cellHeight,
           this.cellWidth,
           this.cellHeight,
@@ -413,8 +417,8 @@ export class Renderer {
       for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
           this.ctx.fillRect(
-            (this.animatedArea.x + i) * this.cellWidth,
-            (this.animatedArea.y + j) * this.cellHeight,
+            (this.animatedArea.x + i) * this.cellWidth | 0,
+            (this.animatedArea.y + j) * this.cellHeight | 0,
             this.cellWidth,
             this.cellHeight,
           );
