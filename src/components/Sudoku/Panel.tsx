@@ -44,9 +44,13 @@ interface PanelProps {
 
 const Panel: Component<PanelProps> = (props) => {
   const handleKeyboardDown = (e: KeyboardEvent) => {
+    const ctrl = e.ctrlKey || e.metaKey;
+    
     switch (e.code) {
       case 'KeyZ':
-        props.setMode('normal');
+        if (!ctrl && !e.shiftKey) {
+          props.setMode('normal');
+        }
         break;
 
       case 'KeyX':
