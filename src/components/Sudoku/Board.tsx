@@ -101,8 +101,10 @@ const Board: Component<BoardProps> = (props) => {
       ref={canvas!}
       tabIndex={0}
       class={twMerge(
-        'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-4',
-        'focus-visible:ring-white dark:focus-visible:ring-offset-background-dark',
+        // TODO figure out how to show focus ring only when using tab
+        'focus-visible:outline-none'
+        // 'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-4',
+        // 'focus-visible:ring-white dark:focus-visible:ring-offset-background-dark',
       )}
       width={canvasWidth() * scale}
       height={canvasHeight() * scale}
