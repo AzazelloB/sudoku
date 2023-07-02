@@ -98,6 +98,10 @@ export class Renderer {
   }
 
   draw(dt: number = 1) {
+    if (state.cells.length === 0) {
+      return;
+    }
+
     if (state.showControls) {
       this.drawControlSchema();
     } else {
