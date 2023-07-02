@@ -64,16 +64,11 @@ const Board: Component<BoardProps> = (props) => {
       return;
     }
 
-    let start: number | null = null;
     let prevTimeStamp = 0;
 
     let frame: number;
 
     const gameLoop = (timeStamp: number) => {
-      if (!start) {
-        start = timeStamp;
-      }
-
       const dt = (timeStamp - prevTimeStamp) / 1000;
       prevTimeStamp = timeStamp;
 
