@@ -31,64 +31,31 @@ const Board: Component<BoardProps> = (props) => {
   let valuesCanvas: HTMLCanvasElement;
   let overlayCanvas: HTMLCanvasElement;
   
-  let boardRenderer: Renderer | null = null;
-  let continuousRenderer: Renderer | null = null;
-  let valuesRenderer: Renderer | null = null;
-  let overlayRenderer: Renderer | null = null;
+  const renderer = new Renderer();
 
-  const renderQueue: CallableFunction[] = [];
+  onCleanup(() => {
+    renderer.destroy();
+  });
 
   const [canvasWidth, setCanvasWidth] = createSignal(initialWidth);
   const [canvasHeight, setCanvasHeight] = createSignal(initialHeight);
 
-  const drawBoardAndValues = () => {
-    boardRenderer?.drawBackground();
-    valuesRenderer?.drawBackground();
+  const drawBoardAndValues = (
+    boardCtx: CanvasRenderingContext2D,
+    valuesCtx: CanvasRenderingContext2D
+  ) => {
+    renderer.drawBackground(boardCtx);
+    renderer.drawBackground(valuesCtx);
 
-    boardRenderer?.drawCellColors();
+    renderer.drawCellColors(boardCtx);
+    renderer.drawGrid(boardCtx);
 
-    boardRenderer?.drawGrid();
-
-    valuesRenderer?.drawValues();
-  };
-
-  const pushToRenderQueue = (fn: CallableFunction) => {
-    renderQueue.push(fn);
-  };
-
-  let frame: number;
-
-  const render = () => {
-    if (renderQueue.length) {
-      const fn = renderQueue.pop();
-      fn?.();
-      renderQueue.length = 0;
-    }
-
-    frame = window.requestAnimationFrame(render);
-  };
-
-  frame = window.requestAnimationFrame(render);
-
-  onCleanup(() => {
-    window.cancelAnimationFrame(frame);
-  });
+    renderer.drawValues(valuesCtx);
+  }
 
   onMount(() => {
-    boardRenderer = new Renderer(boardCanvas, theme());
-    continuousRenderer = new Renderer(continuousCanvas, theme());
-    valuesRenderer = new Renderer(valuesCanvas, theme());
-    overlayRenderer = new Renderer(overlayCanvas, theme());
-
-    const renderBoardAndValues = () => {
-      pushToRenderQueue(drawBoardAndValues);
-    };
-
-    subscribe('cells:changed', renderBoardAndValues);
-
-    onCleanup(() => {
-      unsubscribe('cells:changed', renderBoardAndValues);
-    });
+    const boardCtx = boardCanvas.getContext('2d')!;
+    const valuesCtx = valuesCanvas.getContext('2d')!;
 
     const onResize = () => {
       const { top, left } = continuousCanvas.getBoundingClientRect();
@@ -102,12 +69,9 @@ const Board: Component<BoardProps> = (props) => {
       setCanvasWidth(size);
       setCanvasHeight(size);
 
-      boardRenderer!.resize(size * scale, size * scale);
-      continuousRenderer!.resize(size * scale, size * scale);
-      valuesRenderer!.resize(size * scale, size * scale);
-      overlayRenderer!.resize(size * scale, size * scale);
+      renderer.resize(size * scale, size * scale);
 
-      window.requestAnimationFrame(drawBoardAndValues);
+      window.requestAnimationFrame(() => drawBoardAndValues(boardCtx, valuesCtx));
     };
 
     onResize();
@@ -123,6 +87,31 @@ const Board: Component<BoardProps> = (props) => {
       return;
     }
 
+    const boardCtx = boardCanvas.getContext('2d')!;
+    const valuesCtx = valuesCanvas.getContext('2d')!;
+
+    const renderBoardAndValues = () => {
+      renderer.pushToRenderQueue(() => {
+        drawBoardAndValues(boardCtx, valuesCtx);
+      });
+    };
+
+    drawBoardAndValues(boardCtx, valuesCtx);
+    subscribe('cells:changed', renderBoardAndValues);
+
+    onCleanup(() => {
+      unsubscribe('cells:changed', renderBoardAndValues);
+    });
+  });
+
+  createEffect(() => {
+    if (props.paused()) {
+      return;
+    }
+
+    const continuousCtx = continuousCanvas.getContext('2d')!;
+    const overlayCtx = overlayCanvas.getContext('2d')!;
+
     let prevTimeStamp = 0;
 
     let frame: number;
@@ -131,31 +120,38 @@ const Board: Component<BoardProps> = (props) => {
       const dt = (timeStamp - prevTimeStamp) / 1000;
       prevTimeStamp = timeStamp;
 
-      continuousRenderer!.drawBackground();
+      renderer.drawBackground(continuousCtx);
 
-      continuousRenderer!.drawHighlightedCell(dt);
+      renderer.drawHighlightedCell(continuousCtx, dt);
   
-      continuousRenderer!.drawHighlightedRowColArea(dt);
+      renderer.drawHighlightedRowColArea(continuousCtx, dt);
   
-      continuousRenderer!.drawSelection();
+      renderer.drawSelection(continuousCtx);
 
-      overlayRenderer!.drawBackground();
+      renderer.drawBackground(overlayCtx);
 
       if (state.debug) {
-        overlayRenderer!.drawFPS(dt);
+        renderer.drawFPS(overlayCtx, dt);
       }
 
       if (state.showControls) {
-        overlayRenderer!.drawControlSchema();
+        renderer.drawControlSchema(overlayCtx);
       }
 
       frame = window.requestAnimationFrame(gameLoop);
     };
 
     frame = window.requestAnimationFrame(gameLoop);
+
     onCleanup(() => {
       cancelAnimationFrame(frame);
     });
+  });
+
+  createEffect(() => {
+    if (props.paused()) {
+      return;
+    }
 
     const cleanup = initControls({
       canvas: continuousCanvas,
@@ -168,19 +164,18 @@ const Board: Component<BoardProps> = (props) => {
   });
 
   createEffect(() => {
-    boardRenderer?.setTheme(theme());
-    continuousRenderer?.setTheme(theme());
-    valuesRenderer?.setTheme(theme());
-    overlayRenderer?.setTheme(theme());
+    renderer.setTheme(theme());
 
-    drawBoardAndValues();
+    const boardCtx = boardCanvas.getContext('2d')!;
+    const valuesCtx = valuesCanvas.getContext('2d')!;
+
+    drawBoardAndValues(boardCtx, valuesCtx);
   });
 
   return (
     <div class="relative">
       <canvas
         ref={boardCanvas!}
-        onReset={drawBoardAndValues}
         class="absolute inset-0 pointer-events-none z-10"
         width={canvasWidth() * scale}
         height={canvasHeight() * scale}
@@ -208,7 +203,6 @@ const Board: Component<BoardProps> = (props) => {
       />
       <canvas
         ref={valuesCanvas!}
-        onReset={drawBoardAndValues}
         class="absolute inset-0 pointer-events-none z-30"
         width={canvasWidth() * scale}
         height={canvasHeight() * scale}
@@ -219,7 +213,6 @@ const Board: Component<BoardProps> = (props) => {
       />
       <canvas
         ref={overlayCanvas!}
-        onReset={drawBoardAndValues}
         class="absolute inset-0 pointer-events-none z-40"
         width={canvasWidth() * scale}
         height={canvasHeight() * scale}

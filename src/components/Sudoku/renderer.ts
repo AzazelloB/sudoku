@@ -9,6 +9,10 @@ import {
 import { state } from '~/components/Sudoku/state';
 
 export class Renderer {
+  #renderQueue: CallableFunction[] = [];
+
+  #renderFrame: number = 0;
+  
   static controlBoxPadding = 15;
 
   static controlSections = [
@@ -67,29 +71,26 @@ export class Renderer {
 
   static hightlightedCellSpeed = 25;
 
-  ctx: CanvasRenderingContext2D;
+  #theme?: Theme;
 
-  #theme: Theme;
+  #width: number = 0;
 
-  #width!: number;
+  #height: number = 0;
 
-  #height!: number;
+  #cellWidth: number = 0;
 
-  #cellWidth!: number;
-
-  #cellHeight!: number;
+  #cellHeight: number = 0;
 
   animatedHighlightedCell: Point | null = null;
 
   animatedArea: Point | null = null;
 
-  constructor(canvas: HTMLCanvasElement, theme: Theme) {
-    const ctx = canvas.getContext('2d');
+  constructor() {
+    this.#renderFrame = window.requestAnimationFrame(this.#_renderQueue);
+  }
 
-    this.ctx = ctx!;
-    this.#theme = theme;
-
-    this.resize(canvas.width, canvas.height);
+  destroy() {
+    window.cancelAnimationFrame(this.#renderFrame);
   }
 
   resize(width: number, height: number) {
@@ -106,31 +107,45 @@ export class Renderer {
     this.#theme = theme;
   }
 
-  drawControlSchema() {
+  pushToRenderQueue = (fn: CallableFunction) => {
+    this.#renderQueue.push(fn);
+  };
+
+  #_renderQueue = () => {
+    if (this.#renderQueue.length) {
+      const fn = this.#renderQueue.pop();
+      fn?.();
+      this.#renderQueue.length = 0;
+    }
+
+    this.#renderFrame = window.requestAnimationFrame(this.#_renderQueue);
+  };
+
+  drawControlSchema(ctx: CanvasRenderingContext2D) {
     const boxX = Renderer.controlBoxPadding * scale;
     const boxY = Renderer.controlBoxPadding * scale;
     const boxWidth = this.#width - Renderer.controlBoxPadding * 2 * scale;
     const boxHeight = this.#width - Renderer.controlBoxPadding * 2 * scale;
 
-    this.ctx.fillStyle = colors.background['dark-accent'];
-    this.ctx.roundRect(
+    ctx.fillStyle = colors.background['dark-accent'];
+    ctx.roundRect(
       boxX,
       boxY,
       boxWidth,
       boxHeight,
       [20 * scale],
     );
-    this.ctx.fill();
+    ctx.fill();
 
     const fontSize = this.#width / cellsInRow / 1.5;
-    this.ctx.textAlign = 'left';
-    this.ctx.textBaseline = 'middle';
-    this.ctx.fillStyle = 'white';
-    this.ctx.font = `${fontSize}px Arial`;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = 'white';
+    ctx.font = `${fontSize}px Arial`;
 
     const titleY = boxY + fontSize / 2 + 20 * scale;
 
-    this.ctx.fillText(
+    ctx.fillText(
       'Controls',
       boxWidth / 2 - fontSize * 1.5,
       titleY,
@@ -144,9 +159,9 @@ export class Renderer {
     for (let i = 0; i < Renderer.controlSections.length; i += 1) {
       const section = Renderer.controlSections[i];
 
-      this.ctx.textAlign = 'left';
-      this.ctx.font = `${sectionFontSize}px Arial`;
-      this.ctx.fillText(
+      ctx.textAlign = 'left';
+      ctx.font = `${sectionFontSize}px Arial`;
+      ctx.fillText(
         section.title,
         boxX + 20 * scale,
         y | 0,
@@ -157,17 +172,17 @@ export class Renderer {
       for (let j = 0; j < section.controls.length; j += 1) {
         const control = section.controls[j];
 
-        this.ctx.textAlign = 'left';
-        this.ctx.font = `${shortcutFontSize}px Arial`;
-        this.ctx.fillText(
+        ctx.textAlign = 'left';
+        ctx.font = `${shortcutFontSize}px Arial`;
+        ctx.fillText(
           control.shortcut,
           boxX + 40 * scale,
           y | 0,
         );
 
-        this.ctx.textAlign = 'right';
-        this.ctx.font = `${shortcutFontSize}px Arial`;
-        this.ctx.fillText(
+        ctx.textAlign = 'right';
+        ctx.font = `${shortcutFontSize}px Arial`;
+        ctx.fillText(
           control.description,
           boxWidth,
           y | 0,
@@ -180,21 +195,21 @@ export class Renderer {
     }
   }
 
-  drawFPS(dt: number) {
-    this.ctx.fillStyle = colors.background['dark-accent'];
-    this.ctx.fillRect(0, 0, 55 * scale, 17 * scale);
+  drawFPS(ctx: CanvasRenderingContext2D, dt: number) {
+    ctx.fillStyle = colors.background['dark-accent'];
+    ctx.fillRect(0, 0, 55 * scale, 17 * scale);
 
-    this.ctx.textAlign = 'left';
-    this.ctx.fillStyle = colors.background.light;
-    this.ctx.font = `${12 * scale}px Arial`;
-    this.ctx.fillText(`FPS: ${Math.round(1 / dt)}`, 2 * scale, 10 * scale);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = colors.background.light;
+    ctx.font = `${12 * scale}px Arial`;
+    ctx.fillText(`FPS: ${Math.round(1 / dt)}`, 2 * scale, 10 * scale);
   }
 
-  drawBackground() {
-    this.ctx.clearRect(0, 0, this.#width, this.#height);
+  drawBackground(ctx: CanvasRenderingContext2D) {
+    ctx.clearRect(0, 0, this.#width, this.#height);
   }
 
-  drawCellColors() {
+  drawCellColors(ctx: CanvasRenderingContext2D) {
     for (let i = 0; i < cellsInRow; i += 1) {
       for (let j = 0; j < cellsInColumn; j += 1) {
         const cell = state.cells[j * cellsInRow + i];
@@ -205,12 +220,12 @@ export class Renderer {
 
         const path = new Path2D();
         path.rect(i * this.#cellWidth, j * this.#cellHeight, this.#cellWidth, this.#cellHeight);
-        this.ctx.save();
-        this.ctx.clip(path);
+        ctx.save();
+        ctx.clip(path);
 
         for (let k = 0; k < cell.colors.length; k += 1) {
           const color = cell.colors[k];
-          this.ctx.fillStyle = color;
+          ctx.fillStyle = color;
 
           const x = i * this.#cellWidth + this.#cellWidth / 2;
           const y = j * this.#cellHeight + this.#cellHeight / 2;
@@ -218,65 +233,65 @@ export class Renderer {
           const startAngle = (k / cell.colors.length) * Math.PI * 2 + Math.PI / 3;
           const endAngle = ((k + 1) / cell.colors.length) * Math.PI * 2 + Math.PI / 3;
 
-          this.ctx.beginPath();
-          this.ctx.moveTo(x, y);
-          this.ctx.arc(x, y, radius, startAngle, endAngle);
-          this.ctx.lineTo(x, y);
-          this.ctx.fill();
-          this.ctx.closePath();
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.arc(x, y, radius, startAngle, endAngle);
+          ctx.lineTo(x, y);
+          ctx.fill();
+          ctx.closePath();
         }
 
-        this.ctx.restore();
+        ctx.restore();
       }
     }
   }
 
-  drawGrid() {
-    this.ctx.strokeStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
+  drawGrid(ctx: CanvasRenderingContext2D) {
+    ctx.strokeStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
     for (let i = 0; i < cellsInRow + 1; i += 1) {
       if (i % 3 === 0) {
-        this.ctx.lineWidth = 3 * scale;
-        this.ctx.globalAlpha = 1;
+        ctx.lineWidth = 3 * scale;
+        ctx.globalAlpha = 1;
       } else {
-        this.ctx.lineWidth = 1 * scale;
-        this.ctx.globalAlpha = 0.4;
+        ctx.lineWidth = 1 * scale;
+        ctx.globalAlpha = 0.4;
       }
 
-      this.ctx.beginPath();
-      this.ctx.moveTo(i * this.#cellWidth, 0);
-      this.ctx.lineTo(i * this.#cellWidth, this.#width);
-      this.ctx.stroke();
-      this.ctx.closePath();
+      ctx.beginPath();
+      ctx.moveTo(i * this.#cellWidth, 0);
+      ctx.lineTo(i * this.#cellWidth, this.#width);
+      ctx.stroke();
+      ctx.closePath();
     }
 
     for (let i = 0; i < cellsInColumn + 1; i += 1) {
       if (i % 3 === 0) {
-        this.ctx.lineWidth = 3 * scale;
-        this.ctx.globalAlpha = 1;
+        ctx.lineWidth = 3 * scale;
+        ctx.globalAlpha = 1;
       } else {
-        this.ctx.globalAlpha = 0.4;
-        this.ctx.lineWidth = 1 * scale;
+        ctx.globalAlpha = 0.4;
+        ctx.lineWidth = 1 * scale;
       }
 
-      this.ctx.beginPath();
-      this.ctx.moveTo(0, i * this.#cellHeight);
-      this.ctx.lineTo(this.#height, i * this.#cellHeight);
-      this.ctx.stroke();
-      this.ctx.closePath();
+      ctx.beginPath();
+      ctx.moveTo(0, i * this.#cellHeight);
+      ctx.lineTo(this.#height, i * this.#cellHeight);
+      ctx.stroke();
+      ctx.closePath();
     }
 
-    this.ctx.globalAlpha = 1;
+    ctx.globalAlpha = 1;
   }
 
-  drawValues() {
+  drawValues(ctx: CanvasRenderingContext2D) {
     if (this.#theme === 'dark') {
       // TODO big performance hit
-      this.ctx.shadowColor = colors.background.dark;
-      this.ctx.shadowBlur = 15 * scale;
+      ctx.shadowColor = colors.background.dark;
+      ctx.shadowBlur = 15 * scale;
     }
 
-    this.ctx.textAlign = 'center';
-    this.ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
     const fontSize = this.#width / cellsInRow / 1.5;
     for (let i = 0; i < cellsInRow; i += 1) {
       for (let j = 0; j < cellsInColumn; j += 1) {
@@ -285,36 +300,36 @@ export class Renderer {
         const value = state.revealed ? cell.answer : cell.value;
 
         if (cell.revealed) {
-          this.ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
-          this.ctx.font = `${fontSize}px Arial`;
-          this.ctx.fillText(
+          ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
+          ctx.font = `${fontSize}px Arial`;
+          ctx.fillText(
             cell.answer.toString(),
             i * this.#cellWidth + this.#cellWidth / 2 | 0,
             j * this.#cellHeight + this.#cellHeight / 2 | 0,
           );
         } else if (value) {
-          this.ctx.fillStyle = colors.secondary[this.#theme === 'dark' ? 'light' : 'dark'];
-          this.ctx.font = `${fontSize}px Arial`;
-          this.ctx.fillText(
+          ctx.fillStyle = colors.secondary[this.#theme === 'dark' ? 'light' : 'dark'];
+          ctx.font = `${fontSize}px Arial`;
+          ctx.fillText(
             value.toString(),
             i * this.#cellWidth + this.#cellWidth / 2 | 0,
             j * this.#cellHeight + this.#cellHeight / 2 | 0,
           );
         } else {
-          this.ctx.fillStyle = colors.secondary[this.#theme === 'dark' ? 'light' : 'dark'];
-          this.ctx.font = `${fontSize / 2.4}px Arial`;
+          ctx.fillStyle = colors.secondary[this.#theme === 'dark' ? 'light' : 'dark'];
+          ctx.font = `${fontSize / 2.4}px Arial`;
           cell.corner.forEach((value, valueI) => {
-            this.ctx.fillText(
+            ctx.fillText(
               value.toString(),
               i * this.#cellWidth + (this.#cellWidth / 4) * (valueI % 2 === 0 ? 1 : 3) | 0,
               j * this.#cellHeight + (this.#cellHeight / 4) * (valueI < 2 ? 1 : 3) | 0,
             );
           });
 
-          this.ctx.font = cell.middle.length > 4
+          ctx.font = cell.middle.length > 4
             ? `${fontSize / (cell.middle.length / 2)}px Arial`
             : `${fontSize / 2.4}px Arial`;
-          this.ctx.fillText(
+          ctx.fillText(
             cell.middle.join(''),
             i * this.#cellWidth + (this.#cellWidth / 2) | 0,
             j * this.#cellHeight + (this.#cellHeight / 2) | 0,
@@ -323,10 +338,10 @@ export class Renderer {
       }
     }
 
-    this.ctx.shadowBlur = 0;
+    ctx.shadowBlur = 0;
   }
 
-  drawHighlightedCell(dt:number) {
+  drawHighlightedCell(ctx: CanvasRenderingContext2D, dt:number) {
     if (state.highlightedCell) {
       const x = state.highlightedCell.col * this.#cellWidth;
       const y = state.highlightedCell.row * this.#cellHeight;
@@ -338,21 +353,21 @@ export class Renderer {
         this.animatedHighlightedCell.y = lerp(this.animatedHighlightedCell.y, y, Renderer.hightlightedCellSpeed * dt);
       }
 
-      this.ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
-      this.ctx.globalAlpha = 0.2;
-      this.ctx.fillRect(
+      ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
+      ctx.globalAlpha = 0.2;
+      ctx.fillRect(
         this.animatedHighlightedCell.x | 0,
         this.animatedHighlightedCell.y | 0,
         this.#cellWidth,
         this.#cellHeight,
       );
-      this.ctx.globalAlpha = 1;
+      ctx.globalAlpha = 1;
     } else {
       this.animatedHighlightedCell = null;
     }
   }
 
-  drawHighlightedRowColArea(dt: number) {
+  drawHighlightedRowColArea(ctx: CanvasRenderingContext2D, dt: number) {
     if (state.highlightedCell !== null && this.animatedHighlightedCell !== null) {
       const x = Math.floor(state.highlightedCell.col / 3) * 3;
       const y = Math.floor(state.highlightedCell.row / 3) * 3;
@@ -364,11 +379,11 @@ export class Renderer {
         this.animatedArea.y = lerp(this.animatedArea.y, y, Renderer.hightlightedCellSpeed * dt);
       }
 
-      this.ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
-      this.ctx.globalAlpha = 0.1;
+      ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
+      ctx.globalAlpha = 0.1;
 
       for (let i = 0; i < cellsInRow; i += 1) {
-        this.ctx.fillRect(
+        ctx.fillRect(
           i * this.#cellWidth,
           this.animatedHighlightedCell.y | 0,
           this.#cellWidth,
@@ -377,7 +392,7 @@ export class Renderer {
       }
 
       for (let i = 0; i < cellsInColumn; i += 1) {
-        this.ctx.fillRect(
+        ctx.fillRect(
           this.animatedHighlightedCell.x | 0,
           i * this.#cellHeight,
           this.#cellWidth,
@@ -387,7 +402,7 @@ export class Renderer {
 
       for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
-          this.ctx.fillRect(
+          ctx.fillRect(
             (this.animatedArea.x + i) * this.#cellWidth | 0,
             (this.animatedArea.y + j) * this.#cellHeight | 0,
             this.#cellWidth,
@@ -396,34 +411,34 @@ export class Renderer {
         }
       }
 
-      this.ctx.globalAlpha = 1;
+      ctx.globalAlpha = 1;
     } else {
       this.animatedArea = null;
     }
   }
 
-  drawSelection() {
+  drawSelection(ctx: CanvasRenderingContext2D) {
     const lineWidth = 5 * scale;
 
-    this.ctx.strokeStyle = colors.secondary[this.#theme === 'dark' ? 'light' : 'dark'];
-    this.ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
-    this.ctx.lineWidth = lineWidth;
+    ctx.strokeStyle = colors.secondary[this.#theme === 'dark' ? 'light' : 'dark'];
+    ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
+    ctx.lineWidth = lineWidth;
 
     state.selectedCells.forEach((cell) => {
-      this.ctx.strokeRect(
+      ctx.strokeRect(
         cell.col * this.#cellWidth + lineWidth / 2,
         cell.row * this.#cellHeight + lineWidth / 2,
         this.#cellWidth - lineWidth,
         this.#cellHeight - lineWidth,
       );
-      this.ctx.globalAlpha = 0.2;
-      this.ctx.fillRect(
+      ctx.globalAlpha = 0.2;
+      ctx.fillRect(
         cell.col * this.#cellWidth,
         cell.row * this.#cellHeight,
         this.#cellWidth,
         this.#cellHeight,
       );
-      this.ctx.globalAlpha = 1;
+      ctx.globalAlpha = 1;
     });
   }
 }
