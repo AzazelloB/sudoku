@@ -10,6 +10,10 @@ const handler: DeepProxyHandler<any> = {
       // find the memory leak
       publish('cells:changed');
     }
+    
+    if (this.path.includes('selectedCells') || prop === 'selectedCells') {
+      publish('selectedCells:changed');
+    }
 
     return result;
   },

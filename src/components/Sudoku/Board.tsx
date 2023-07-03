@@ -26,35 +26,37 @@ interface BoardProps {
 const Board: Component<BoardProps> = (props) => {
   const { theme } = useGlobalContext();
 
-  let boardCanvas: HTMLCanvasElement;
-  let continuousCanvas: HTMLCanvasElement;
-  let valuesCanvas: HTMLCanvasElement;
-  let overlayCanvas: HTMLCanvasElement;
+  let layer_1: HTMLCanvasElement;
+  let layer_2: HTMLCanvasElement;
+  let layer_3: HTMLCanvasElement;
+  let layer_4: HTMLCanvasElement;
   
   const renderer = new Renderer();
 
   const [canvasWidth, setCanvasWidth] = createSignal(initialWidth);
   const [canvasHeight, setCanvasHeight] = createSignal(initialHeight);
 
-  const drawBoardAndValues = (
-    boardCtx: CanvasRenderingContext2D,
-    valuesCtx: CanvasRenderingContext2D
+  const drawStaticLayers = (
+    layer_1_ctx: CanvasRenderingContext2D,
+    layer_3_ctx: CanvasRenderingContext2D
   ) => {
-    renderer.drawBackground(boardCtx);
-    renderer.drawBackground(valuesCtx);
+    renderer.drawBackground(layer_1_ctx);
+    renderer.drawBackground(layer_3_ctx);
 
-    renderer.drawCellColors(boardCtx);
-    renderer.drawGrid(boardCtx);
+    renderer.drawCellColors(layer_1_ctx);
+    renderer.drawGrid(layer_1_ctx);
 
-    renderer.drawValues(valuesCtx);
+    renderer.drawSelection(layer_3_ctx);
+
+    renderer.drawValues(layer_3_ctx);
   }
 
   onMount(() => {
-    const boardCtx = boardCanvas.getContext('2d')!;
-    const valuesCtx = valuesCanvas.getContext('2d')!;
+    const layer_1_ctx = layer_1.getContext('2d')!;
+    const layer_3_ctx = layer_3.getContext('2d')!;
 
     const onResize = () => {
-      const { top, left } = continuousCanvas.getBoundingClientRect();
+      const { top, left } = layer_2.getBoundingClientRect();
       const padding = 24;
 
       const size = Math.min(
@@ -67,7 +69,7 @@ const Board: Component<BoardProps> = (props) => {
 
       renderer.resize(size * scale, size * scale);
 
-      window.requestAnimationFrame(() => drawBoardAndValues(boardCtx, valuesCtx));
+      window.requestAnimationFrame(() => drawStaticLayers(layer_1_ctx, layer_3_ctx));
     };
 
     onResize();
@@ -83,20 +85,22 @@ const Board: Component<BoardProps> = (props) => {
       return;
     }
 
-    const boardCtx = boardCanvas.getContext('2d')!;
-    const valuesCtx = valuesCanvas.getContext('2d')!;
+    const layer_1_ctx = layer_1.getContext('2d')!;
+    const layer_3_ctx = layer_3.getContext('2d')!;
 
-    const renderBoardAndValues = () => {
+    const updateStaticLayers = () => {
       renderer.pushToRenderQueue(() => {
-        drawBoardAndValues(boardCtx, valuesCtx);
+        drawStaticLayers(layer_1_ctx, layer_3_ctx);
       });
     };
 
-    drawBoardAndValues(boardCtx, valuesCtx);
-    subscribe('cells:changed', renderBoardAndValues);
+    drawStaticLayers(layer_1_ctx, layer_3_ctx);
+    subscribe('cells:changed', updateStaticLayers);
+    subscribe('selectedCells:changed', updateStaticLayers);
 
     onCleanup(() => {
-      unsubscribe('cells:changed', renderBoardAndValues);
+      unsubscribe('cells:changed', updateStaticLayers);
+      unsubscribe('selectedCells:changed', updateStaticLayers);
     });
   });
 
@@ -105,8 +109,8 @@ const Board: Component<BoardProps> = (props) => {
       return;
     }
 
-    const continuousCtx = continuousCanvas.getContext('2d')!;
-    const overlayCtx = overlayCanvas.getContext('2d')!;
+    const layer_2_ctx = layer_2.getContext('2d')!;
+    const layer_4_ctx = layer_4.getContext('2d')!;
 
     let prevTimeStamp = 0;
 
@@ -116,22 +120,20 @@ const Board: Component<BoardProps> = (props) => {
       const dt = (timeStamp - prevTimeStamp) / 1000;
       prevTimeStamp = timeStamp;
 
-      renderer.drawBackground(continuousCtx);
+      renderer.drawBackground(layer_2_ctx);
 
-      renderer.drawHighlightedCell(continuousCtx, dt);
+      renderer.drawHighlightedCell(layer_2_ctx, dt);
   
-      renderer.drawHighlightedRowColArea(continuousCtx, dt);
+      renderer.drawHighlightedRowColArea(layer_2_ctx, dt);
   
-      renderer.drawSelection(continuousCtx);
-
-      renderer.drawBackground(overlayCtx);
+      renderer.drawBackground(layer_4_ctx);
 
       if (state.debug) {
-        renderer.drawFPS(overlayCtx, dt);
+        renderer.drawFPS(layer_4_ctx, dt);
       }
 
       if (state.showControls) {
-        renderer.drawControlSchema(overlayCtx);
+        renderer.drawControlSchema(layer_4_ctx);
       }
 
       frame = window.requestAnimationFrame(gameLoop);
@@ -150,7 +152,7 @@ const Board: Component<BoardProps> = (props) => {
     }
 
     const cleanup = initControls({
-      canvas: continuousCanvas,
+      canvas: layer_2,
       panel: props.panel()!,
       mode: props.mode(),
       tool: props.tool(),
@@ -162,16 +164,16 @@ const Board: Component<BoardProps> = (props) => {
   createEffect(() => {
     renderer.setTheme(theme());
 
-    const boardCtx = boardCanvas.getContext('2d')!;
-    const valuesCtx = valuesCanvas.getContext('2d')!;
+    const layer_1_ctx = layer_1.getContext('2d')!;
+    const layer_3_ctx = layer_3.getContext('2d')!;
 
-    drawBoardAndValues(boardCtx, valuesCtx);
+    drawStaticLayers(layer_1_ctx, layer_3_ctx);
   });
 
   return (
     <div class="relative">
       <canvas
-        ref={boardCanvas!}
+        ref={layer_1!}
         class="absolute inset-0 pointer-events-none z-10"
         width={canvasWidth() * scale}
         height={canvasHeight() * scale}
@@ -181,7 +183,7 @@ const Board: Component<BoardProps> = (props) => {
         }}
       />
       <canvas
-        ref={continuousCanvas!}
+        ref={layer_2!}
         tabIndex={0}
         class={twMerge(
           'relative z-20 select-none',
@@ -198,7 +200,7 @@ const Board: Component<BoardProps> = (props) => {
         }}
       />
       <canvas
-        ref={valuesCanvas!}
+        ref={layer_3!}
         class="absolute inset-0 pointer-events-none z-30"
         width={canvasWidth() * scale}
         height={canvasHeight() * scale}
@@ -208,7 +210,7 @@ const Board: Component<BoardProps> = (props) => {
         }}
       />
       <canvas
-        ref={overlayCanvas!}
+        ref={layer_4!}
         class="absolute inset-0 pointer-events-none z-40"
         width={canvasWidth() * scale}
         height={canvasHeight() * scale}
