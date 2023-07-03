@@ -205,9 +205,10 @@ export class Renderer {
     ctx.fillRect(0, 0, 55 * scale, 17 * scale);
 
     ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
     ctx.fillStyle = colors.background.light;
     ctx.font = `${12 * scale}px Arial`;
-    ctx.fillText(`FPS: ${Math.round(1 / dt)}`, 2 * scale, 12 * scale);
+    ctx.fillText(`FPS: ${Math.round(1 / dt)}`, 2 * scale, 10 * scale);
   }
 
   drawBackground(ctx: CanvasRenderingContext2D) {
