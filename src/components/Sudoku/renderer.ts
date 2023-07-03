@@ -85,14 +85,6 @@ export class Renderer {
 
   animatedArea: Point | null = null;
 
-  constructor() {
-    this.#renderFrame = window.requestAnimationFrame(this.#renderTheQueue);
-  }
-
-  destroy() {
-    window.cancelAnimationFrame(this.#renderFrame);
-  }
-
   resize(width: number, height: number) {
     const cellWidth = width / cellsInRow;
     const cellHeight = height / cellsInColumn;
@@ -109,6 +101,9 @@ export class Renderer {
 
   pushToRenderQueue(fn: CallableFunction) {
     this.#renderQueue.push(fn);
+
+    window.cancelAnimationFrame(this.#renderFrame);
+    this.#renderFrame = window.requestAnimationFrame(this.#renderTheQueue);
   };
 
   // has to be arrow function to preserve context
@@ -119,7 +114,7 @@ export class Renderer {
       this.#renderQueue.length = 0;
     }
 
-    this.#renderFrame = window.requestAnimationFrame(this.#renderTheQueue);
+    window.cancelAnimationFrame(this.#renderFrame);
   };
 
   #getPixel(value: number) {

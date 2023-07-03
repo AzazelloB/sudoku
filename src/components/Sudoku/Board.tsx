@@ -33,10 +33,6 @@ const Board: Component<BoardProps> = (props) => {
   
   const renderer = new Renderer();
 
-  onCleanup(() => {
-    renderer.destroy();
-  });
-
   const [canvasWidth, setCanvasWidth] = createSignal(initialWidth);
   const [canvasHeight, setCanvasHeight] = createSignal(initialHeight);
 
@@ -44,6 +40,7 @@ const Board: Component<BoardProps> = (props) => {
     boardCtx: CanvasRenderingContext2D,
     valuesCtx: CanvasRenderingContext2D
   ) => {
+    console.log('drawBoardAndValues');
     renderer.drawBackground(boardCtx);
     renderer.drawBackground(valuesCtx);
 
