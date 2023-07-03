@@ -13,7 +13,7 @@ const useLocalStorage = <T>(key: string, defaultValue: T) => {
       setValue(JSON.parse(strignifiedValue));
       window.localStorage.setItem(key, strignifiedValue);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   });
 
