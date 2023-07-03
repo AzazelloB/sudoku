@@ -14,6 +14,10 @@ const handler: DeepProxyHandler<any> = {
     if (this.path.includes('selectedCells') || prop === 'selectedCells') {
       publish('selectedCells:changed');
     }
+    
+    if (this.path.includes('revealed') || prop === 'revealed') {
+      publish('revealed:changed');
+    }
 
     return result;
   },

@@ -125,6 +125,8 @@ const handleDoubleClick = () => {
   }
 };
 
+let pass = '';
+
 interface handleKeyboardDownThis {
   tool: Tool;
   mode: InsertionMode;
@@ -202,17 +204,29 @@ function handleKeyboardDown(this: handleKeyboardDownThis, e: KeyboardEvent) {
       }
       break;
 
-    case 'Slash':
-      if (!e.shiftKey) {
-        state.revealed = !state.revealed;
-      }
-      break;
-
     case 'KeyD':
       state.debug = !state.debug;
       break;
 
     default:
+      break;
+  }
+
+  switch (e.code) {
+    case 'KeyH':
+    case 'KeyE':
+    case 'KeyL':
+    case 'KeyP':
+      pass += e.code[3];
+
+      if (pass === 'HELP') {
+        state.revealed = !state.revealed;
+        pass = '';
+      }
+      break;
+
+    default:
+      pass = '';
       break;
   }
 }

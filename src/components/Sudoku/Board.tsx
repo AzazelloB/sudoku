@@ -97,10 +97,12 @@ const Board: Component<BoardProps> = (props) => {
     drawStaticLayers(layer_1_ctx, layer_3_ctx);
     subscribe('cells:changed', updateStaticLayers);
     subscribe('selectedCells:changed', updateStaticLayers);
+    subscribe('revealed:changed', updateStaticLayers);
 
     onCleanup(() => {
       unsubscribe('cells:changed', updateStaticLayers);
       unsubscribe('selectedCells:changed', updateStaticLayers);
+      unsubscribe('revealed:changed', updateStaticLayers);
     });
   });
 
