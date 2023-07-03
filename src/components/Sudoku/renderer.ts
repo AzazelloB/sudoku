@@ -130,6 +130,7 @@ export class Renderer {
   }
 
   drawControlSchema(ctx: CanvasRenderingContext2D) {
+    // TODO drops performance over time for some reason
     const boxX = Renderer.controlBoxPadding * scale;
     const boxY = Renderer.controlBoxPadding * scale;
     const boxWidth = this.#width - Renderer.controlBoxPadding * 2 * scale;
