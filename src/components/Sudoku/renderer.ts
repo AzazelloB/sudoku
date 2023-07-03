@@ -121,6 +121,14 @@ export class Renderer {
     return value | 0;
   }
 
+  #drawShadow(ctx: CanvasRenderingContext2D) {
+    if (this.#theme) {
+      // TODO big performance hit
+      ctx.shadowColor = colors.background[this.#theme];
+      ctx.shadowBlur = 15 * scale;
+    }
+  }
+
   drawControlSchema(ctx: CanvasRenderingContext2D) {
     const boxX = Renderer.controlBoxPadding * scale;
     const boxY = Renderer.controlBoxPadding * scale;
@@ -211,11 +219,7 @@ export class Renderer {
   }
 
   drawCellColors(ctx: CanvasRenderingContext2D) {
-    if (this.#theme === 'dark') {
-      // TODO big performance hit
-      ctx.shadowColor = colors.background.dark;
-      ctx.shadowBlur = 15 * scale;
-    }
+    this.#drawShadow(ctx);
     
     for (let i = 0; i < cellsInRow; i += 1) {
       for (let j = 0; j < cellsInColumn; j += 1) {
@@ -256,16 +260,21 @@ export class Renderer {
         ctx.restore();
       }
     }
+
+    ctx.shadowBlur = 0;
   }
 
   drawGrid(ctx: CanvasRenderingContext2D) {
     ctx.strokeStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
+    const thickLineWidth = this.#width * 0.006;
+    const thinLineWidth = this.#width * 0.002;
+
     for (let i = 0; i < cellsInRow + 1; i += 1) {
       if (i % 3 === 0) {
-        ctx.lineWidth = 3 * scale;
+        ctx.lineWidth = this.#getPixel(thickLineWidth);
         ctx.globalAlpha = 1;
       } else {
-        ctx.lineWidth = 1 * scale;
+        ctx.lineWidth = this.#getPixel(thinLineWidth);
         ctx.globalAlpha = 0.4;
       }
 
@@ -278,11 +287,11 @@ export class Renderer {
 
     for (let i = 0; i < cellsInColumn + 1; i += 1) {
       if (i % 3 === 0) {
-        ctx.lineWidth = 3 * scale;
+        ctx.lineWidth = this.#getPixel(thickLineWidth);
         ctx.globalAlpha = 1;
       } else {
         ctx.globalAlpha = 0.4;
-        ctx.lineWidth = 1 * scale;
+        ctx.lineWidth = this.#getPixel(thinLineWidth);
       }
 
       ctx.beginPath();
@@ -296,11 +305,7 @@ export class Renderer {
   }
 
   drawValues(ctx: CanvasRenderingContext2D) {
-    if (this.#theme === 'dark') {
-      // TODO big performance hit
-      ctx.shadowColor = colors.background.dark;
-      ctx.shadowBlur = 15 * scale;
-    }
+    this.#drawShadow(ctx);
 
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -430,13 +435,9 @@ export class Renderer {
   }
 
   drawSelection(ctx: CanvasRenderingContext2D) {
-    if (this.#theme === 'dark') {
-      // TODO big performance hit
-      ctx.shadowColor = colors.background.dark;
-      ctx.shadowBlur = 15 * scale;
-    }
+    this.#drawShadow(ctx);
 
-    const lineWidth = 5 * scale;
+    const lineWidth = this.#width * 0.01;
 
     ctx.strokeStyle = colors.secondary[this.#theme === 'dark' ? 'light' : 'dark'];
     ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
@@ -458,5 +459,7 @@ export class Renderer {
       );
       ctx.globalAlpha = 1;
     });
+
+    ctx.shadowBlur = 0;
   }
 }
