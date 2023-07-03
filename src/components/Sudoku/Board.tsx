@@ -40,7 +40,6 @@ const Board: Component<BoardProps> = (props) => {
     boardCtx: CanvasRenderingContext2D,
     valuesCtx: CanvasRenderingContext2D
   ) => {
-    console.log('drawBoardAndValues');
     renderer.drawBackground(boardCtx);
     renderer.drawBackground(valuesCtx);
 
