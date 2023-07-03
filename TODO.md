@@ -19,7 +19,7 @@
 - [ ] Restrict features to lvl of difficulty
 - [x] Scale board according to window size
 - [ ] Touch support
-- [x] MacOS support
+- [ ] MacOS support
 - [x] Ctrl + A
 - [ ] Add save check and show notification if it's not compatible anymore
 - [x] Increase canvas resolution
@@ -28,3 +28,4 @@
 - [x] Show keybinding on "?"
 - [x] FIX: Use worker to generate board
 - [x] FIX: FPS drops when a lot of "Normal" cells are filled
+- [ ] FIX: Mobile layout is fucked
