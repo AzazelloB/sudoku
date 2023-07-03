@@ -188,7 +188,7 @@ const Board: Component<BoardProps> = (props) => {
         ref={continuousCanvas!}
         tabIndex={0}
         class={twMerge(
-          'relative z-20',
+          'relative z-20 select-none',
           // TODO figure out how to show focus ring only when using tab
           'focus-visible:outline-none'
           // 'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-4',
