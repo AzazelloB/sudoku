@@ -48,6 +48,10 @@ export class Renderer {
           shortcut: 'Shift + ⬆➡⬇⬅',
           description: 'Select multiple cells',
         },
+        {
+          shortcut: 'Double Shift',
+          description: 'Select similar cells',
+        },
       ],
     },
     {
@@ -152,7 +156,7 @@ export class Renderer {
     ctx.fillStyle = 'white';
     ctx.font = `${fontSize}px Arial`;
 
-    const titleY = boxY + fontSize / 2 + 20 * scale;
+    const titleY = boxY + fontSize / 2 + 15 * scale;
 
     ctx.fillText(
       'Controls',

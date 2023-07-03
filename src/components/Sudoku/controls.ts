@@ -1,3 +1,5 @@
+import { colors } from '~/constants/theme';
+
 import {
   checkBoundaries,
   clearSelectedCells,
@@ -9,15 +11,16 @@ import {
   moveSelectedCell,
   selectAllCells,
   selectCell,
+  selectSimilarCells,
 } from '~/components/Sudoku/board';
 import { handleRedo, handleUndo, saveSnapshot } from '~/components/Sudoku/history';
 import {
   cellsInColumn, cellsInRow, scale,
 } from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
-import { colors } from '~/constants/theme';
-import { publish } from '~/utils/pubSub';
 
+// TODO add double click check
+// on dbclick select all cells with same value current cell flickers
 const handleMouseDown = (e: MouseEvent) => {
   state.mouseDown = true;
 
@@ -100,32 +103,11 @@ const handleDoubleClick = () => {
         && c.row === state.highlightedCell!.row,
   )!;
 
-  if (cell.revealed || (!cell.revealed && cell.value)) {
-    const valueToLookFor = cell.revealed ? cell.answer : cell.value;
-
-    for (let i = 0; i < state.cells.length; i += 1) {
-      const c = state.cells[i];
-
-      const valueToCompateTo = c.revealed ? c.answer : c.value;
-
-      if (valueToCompateTo === valueToLookFor) {
-        selectCell(c);
-      }
-    }
-  } else if (cell.colors.length === 1) {
-    const colorToLookFor = cell.colors[0];
-
-    for (let i = 0; i < state.cells.length; i += 1) {
-      const c = state.cells[i];
-
-      if (c.colors.length === 1 && c.colors.includes(colorToLookFor)) {
-        selectCell(c);
-      }
-    }
-  }
+  selectSimilarCells(cell);
 };
 
 let pass = '';
+let lastKeyTime = 0;
 
 interface handleKeyboardDownThis {
   tool: Tool;
@@ -184,6 +166,25 @@ function handleKeyboardDown(this: handleKeyboardDownThis, e: KeyboardEvent) {
     case 'ArrowRight':
       e.preventDefault();
       moveSelectedCell('right', e.shiftKey, ctrl);
+      break;
+
+    case 'ShiftLeft':
+    case 'ShiftRight':
+      const now = Date.now();
+
+      if (now - lastKeyTime < 500) {
+        const selectedCell = state.selectedCells[state.selectedCells.length - 1];
+        const cell = state.cells.find(
+          (c) => c.col === selectedCell.col
+              && c.row === selectedCell.row,
+        );
+
+        if (cell) {
+          selectSimilarCells(cell);
+        }
+      }
+
+      lastKeyTime = now;
       break;
 
     case 'KeyZ':

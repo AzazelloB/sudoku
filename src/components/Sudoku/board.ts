@@ -58,6 +58,36 @@ export const selectAllCells = () => {
   }
 };
 
+export const selectSimilarCells = (cell: Cell) => {  
+  if (cell.revealed || (!cell.revealed && cell.value)) {
+    const valueToLookFor = cell.revealed ? cell.answer : cell.value;
+
+    for (let i = 0; i < state.cells.length; i += 1) {
+      const c = state.cells[i];
+
+      const valueToCompateTo = c.revealed ? c.answer : c.value;
+
+      if (valueToCompateTo === valueToLookFor) {
+        selectCell(c);
+      }
+    }
+  } else if (cell.colors.length > 0) {
+    const colorsToLookFor = cell.colors.join('');
+
+    for (let i = 0; i < state.cells.length; i += 1) {
+      const c = state.cells[i];
+
+      if (c.colors.join('') === colorsToLookFor) {
+        selectCell(c);
+      }
+    }
+  }
+
+  // put current cell on top of the stack to move away from it first
+  deselectCell(cell);
+  selectCell(cell);
+};
+
 export const deselectCell = (cell: CellPosition) => {
   const index = state.selectedCells.findIndex(
     (c) => c.col === cell.col && c.row === cell.row,
