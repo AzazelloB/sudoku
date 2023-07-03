@@ -1,20 +1,17 @@
 import DeepProxy, { DeepProxyHandler } from 'proxy-deep';
+import { publish } from '~/utils/pubSub';
 
 const handler: DeepProxyHandler<any> = {
-  defineProperty(target, p, attributes) {
-    if (this.path.includes('cells')) {
-      console.log('redraw');
-    }
-
-    return Reflect.defineProperty(target, p, attributes);
-  },
-
   set(target, prop, value, reciver) {
-    if (this.path.includes('cells')) {
-      console.log('redraw');
+    const result = Reflect.set(target, prop, value, reciver);
+    
+    if (this.path.includes('cells') || prop === 'cells') {
+      // TODO on restart this is called +1 time every restart
+      // find the memory leak
+      publish('cells:changed');
     }
 
-    return Reflect.set(target, prop, value, reciver);
+    return result;
   },
 
   get(target, key, receiver) {
