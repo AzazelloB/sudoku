@@ -86,7 +86,7 @@ export class Renderer {
   animatedArea: Point | null = null;
 
   constructor() {
-    this.#renderFrame = window.requestAnimationFrame(this.#_renderQueue);
+    this.#renderFrame = window.requestAnimationFrame(this.#renderTheQueue);
   }
 
   destroy() {
@@ -94,8 +94,8 @@ export class Renderer {
   }
 
   resize(width: number, height: number) {
-    const cellWidth = width / cellsInRow | 0;
-    const cellHeight = height / cellsInColumn | 0;
+    const cellWidth = width / cellsInRow;
+    const cellHeight = height / cellsInColumn;
 
     this.#width = width;
     this.#height = height;
@@ -107,19 +107,24 @@ export class Renderer {
     this.#theme = theme;
   }
 
-  pushToRenderQueue = (fn: CallableFunction) => {
+  pushToRenderQueue(fn: CallableFunction) {
     this.#renderQueue.push(fn);
   };
 
-  #_renderQueue = () => {
+  // has to be arrow function to preserve context
+  #renderTheQueue = () => {
     if (this.#renderQueue.length) {
       const fn = this.#renderQueue.pop();
       fn?.();
       this.#renderQueue.length = 0;
     }
 
-    this.#renderFrame = window.requestAnimationFrame(this.#_renderQueue);
+    this.#renderFrame = window.requestAnimationFrame(this.#renderTheQueue);
   };
+
+  #getPixel(value: number) {
+    return value | 0;
+  }
 
   drawControlSchema(ctx: CanvasRenderingContext2D) {
     const boxX = Renderer.controlBoxPadding * scale;
@@ -163,8 +168,8 @@ export class Renderer {
       ctx.font = `${sectionFontSize}px Arial`;
       ctx.fillText(
         section.title,
-        boxX + 20 * scale,
-        y | 0,
+        this.#getPixel(boxX + 20 * scale),
+        this.#getPixel(y),
       );
 
       y += sectionFontSize + 10 * scale;
@@ -176,8 +181,8 @@ export class Renderer {
         ctx.font = `${shortcutFontSize}px Arial`;
         ctx.fillText(
           control.shortcut,
-          boxX + 40 * scale,
-          y | 0,
+          this.#getPixel(boxX + 40 * scale),
+          this.#getPixel(y),
         );
 
         ctx.textAlign = 'right';
@@ -185,7 +190,7 @@ export class Renderer {
         ctx.fillText(
           control.description,
           boxWidth,
-          y | 0,
+          this.#getPixel(y),
         );
 
         y += shortcutFontSize + 10 * scale;
@@ -202,7 +207,7 @@ export class Renderer {
     ctx.textAlign = 'left';
     ctx.fillStyle = colors.background.light;
     ctx.font = `${12 * scale}px Arial`;
-    ctx.fillText(`FPS: ${Math.round(1 / dt)}`, 2 * scale, 10 * scale);
+    ctx.fillText(`FPS: ${Math.round(1 / dt)}`, 2 * scale, 12 * scale);
   }
 
   drawBackground(ctx: CanvasRenderingContext2D) {
@@ -210,6 +215,12 @@ export class Renderer {
   }
 
   drawCellColors(ctx: CanvasRenderingContext2D) {
+    if (this.#theme === 'dark') {
+      // TODO big performance hit
+      ctx.shadowColor = colors.background.dark;
+      ctx.shadowBlur = 15 * scale;
+    }
+    
     for (let i = 0; i < cellsInRow; i += 1) {
       for (let j = 0; j < cellsInColumn; j += 1) {
         const cell = state.cells[j * cellsInRow + i];
@@ -219,7 +230,12 @@ export class Renderer {
         }
 
         const path = new Path2D();
-        path.rect(i * this.#cellWidth, j * this.#cellHeight, this.#cellWidth, this.#cellHeight);
+        path.rect(
+          this.#getPixel(i * this.#cellWidth),
+          this.#getPixel(j * this.#cellHeight),
+          this.#getPixel(this.#cellWidth),
+          this.#getPixel(this.#cellHeight),
+        );
         ctx.save();
         ctx.clip(path);
 
@@ -227,9 +243,9 @@ export class Renderer {
           const color = cell.colors[k];
           ctx.fillStyle = color;
 
-          const x = i * this.#cellWidth + this.#cellWidth / 2;
-          const y = j * this.#cellHeight + this.#cellHeight / 2;
-          const radius = Math.max(this.#cellWidth, this.#cellHeight);
+          const x = this.#getPixel(i * this.#cellWidth + this.#cellWidth / 2);
+          const y = this.#getPixel(j * this.#cellHeight + this.#cellHeight / 2);
+          const radius = this.#getPixel(Math.max(this.#cellWidth, this.#cellHeight));
           const startAngle = (k / cell.colors.length) * Math.PI * 2 + Math.PI / 3;
           const endAngle = ((k + 1) / cell.colors.length) * Math.PI * 2 + Math.PI / 3;
 
@@ -258,8 +274,8 @@ export class Renderer {
       }
 
       ctx.beginPath();
-      ctx.moveTo(i * this.#cellWidth, 0);
-      ctx.lineTo(i * this.#cellWidth, this.#width);
+      ctx.moveTo(this.#getPixel(i * this.#cellWidth), 0);
+      ctx.lineTo(this.#getPixel(i * this.#cellWidth), this.#getPixel(this.#width));
       ctx.stroke();
       ctx.closePath();
     }
@@ -304,16 +320,16 @@ export class Renderer {
           ctx.font = `${fontSize}px Arial`;
           ctx.fillText(
             cell.answer.toString(),
-            i * this.#cellWidth + this.#cellWidth / 2 | 0,
-            j * this.#cellHeight + this.#cellHeight / 2 | 0,
+            this.#getPixel(i * this.#cellWidth + this.#cellWidth / 2),
+            this.#getPixel(j * this.#cellHeight + this.#cellHeight / 2),
           );
         } else if (value) {
           ctx.fillStyle = colors.secondary[this.#theme === 'dark' ? 'light' : 'dark'];
           ctx.font = `${fontSize}px Arial`;
           ctx.fillText(
             value.toString(),
-            i * this.#cellWidth + this.#cellWidth / 2 | 0,
-            j * this.#cellHeight + this.#cellHeight / 2 | 0,
+            this.#getPixel(i * this.#cellWidth + this.#cellWidth / 2),
+            this.#getPixel(j * this.#cellHeight + this.#cellHeight / 2),
           );
         } else {
           ctx.fillStyle = colors.secondary[this.#theme === 'dark' ? 'light' : 'dark'];
@@ -321,8 +337,8 @@ export class Renderer {
           cell.corner.forEach((value, valueI) => {
             ctx.fillText(
               value.toString(),
-              i * this.#cellWidth + (this.#cellWidth / 4) * (valueI % 2 === 0 ? 1 : 3) | 0,
-              j * this.#cellHeight + (this.#cellHeight / 4) * (valueI < 2 ? 1 : 3) | 0,
+              this.#getPixel(i * this.#cellWidth + (this.#cellWidth / 4) * (valueI % 2 === 0 ? 1 : 3)),
+              this.#getPixel(j * this.#cellHeight + (this.#cellHeight / 4) * (valueI < 2 ? 1 : 3)),
             );
           });
 
@@ -331,8 +347,8 @@ export class Renderer {
             : `${fontSize / 2.4}px Arial`;
           ctx.fillText(
             cell.middle.join(''),
-            i * this.#cellWidth + (this.#cellWidth / 2) | 0,
-            j * this.#cellHeight + (this.#cellHeight / 2) | 0,
+            this.#getPixel(i * this.#cellWidth + (this.#cellWidth / 2)),
+            this.#getPixel(j * this.#cellHeight + (this.#cellHeight / 2)),
           );
         }
       }
@@ -356,10 +372,10 @@ export class Renderer {
       ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
       ctx.globalAlpha = 0.2;
       ctx.fillRect(
-        this.animatedHighlightedCell.x | 0,
-        this.animatedHighlightedCell.y | 0,
-        this.#cellWidth,
-        this.#cellHeight,
+        this.#getPixel(this.animatedHighlightedCell.x),
+        this.#getPixel(this.animatedHighlightedCell.y),
+        this.#getPixel(this.#cellWidth),
+        this.#getPixel(this.#cellHeight),
       );
       ctx.globalAlpha = 1;
     } else {
@@ -384,29 +400,29 @@ export class Renderer {
 
       for (let i = 0; i < cellsInRow; i += 1) {
         ctx.fillRect(
-          i * this.#cellWidth,
-          this.animatedHighlightedCell.y | 0,
-          this.#cellWidth,
-          this.#cellHeight,
+          this.#getPixel(i * this.#cellWidth),
+          this.#getPixel(this.animatedHighlightedCell.y),
+          this.#getPixel(this.#cellWidth),
+          this.#getPixel(this.#cellHeight),
         );
       }
 
       for (let i = 0; i < cellsInColumn; i += 1) {
         ctx.fillRect(
-          this.animatedHighlightedCell.x | 0,
-          i * this.#cellHeight,
-          this.#cellWidth,
-          this.#cellHeight,
+          this.#getPixel(this.animatedHighlightedCell.x),
+          this.#getPixel(i * this.#cellHeight),
+          this.#getPixel(this.#cellWidth),
+          this.#getPixel(this.#cellHeight),
         );
       }
 
       for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
           ctx.fillRect(
-            (this.animatedArea.x + i) * this.#cellWidth | 0,
-            (this.animatedArea.y + j) * this.#cellHeight | 0,
-            this.#cellWidth,
-            this.#cellHeight,
+            this.#getPixel((this.animatedArea.x + i) * this.#cellWidth),
+            this.#getPixel((this.animatedArea.y + j) * this.#cellHeight),
+            this.#getPixel(this.#cellWidth),
+            this.#getPixel(this.#cellHeight),
           );
         }
       }
@@ -418,6 +434,12 @@ export class Renderer {
   }
 
   drawSelection(ctx: CanvasRenderingContext2D) {
+    if (this.#theme === 'dark') {
+      // TODO big performance hit
+      ctx.shadowColor = colors.background.dark;
+      ctx.shadowBlur = 15 * scale;
+    }
+
     const lineWidth = 5 * scale;
 
     ctx.strokeStyle = colors.secondary[this.#theme === 'dark' ? 'light' : 'dark'];
@@ -426,17 +448,17 @@ export class Renderer {
 
     state.selectedCells.forEach((cell) => {
       ctx.strokeRect(
-        cell.col * this.#cellWidth + lineWidth / 2,
-        cell.row * this.#cellHeight + lineWidth / 2,
-        this.#cellWidth - lineWidth,
-        this.#cellHeight - lineWidth,
+        this.#getPixel(cell.col * this.#cellWidth + lineWidth / 2),
+        this.#getPixel(cell.row * this.#cellHeight + lineWidth / 2),
+        this.#getPixel(this.#cellWidth - lineWidth),
+        this.#getPixel(this.#cellHeight - lineWidth),
       );
       ctx.globalAlpha = 0.2;
       ctx.fillRect(
-        cell.col * this.#cellWidth,
-        cell.row * this.#cellHeight,
-        this.#cellWidth,
-        this.#cellHeight,
+        this.#getPixel(cell.col * this.#cellWidth),
+        this.#getPixel(cell.row * this.#cellHeight),
+        this.#getPixel(this.#cellWidth),
+        this.#getPixel(this.#cellHeight),
       );
       ctx.globalAlpha = 1;
     });
