@@ -278,6 +278,7 @@ const HomePage = () => {
       <div>
         <Panel
           ref={setPanelRef}
+          class="mt-8"
           mode={mode}
           setMode={setMode}
           tool={tool}

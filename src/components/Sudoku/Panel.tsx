@@ -24,6 +24,7 @@ import {
   handleUndo,
   saveSnapshot,
 } from '~/components/Sudoku/history';
+import { twMerge } from 'tailwind-merge';
 
 const tools: Tool[] = ['digits', 'colors'];
 
@@ -36,6 +37,7 @@ const getNextTool = (currentTool: Tool): Tool => {
 
 interface PanelProps {
   ref: Ref<HTMLDivElement>;
+  class: string;
   mode: Accessor<InsertionMode>;
   setMode: Setter<InsertionMode>;
   tool: Accessor<Tool>;
@@ -116,7 +118,10 @@ const Panel: Component<PanelProps> = (props) => {
   return (
     <div
       ref={props.ref}
-      class="grid grid-cols-3 lg:grid-cols-4 gap-4 text-6xl aspect-square mt-8 select-none"
+      class={twMerge(
+        'grid grid-cols-3 lg:grid-cols-4 gap-4 text-6xl aspect-square select-none',
+        props.class,
+      )}
     >
       <Control
         as={Button}
