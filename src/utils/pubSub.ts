@@ -2,9 +2,13 @@ type Subscription = Record<string, CallableFunction[]>
 
 const subsctibers: Subscription = {};
 
-export const publish = (eventName: string, data: any) => {
+export const publish = (eventName: string, ...args: any[]) => {
+  if (subsctibers.hasOwnProperty(eventName) === false) {
+    return;
+  }
+
   for (const callback of subsctibers[eventName]) {
-    callback(data);
+    callback(...args);
   }
 };
 
