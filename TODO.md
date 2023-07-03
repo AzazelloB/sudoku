@@ -27,4 +27,4 @@
 - [ ] Add excessive accessibility support (Look into solid-headless)
 - [x] Show keybinding on "?"
 - [x] FIX: Use worker to generate board
-- [ ] FIX: FPS drops when a lot of "Normal" cells are filled
+- [x] FIX: FPS drops when a lot of "Normal" cells are filled
