@@ -203,6 +203,10 @@ export const insertCorner = (value: number) => {
       areWeRemoving = cellInGrid.corner.includes(value);
     }
 
+    if (!areWeRemoving && cellInGrid.corner.includes(value)) {
+      return;
+    }
+
     if (areWeRemoving) {
       cellInGrid.corner = cellInGrid.corner.filter((c) => c !== value);
     } else {
@@ -226,6 +230,10 @@ export const insertMiddle = (value: number) => {
       areWeRemoving = cellInGrid.middle.includes(value);
     }
 
+    if (!areWeRemoving && cellInGrid.middle.includes(value)) {
+      return;
+    }
+
     if (areWeRemoving) {
       cellInGrid.middle = cellInGrid.middle.filter((c) => c !== value);
     } else {
@@ -243,6 +251,10 @@ export const insertColor = (color: string) => {
 
     if (areWeRemoving === null) {
       areWeRemoving = cellInGrid.colors.includes(color);
+    }
+
+    if (!areWeRemoving && cellInGrid.colors.includes(color)) {
+      return;
     }
 
     if (areWeRemoving) {
