@@ -1,6 +1,6 @@
 import { cellsInColumn, cellsInRow } from '~/components/Sudoku/settings';
 
-enum TipType {
+export enum TipType {
   NOTHING,
   EASY_NAKED_SINGLE,
   NAKED_SINGLE,

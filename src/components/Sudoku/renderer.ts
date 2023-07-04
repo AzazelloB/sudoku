@@ -89,6 +89,20 @@ export class Renderer {
 
   animatedArea: Point | null = null;
 
+  flashCellsAnimation: {
+    alpha: number,
+    offsetX: number
+    offsetY: number
+    targetX: number,
+    targetY: number,
+  } | null = null;
+
+  static flashCellsSpeed = 15;
+  static flashCellsShakeSpeed = 20;
+  static flashCellsShakeMagnitute = 50;
+  static flashCellsAlphaLimit = 0.4;
+  static flashCellsAlphaUp = true;
+
   resize(width: number, height: number) {
     const cellWidth = width / cellsInRow;
     const cellHeight = height / cellsInColumn;
@@ -468,5 +482,85 @@ export class Renderer {
     });
 
     ctx.shadowBlur = 0;
+  }
+
+  drawFlashedCells(ctx: CanvasRenderingContext2D, dt: number) {
+    if (state.flashedCells.length > 0) {
+      if (this.flashCellsAnimation === null) {
+        this.flashCellsAnimation = {
+          alpha: 0,
+          offsetX: 0,
+          offsetY: 0,
+          targetX: Math.random() * Renderer.flashCellsShakeMagnitute * (Math.random() > 0.5 ? 1 : -1),
+          targetY: Math.random() * Renderer.flashCellsShakeMagnitute * (Math.random() > 0.5 ? 1 : -1),
+        };
+      } else {
+        if (Renderer.flashCellsAlphaUp) {
+          Renderer.flashCellsAlphaUp = this.flashCellsAnimation.alpha <= Renderer.flashCellsAlphaLimit - 0.01;
+
+          this.flashCellsAnimation.alpha = lerp(
+            this.flashCellsAnimation.alpha,
+            Renderer.flashCellsAlphaLimit,
+            Renderer.flashCellsSpeed * dt);
+        } else {
+          Renderer.flashCellsAlphaUp = this.flashCellsAnimation.alpha <= 0.01;
+
+          this.flashCellsAnimation.alpha = lerp(
+            this.flashCellsAnimation.alpha,
+            0,
+            Renderer.flashCellsSpeed * dt);
+        }
+
+        this.flashCellsAnimation.offsetX = lerp(
+          this.flashCellsAnimation.offsetX,
+          this.flashCellsAnimation.targetX,
+          Renderer.flashCellsShakeSpeed * dt
+        );
+
+        if (Math.abs(this.flashCellsAnimation.targetX - this.flashCellsAnimation.offsetX) < 0.1) {
+          if (this.flashCellsAnimation.targetX < 0) {
+            this.flashCellsAnimation.targetX = Math.random() * Renderer.flashCellsShakeMagnitute;
+          } else {
+            this.flashCellsAnimation.targetX = -Math.random() * Renderer.flashCellsShakeMagnitute;
+          }
+        }
+
+        this.flashCellsAnimation.offsetY = lerp(
+          this.flashCellsAnimation.offsetY,
+          this.flashCellsAnimation.targetY,
+          Renderer.flashCellsShakeSpeed * dt
+        );
+
+        if (Math.abs(this.flashCellsAnimation.targetY - this.flashCellsAnimation.offsetY) < 0.1) {
+          if (this.flashCellsAnimation.targetY < 0) {
+            this.flashCellsAnimation.targetY = Math.random() * Renderer.flashCellsShakeMagnitute;
+          } else {
+            this.flashCellsAnimation.targetY = -Math.random() * Renderer.flashCellsShakeMagnitute;
+          }
+        }
+      }
+
+      ctx.fillStyle = colors.secondary[this.#theme === 'dark' ? 'light' : 'dark'];
+      ctx.globalAlpha = this.flashCellsAnimation.alpha;
+
+      ctx.save();
+
+      ctx.translate(this.flashCellsAnimation.offsetX, this.flashCellsAnimation.offsetY);
+
+      state.flashedCells.forEach((cell) => {
+        ctx.fillRect(
+          this.#getPixel(cell.col * this.#cellWidth),
+          this.#getPixel(cell.row * this.#cellHeight),
+          this.#getPixel(this.#cellWidth),
+          this.#getPixel(this.#cellHeight),
+        );
+      });
+
+      ctx.restore();
+
+      ctx.globalAlpha = 1;
+    } else {
+      this.flashCellsAnimation = null;
+    }
   }
 }

@@ -17,7 +17,8 @@ const Content: ParentComponent<ContentProps> = (props) => {
   return (
     <>
       <Show when={isOpen()}>
-        <PopoverOverlay class="fixed inset-0 h-screen" />
+        {/* TODO fix overlay, somehow solid-headless top Popover component breaks position fixed */}
+        <PopoverOverlay class="fixed inset-0" />
       </Show>
 
       <Transition

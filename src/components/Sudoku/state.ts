@@ -34,7 +34,7 @@ const handler: DeepProxyHandler<any> = {
   }
 };
 
-const proxy = new DeepProxy({
+const proxy: State = new DeepProxy({
   highlightedCell: null,
   mouseDown: false,
   revealed: false,
@@ -42,8 +42,9 @@ const proxy = new DeepProxy({
   showControls: false,
   selectedCells: [],
   cells: [],
+  flashedCells: [],
   historyCursor: 0,
   history: [],
 }, handler);
 
-export const state: State = proxy;
+export const state = proxy;

@@ -27,6 +27,7 @@ interface State {
   debug: boolean;
   showControls: boolean;
   selectedCells: CellPosition[];
+  flashedCells: CellPosition[];
   cells: Cell[];
   historyCursor: number;
   history: string[];

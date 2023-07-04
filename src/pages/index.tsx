@@ -4,7 +4,7 @@ import {
   onMount,
 } from 'solid-js';
 import classNames from 'classnames';
-import { Transition, TransitionChild } from 'solid-headless';
+import { PopoverOverlay, Transition, TransitionChild } from 'solid-headless';
 
 import { DifficultyLevel } from '~/constants/difficulty';
 import useLocalStorage from '~/hooks/useLocalStorage';
@@ -29,7 +29,9 @@ import Panel from '~/components/Sudoku/Panel';
 import CheckModal from '~/components/Sudoku/CheckModal';
 import Timer from '~/components/Sudoku/Timer';
 
-const HomePage = () => {
+import TipButton from '~/components/Sudoku/TipButton';
+
+const HomePage = () => {  
   const [cells, setCells] = useLocalStorage<Cell[]>('cells', []);
 
   const [panelRef, setPanelRef] = createSignal<HTMLElement | null>(null);
@@ -235,6 +237,12 @@ const HomePage = () => {
         </div>
 
         <div class="relative">
+          <div class="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 z-40">
+            <TipButton
+              paused={paused}
+            />
+          </div>
+
           <Transition
             show={paused()}
             class="absolute z-10 inset-0 overflow-hidden"
