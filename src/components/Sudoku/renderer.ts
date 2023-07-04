@@ -73,35 +73,21 @@ export class Renderer {
     },
   ];
 
-  static hightlightedCellSpeed = 25;
-
   #theme?: Theme;
 
   #width: number = 0;
-
   #height: number = 0;
-
   #cellWidth: number = 0;
-
   #cellHeight: number = 0;
 
-  animatedHighlightedCell: Point | null = null;
+  static hightlightedCellSpeed = 25;
 
+  animatedHighlightedCell: Point | null = null;
   animatedArea: Point | null = null;
 
-  flashCellsAnimation: {
-    alpha: number,
-    offsetX: number
-    offsetY: number
-    targetX: number,
-    targetY: number,
-  } | null = null;
-
-  static flashCellsSpeed = 15;
-  static flashCellsShakeSpeed = 20;
-  static flashCellsShakeMagnitute = 50;
-  static flashCellsAlphaLimit = 0.4;
-  static flashCellsAlphaUp = true;
+  static flyInSpeed = 10;
+  flyInCells: (CellPosition & Point)[] = [];
+  flyInCallback: CallableFunction | null = null;
 
   resize(width: number, height: number) {
     const cellWidth = width / cellsInRow;
@@ -456,6 +442,15 @@ export class Renderer {
   }
 
   drawSelection(ctx: CanvasRenderingContext2D) {
+    state.selectedCells.forEach((cell) => {
+      this.drawSelectedCell(ctx, {
+        x: cell.col * this.#cellWidth,
+        y: cell.row * this.#cellHeight,
+      })
+    });
+  }
+
+  drawSelectedCell(ctx: CanvasRenderingContext2D, cell: Point) {
     this.#drawShadow(ctx);
 
     const lineWidth = this.#width * 0.01;
@@ -464,103 +459,51 @@ export class Renderer {
     ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
     ctx.lineWidth = lineWidth;
 
-    state.selectedCells.forEach((cell) => {
-      ctx.strokeRect(
-        this.#getPixel(cell.col * this.#cellWidth + lineWidth / 2),
-        this.#getPixel(cell.row * this.#cellHeight + lineWidth / 2),
-        this.#getPixel(this.#cellWidth - lineWidth),
-        this.#getPixel(this.#cellHeight - lineWidth),
-      );
-      ctx.globalAlpha = 0.2;
-      ctx.fillRect(
-        this.#getPixel(cell.col * this.#cellWidth),
-        this.#getPixel(cell.row * this.#cellHeight),
-        this.#getPixel(this.#cellWidth),
-        this.#getPixel(this.#cellHeight),
-      );
-      ctx.globalAlpha = 1;
-    });
+    ctx.strokeRect(
+      this.#getPixel(cell.x + lineWidth / 2),
+      this.#getPixel(cell.y + lineWidth / 2),
+      this.#getPixel(this.#cellWidth - lineWidth),
+      this.#getPixel(this.#cellHeight - lineWidth),
+    );
+    ctx.globalAlpha = 0.2;
+    ctx.fillRect(
+      this.#getPixel(cell.x),
+      this.#getPixel(cell.y),
+      this.#getPixel(this.#cellWidth),
+      this.#getPixel(this.#cellHeight),
+    );
+    ctx.globalAlpha = 1;
 
     ctx.shadowBlur = 0;
   }
 
-  drawFlashedCells(ctx: CanvasRenderingContext2D, dt: number) {
-    if (state.flashedCells.length > 0) {
-      if (this.flashCellsAnimation === null) {
-        this.flashCellsAnimation = {
-          alpha: 0,
-          offsetX: 0,
-          offsetY: 0,
-          targetX: Math.random() * Renderer.flashCellsShakeMagnitute * (Math.random() > 0.5 ? 1 : -1),
-          targetY: Math.random() * Renderer.flashCellsShakeMagnitute * (Math.random() > 0.5 ? 1 : -1),
-        };
-      } else {
-        if (Renderer.flashCellsAlphaUp) {
-          Renderer.flashCellsAlphaUp = this.flashCellsAnimation.alpha <= Renderer.flashCellsAlphaLimit - 0.01;
+  pushFlyInCells(cells: CellPosition[], callback: CallableFunction) {
+    this.flyInCells = cells.map((cell) => ({
+      ...cell,
+      x: 0,
+      y: 0,
+    }));
 
-          this.flashCellsAnimation.alpha = lerp(
-            this.flashCellsAnimation.alpha,
-            Renderer.flashCellsAlphaLimit,
-            Renderer.flashCellsSpeed * dt);
-        } else {
-          Renderer.flashCellsAlphaUp = this.flashCellsAnimation.alpha <= 0.01;
+    this.flyInCallback = callback;
+  }
 
-          this.flashCellsAnimation.alpha = lerp(
-            this.flashCellsAnimation.alpha,
-            0,
-            Renderer.flashCellsSpeed * dt);
-        }
+  drawFlyIn(ctx: CanvasRenderingContext2D, dt: number) {
+    if (this.flyInCells.length > 0) {
+      for (const cell of this.flyInCells) {
+        this.drawSelectedCell(ctx, cell);
 
-        this.flashCellsAnimation.offsetX = lerp(
-          this.flashCellsAnimation.offsetX,
-          this.flashCellsAnimation.targetX,
-          Renderer.flashCellsShakeSpeed * dt
-        );
-
-        if (Math.abs(this.flashCellsAnimation.targetX - this.flashCellsAnimation.offsetX) < 0.1) {
-          if (this.flashCellsAnimation.targetX < 0) {
-            this.flashCellsAnimation.targetX = Math.random() * Renderer.flashCellsShakeMagnitute;
-          } else {
-            this.flashCellsAnimation.targetX = -Math.random() * Renderer.flashCellsShakeMagnitute;
-          }
-        }
-
-        this.flashCellsAnimation.offsetY = lerp(
-          this.flashCellsAnimation.offsetY,
-          this.flashCellsAnimation.targetY,
-          Renderer.flashCellsShakeSpeed * dt
-        );
-
-        if (Math.abs(this.flashCellsAnimation.targetY - this.flashCellsAnimation.offsetY) < 0.1) {
-          if (this.flashCellsAnimation.targetY < 0) {
-            this.flashCellsAnimation.targetY = Math.random() * Renderer.flashCellsShakeMagnitute;
-          } else {
-            this.flashCellsAnimation.targetY = -Math.random() * Renderer.flashCellsShakeMagnitute;
-          }
-        }
+        cell.x = lerp(cell.x, cell.col * this.#cellWidth, Renderer.flyInSpeed * dt);
+        cell.y = lerp(cell.y, cell.row * this.#cellHeight, Renderer.flyInSpeed * dt);
       }
 
-      ctx.fillStyle = colors.secondary[this.#theme === 'dark' ? 'light' : 'dark'];
-      ctx.globalAlpha = this.flashCellsAnimation.alpha;
-
-      ctx.save();
-
-      ctx.translate(this.flashCellsAnimation.offsetX, this.flashCellsAnimation.offsetY);
-
-      state.flashedCells.forEach((cell) => {
-        ctx.fillRect(
-          this.#getPixel(cell.col * this.#cellWidth),
-          this.#getPixel(cell.row * this.#cellHeight),
-          this.#getPixel(this.#cellWidth),
-          this.#getPixel(this.#cellHeight),
-        );
-      });
-
-      ctx.restore();
-
-      ctx.globalAlpha = 1;
-    } else {
-      this.flashCellsAnimation = null;
+      if (this.flyInCells.every(
+        (cell) => Math.abs(cell.x - cell.col * this.#cellWidth) <= 0.1
+               && Math.abs(cell.y - cell.row * this.#cellHeight) <= 0.1
+      )) {
+        this.flyInCells.length = 0;
+        this.flyInCallback?.();
+        this.flyInCallback = null;
+      }
     }
   }
 }

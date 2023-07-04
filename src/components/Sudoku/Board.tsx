@@ -15,6 +15,7 @@ import { initControls } from '~/components/Sudoku/controls';
 import { Renderer } from '~/components/Sudoku/renderer';
 import { initialHeight, initialWidth, scale } from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
+import { selectCell } from '~/components/Sudoku/board';
 
 interface BoardProps {
   paused: () => boolean;
@@ -94,15 +95,23 @@ const Board: Component<BoardProps> = (props) => {
       });
     };
 
+    const flyInCells = (cells: CellPosition[]) => {
+      renderer.pushFlyInCells(cells, () => {
+        cells.forEach(selectCell);
+      });
+    };
+
     drawStaticLayers(layer_1_ctx, layer_3_ctx);
     subscribe('cells:changed', updateStaticLayers);
     subscribe('selectedCells:changed', updateStaticLayers);
     subscribe('revealed:changed', updateStaticLayers);
+    subscribe('tip:added', flyInCells);
 
     onCleanup(() => {
       unsubscribe('cells:changed', updateStaticLayers);
       unsubscribe('selectedCells:changed', updateStaticLayers);
       unsubscribe('revealed:changed', updateStaticLayers);
+      unsubscribe('tip:added', flyInCells);
     });
   });
 
@@ -127,10 +136,10 @@ const Board: Component<BoardProps> = (props) => {
       renderer.drawHighlightedCell(layer_2_ctx, dt);
   
       renderer.drawHighlightedRowColArea(layer_2_ctx, dt);
+
+      renderer.drawFlyIn(layer_2_ctx, dt);
   
       renderer.drawBackground(layer_4_ctx);
-
-      renderer.drawFlashedCells(layer_4_ctx, dt);
 
       if (state.debug) {
         renderer.drawFPS(layer_4_ctx, dt);

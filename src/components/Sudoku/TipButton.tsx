@@ -11,6 +11,7 @@ import Tipper from '~/workers/tipper?worker';
 
 import { TipType } from '~/workers/tipper';
 import { selectCell } from '~/components/Sudoku/board';
+import { publish } from '~/utils/pubSub';
 
 const messages = {
   [TipType.NOTHING]: {
@@ -64,18 +65,7 @@ const TipButton: Component<TipButtonProps> = (props) => {
           const response = JSON.parse(message.data);
           
           setTipType(response.type);
-
-          response.cells.forEach(selectCell);
-          state.flashedCells = response.cells;
-
-          const timeout = setTimeout(() => {
-            state.flashedCells = [];
-          }, 1000);
-
-          onCleanup(() => {
-            clearTimeout(timeout);
-          });
-          
+          publish('tip:added', response.cells);
           resolve(response);
 
           worker.removeEventListener('message', callback);
