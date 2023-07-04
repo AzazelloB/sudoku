@@ -11,7 +11,7 @@ function useModalState(props: Params) {
   if (props.open !== undefined && props.setOpen !== undefined) {
     return props as Required<Params>;
   }
-  
+
   const [open, setOpen] = createSignal(false);
 
   return {

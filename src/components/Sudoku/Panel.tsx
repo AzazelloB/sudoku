@@ -7,6 +7,7 @@ import {
 } from 'solid-js';
 import classNames from 'classnames';
 
+import { twMerge } from 'tailwind-merge';
 import { colors } from '~/constants/theme';
 
 import Button from '~/ui/Button';
@@ -24,7 +25,6 @@ import {
   handleUndo,
   saveSnapshot,
 } from '~/components/Sudoku/history';
-import { twMerge } from 'tailwind-merge';
 
 const tools: Tool[] = ['digits', 'colors'];
 
@@ -47,7 +47,7 @@ interface PanelProps {
 const Panel: Component<PanelProps> = (props) => {
   const handleKeyboardDown = (e: KeyboardEvent) => {
     const ctrl = e.ctrlKey || e.metaKey;
-    
+
     switch (e.code) {
       case 'KeyZ':
         if (!ctrl && !e.shiftKey) {

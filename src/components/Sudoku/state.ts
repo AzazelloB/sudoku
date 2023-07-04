@@ -4,15 +4,15 @@ import { publish } from '~/utils/pubSub';
 const handler: DeepProxyHandler<any> = {
   set(target, prop, value, reciver) {
     const result = Reflect.set(target, prop, value, reciver);
-    
+
     if (this.path.includes('cells') || prop === 'cells') {
       publish('cells:changed');
     }
-    
+
     if (this.path.includes('selectedCells') || prop === 'selectedCells') {
       publish('selectedCells:changed');
     }
-    
+
     if (this.path.includes('revealed') || prop === 'revealed') {
       publish('revealed:changed');
     }
@@ -31,7 +31,7 @@ const handler: DeepProxyHandler<any> = {
     }
 
     return value;
-  }
+  },
 };
 
 const proxy: State = new DeepProxy({

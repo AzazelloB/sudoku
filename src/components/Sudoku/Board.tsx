@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import {
   Accessor,
   Component,
@@ -31,7 +32,7 @@ const Board: Component<BoardProps> = (props) => {
   let layer_2: HTMLCanvasElement;
   let layer_3: HTMLCanvasElement;
   let layer_4: HTMLCanvasElement;
-  
+
   const renderer = new Renderer();
 
   const [canvasWidth, setCanvasWidth] = createSignal(initialWidth);
@@ -39,7 +40,7 @@ const Board: Component<BoardProps> = (props) => {
 
   const drawStaticLayers = (
     layer_1_ctx: CanvasRenderingContext2D,
-    layer_3_ctx: CanvasRenderingContext2D
+    layer_3_ctx: CanvasRenderingContext2D,
   ) => {
     renderer.drawBackground(layer_1_ctx);
     renderer.drawBackground(layer_3_ctx);
@@ -50,7 +51,7 @@ const Board: Component<BoardProps> = (props) => {
     renderer.drawSelection(layer_3_ctx);
 
     renderer.drawValues(layer_3_ctx);
-  }
+  };
 
   onMount(() => {
     const layer_1_ctx = layer_1.getContext('2d')!;
@@ -97,7 +98,7 @@ const Board: Component<BoardProps> = (props) => {
 
     const flyInCells = (cells: CellPosition[]) => {
       state.selectedCells.length = 0;
-      
+
       renderer.pushFlyInCells(cells, () => {
         cells.forEach(selectCell);
       });
@@ -136,11 +137,11 @@ const Board: Component<BoardProps> = (props) => {
       renderer.drawBackground(layer_2_ctx);
 
       renderer.drawHighlightedCell(layer_2_ctx, dt);
-  
+
       renderer.drawHighlightedRowColArea(layer_2_ctx, dt);
 
       renderer.drawFlyIn(layer_2_ctx, dt);
-  
+
       renderer.drawBackground(layer_4_ctx);
 
       if (state.debug) {
@@ -203,7 +204,7 @@ const Board: Component<BoardProps> = (props) => {
         class={twMerge(
           'relative z-20 select-none',
           // TODO figure out how to show focus ring only when using tab
-          'focus-visible:outline-none'
+          'focus-visible:outline-none',
           // 'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-4',
           // 'focus-visible:ring-white dark:focus-visible:ring-offset-background-dark',
         )}

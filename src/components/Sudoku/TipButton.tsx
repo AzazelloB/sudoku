@@ -1,5 +1,9 @@
-import { Accessor, Component, createSignal, on, onCleanup } from 'solid-js';
+import {
+  Accessor, Component, createSignal,
+} from 'solid-js';
 import { twMerge } from 'tailwind-merge';
+
+import { publish } from '~/utils/pubSub';
 
 import Button from '~/ui/Button';
 import Bulb from '~/ui/icons/Bulb';
@@ -10,8 +14,6 @@ import { state } from '~/components/Sudoku/state';
 import Tipper from '~/workers/tipper?worker';
 
 import { TipType } from '~/workers/tipper';
-import { selectCell } from '~/components/Sudoku/board';
-import { publish } from '~/utils/pubSub';
 
 const messages = {
   [TipType.NOTHING]: {
@@ -26,7 +28,7 @@ const messages = {
   [TipType.BOARD_FINISHED]: {
     message: 'You\'ve solved the puzzle, Genius!',
   },
-}
+};
 
 interface TipButtonProps {
   paused: Accessor<boolean>;
@@ -39,13 +41,13 @@ const TipButton: Component<TipButtonProps> = (props) => {
 
   const getMessage = () => {
     return messages[tipType()].message;
-  }
-  
+  };
+
   const handleTip = () => {
     return new Promise((resolve, reject) => {
       if (window.Worker) {
         worker = worker instanceof Worker ? worker : new Tipper();
-  
+
         const maskedCells = [];
 
         for (let i = 0; i < state.cells.length; i++) {
@@ -73,14 +75,14 @@ const TipButton: Component<TipButtonProps> = (props) => {
 
           worker.removeEventListener('message', callback);
         };
-  
+
         worker.addEventListener('message', callback);
       } else {
         reject(new Error('No worker object'));
       }
     });
   };
-  
+
   return (
     <Popover>
       <Popover.Button

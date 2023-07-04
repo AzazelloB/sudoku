@@ -12,7 +12,7 @@ interface ContentProps {
 }
 
 const Content: ParentComponent<ContentProps> = (props) => {
-  const { isOpen} = useHeadlessDisclosureProperties();
+  const { isOpen } = useHeadlessDisclosureProperties();
 
   return (
     <>

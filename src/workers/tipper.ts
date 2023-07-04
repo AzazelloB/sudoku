@@ -1,4 +1,3 @@
-import { checkIfSolved } from '~/components/Sudoku/board';
 import { cellsInColumn, cellsInRow } from '~/components/Sudoku/settings';
 
 export enum TipType {
@@ -61,7 +60,7 @@ const findEasyNakedSingle = (cells: Cells): CellPosition[] | null => {
     const possible = [];
 
     // find avbaliable in an area
-    av_loop: while (available.length) {
+    avLoop: while (available.length) {
       const number = available.pop();
 
       // check sudoku area
@@ -76,7 +75,7 @@ const findEasyNakedSingle = (cells: Cells): CellPosition[] | null => {
           const areaIndex = i * cellsInRow + j;
 
           if (areaIndex !== index && cells[areaIndex] === number) {
-            continue av_loop;
+            continue avLoop;
           }
         }
       }
@@ -148,7 +147,7 @@ const findNakedSingle = (cells: Cells): CellPosition[] | null => {
     const available = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     const possible = [];
 
-    av_loop: while (available.length) {
+    avLoop: while (available.length) {
       const number = available.pop();
 
       // check row and col
@@ -157,11 +156,11 @@ const findNakedSingle = (cells: Cells): CellPosition[] | null => {
         const colIndex = col + i * cellsInRow;
 
         if (rowIndex !== index && cells[rowIndex] === number) {
-          continue av_loop;
+          continue avLoop;
         }
 
         if (colIndex !== index && cells[colIndex] === number) {
-          continue av_loop;
+          continue avLoop;
         }
       }
 
@@ -177,7 +176,7 @@ const findNakedSingle = (cells: Cells): CellPosition[] | null => {
           const areaIndex = i * cellsInRow + j;
 
           if (areaIndex !== index && cells[areaIndex] === number) {
-            continue av_loop;
+            continue avLoop;
           }
         }
       }
@@ -224,8 +223,8 @@ interface Result {
 }
 
 onmessage = ({ data: { cells } }: { data: { cells: Cells }}) => {
-  const numericKeys: TipType[] = Object.keys(TipType).map(x => parseInt(x)).filter(x => !isNaN(x));
-  
+  const numericKeys: TipType[] = Object.keys(TipType).map((x) => parseInt(x, 10)).filter((x) => !Number.isNaN(x));
+
   for (const tip of numericKeys) {
     if (tip === TipType.NOTHING) {
       continue;

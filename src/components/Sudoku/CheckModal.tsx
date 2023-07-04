@@ -20,7 +20,7 @@ const CheckModal: Component<CheckModalProps> = (props) => {
     closeModal();
     props.onNewGame();
   };
-  
+
   return (
     <Modal
       open={props.open}

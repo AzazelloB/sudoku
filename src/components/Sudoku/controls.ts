@@ -169,7 +169,7 @@ function handleKeyboardDown(this: handleKeyboardDownThis, e: KeyboardEvent) {
       break;
 
     case 'ShiftLeft':
-    case 'ShiftRight':
+    case 'ShiftRight': {
       const now = Date.now();
 
       if (now - lastKeyTime < 500) {
@@ -186,6 +186,7 @@ function handleKeyboardDown(this: handleKeyboardDownThis, e: KeyboardEvent) {
 
       lastKeyTime = now;
       break;
+    }
 
     case 'KeyZ':
       if (ctrl) {

@@ -4,7 +4,7 @@ import {
   onMount,
 } from 'solid-js';
 import classNames from 'classnames';
-import { PopoverOverlay, Transition, TransitionChild } from 'solid-headless';
+import { Transition, TransitionChild } from 'solid-headless';
 
 import { DifficultyLevel } from '~/constants/difficulty';
 import useLocalStorage from '~/hooks/useLocalStorage';
@@ -31,7 +31,7 @@ import Timer from '~/components/Sudoku/Timer';
 
 import TipButton from '~/components/Sudoku/TipButton';
 
-const HomePage = () => {  
+const HomePage = () => {
   const [cells, setCells] = useLocalStorage<Cell[]>('cells', []);
 
   const [panelRef, setPanelRef] = createSignal<HTMLElement | null>(null);
@@ -57,7 +57,7 @@ const HomePage = () => {
           }
         }
         break;
-      
+
       case 'Space':
         if (canRedefineControls()) {
           handlePausePlay();
@@ -89,7 +89,7 @@ const HomePage = () => {
           publish('showControls', state.showControls);
         }
         break;
-  
+
       default:
         break;
     }

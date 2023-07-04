@@ -3,7 +3,7 @@ type Subscription = Record<string, CallableFunction[]>
 const subsctibers: Subscription = {};
 
 export const publish = (eventName: string, ...args: any[]) => {
-  if (subsctibers.hasOwnProperty(eventName) === false) {
+  if (Object.prototype.hasOwnProperty.call(subsctibers, eventName) === false) {
     return;
   }
 

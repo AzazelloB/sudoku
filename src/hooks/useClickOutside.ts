@@ -1,6 +1,10 @@
-import { Accessor, Ref, createEffect, onCleanup } from 'solid-js';
+import {
+  Accessor, createEffect, onCleanup,
+} from 'solid-js';
 
-function useClickOutside(ref: Accessor<HTMLElement | null>, handler: (event: Event) => void) {
+type Handler = (event: Event) => void;
+
+function useClickOutside(ref: Accessor<HTMLElement | null>, handler: Handler) {
   createEffect(() => {
     const listener = (event: Event) => {
       if (!ref() || ref()?.contains(event.target as Node)) {

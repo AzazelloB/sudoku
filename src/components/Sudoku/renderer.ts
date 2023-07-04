@@ -11,8 +11,8 @@ import { state } from '~/components/Sudoku/state';
 export class Renderer {
   #renderQueue: CallableFunction[] = [];
 
-  #renderFrame: number = 0;
-  
+  #renderFrame = 0;
+
   static controlBoxPadding = 15;
 
   static controlSections = [
@@ -75,18 +75,24 @@ export class Renderer {
 
   #theme?: Theme;
 
-  #width: number = 0;
-  #height: number = 0;
-  #cellWidth: number = 0;
-  #cellHeight: number = 0;
+  #width = 0;
+
+  #height = 0;
+
+  #cellWidth = 0;
+
+  #cellHeight = 0;
 
   static hightlightedCellSpeed = 25;
 
   animatedHighlightedCell: Point | null = null;
+
   animatedArea: Point | null = null;
 
   static flyInSpeed = 10;
+
   flyInCells: (CellPosition & Point)[] = [];
+
   flyInCallback: CallableFunction | null = null;
 
   resize(width: number, height: number) {
@@ -108,7 +114,7 @@ export class Renderer {
 
     window.cancelAnimationFrame(this.#renderFrame);
     this.#renderFrame = window.requestAnimationFrame(this.#renderTheQueue);
-  };
+  }
 
   // has to be arrow function to preserve context
   #renderTheQueue = () => {
@@ -227,7 +233,7 @@ export class Renderer {
 
   drawCellColors(ctx: CanvasRenderingContext2D) {
     this.#drawShadow(ctx);
-    
+
     for (let i = 0; i < cellsInRow; i += 1) {
       for (let j = 0; j < cellsInColumn; j += 1) {
         const cell = state.cells[j * cellsInRow + i];
@@ -395,7 +401,7 @@ export class Renderer {
     if (state.highlightedCell !== null && this.animatedHighlightedCell !== null) {
       const x = Math.floor(state.highlightedCell.col / 3) * 3;
       const y = Math.floor(state.highlightedCell.row / 3) * 3;
-      
+
       if (this.animatedArea === null) {
         this.animatedArea = { x, y };
       } else {
@@ -446,7 +452,7 @@ export class Renderer {
       this.drawSelectedCell(ctx, {
         x: cell.col * this.#cellWidth,
         y: cell.row * this.#cellHeight,
-      })
+      });
     });
   }
 
@@ -498,7 +504,7 @@ export class Renderer {
 
       if (this.flyInCells.every(
         (cell) => Math.abs(cell.x - cell.col * this.#cellWidth) <= 0.1
-               && Math.abs(cell.y - cell.row * this.#cellHeight) <= 0.1
+               && Math.abs(cell.y - cell.row * this.#cellHeight) <= 0.1,
       )) {
         this.flyInCells.length = 0;
         this.flyInCallback?.();

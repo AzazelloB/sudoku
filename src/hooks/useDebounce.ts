@@ -1,4 +1,6 @@
-import { Accessor, createEffect, createSignal, on, onCleanup } from 'solid-js';
+import {
+  Accessor, createEffect, createSignal, on, onCleanup,
+} from 'solid-js';
 
 function useDebounce<T>(value: Accessor<T>, delay: number) {
   const [debouncedValue, setDebouncedValue] = createSignal<T>(value());

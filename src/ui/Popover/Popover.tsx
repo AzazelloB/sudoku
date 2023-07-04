@@ -10,7 +10,7 @@ import PopoverInContext from '~/ui/Popover/PopoverInContext';
 interface PopoverComponent {
   Button: typeof Button;
   Content: typeof Content;
-} 
+}
 
 const Popover: ParentComponent & PopoverComponent = (props) => {
   return (

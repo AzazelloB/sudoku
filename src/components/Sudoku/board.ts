@@ -60,7 +60,7 @@ export const selectAllCells = () => {
   }
 };
 
-export const selectSimilarCells = (cell: Cell) => {  
+export const selectSimilarCells = (cell: Cell) => {
   if (cell.revealed || (!cell.revealed && cell.value)) {
     const valueToLookFor = cell.revealed ? cell.answer : cell.value;
 

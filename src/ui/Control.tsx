@@ -32,7 +32,7 @@ interface ControlProps {
   alt?: boolean;
   alternatives?: Alternative[];
   hintClass?: string;
-  corenr?: 1 | 2 | 3 | 4; 
+  corenr?: 1 | 2 | 3 | 4;
 }
 
 const Control = <T extends Component<ComponentProps<typeof Button>>>(props: AsProp<T, ControlProps>) => {
