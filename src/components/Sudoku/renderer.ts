@@ -210,13 +210,15 @@ export class Renderer {
 
   drawFPS(ctx: CanvasRenderingContext2D, dt: number) {
     ctx.fillStyle = colors.background['dark-accent'];
-    ctx.fillRect(0, 0, 55 * scale, 17 * scale);
+    const w = 55 * scale;
+    const h = 17 * scale;
+    ctx.fillRect(this.#width - w, 0, w, h);
 
-    ctx.textAlign = 'left';
+    ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = colors.background.light;
     ctx.font = `${12 * scale}px Arial`;
-    ctx.fillText(`FPS: ${Math.round(1 / dt)}`, 2 * scale, 10 * scale);
+    ctx.fillText(`FPS: ${Math.round(1 / dt)}`, this.#width - 2 * scale, 10 * scale);
   }
 
   drawBackground(ctx: CanvasRenderingContext2D) {
