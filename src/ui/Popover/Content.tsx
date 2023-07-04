@@ -12,7 +12,7 @@ interface ContentProps {
 }
 
 const Content: ParentComponent<ContentProps> = (props) => {
-  const { isOpen } = useHeadlessDisclosureProperties();
+  const { isOpen} = useHeadlessDisclosureProperties();
 
   return (
     <>
@@ -31,7 +31,7 @@ const Content: ParentComponent<ContentProps> = (props) => {
         leaveTo="opacity-0 translate-y-1"
       >
         <PopoverPanel
-          unmount={false}
+          unmount
           class={twMerge(
             'absolute right-0 mt-1 z-50 w-max max-w-sm px-4 py-2',
             'bg-background-dark-accent text-white rounded-md shadow-md',

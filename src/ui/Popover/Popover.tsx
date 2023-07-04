@@ -5,6 +5,7 @@ import {
 
 import Button from '~/ui/Popover/Button';
 import Content from '~/ui/Popover/Content';
+import PopoverInContext from '~/ui/Popover/PopoverInContext';
 
 interface PopoverComponent {
   Button: typeof Button;
@@ -14,7 +15,9 @@ interface PopoverComponent {
 const Popover: ParentComponent & PopoverComponent = (props) => {
   return (
     <HeadlessPopover defaultOpen={false} class="relative">
-      {props.children}
+      <PopoverInContext>
+        {props.children}
+      </PopoverInContext>
     </HeadlessPopover>
   );
 };
