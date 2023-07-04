@@ -6,8 +6,6 @@ const handler: DeepProxyHandler<any> = {
     const result = Reflect.set(target, prop, value, reciver);
     
     if (this.path.includes('cells') || prop === 'cells') {
-      // TODO on restart this is called +1 time every restart
-      // find the memory leak
       publish('cells:changed');
     }
     

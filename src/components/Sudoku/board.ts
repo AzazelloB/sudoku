@@ -16,10 +16,14 @@ export const generateGrid = async (difficulty: DifficultyLevel) => {
         difficulty,
       });
 
-      worker.addEventListener('message', (message) => {
+      const callback = (message: MessageEvent) => {
         state.cells = message.data;
         resolve(message.data);
-      });
+
+        worker.removeEventListener('message', callback);
+      };
+
+      worker.addEventListener('message', callback);
     } else {
       reject(new Error('No worker object'));
     }
