@@ -28,6 +28,21 @@ interface BoardProps {
 const Board: Component<BoardProps> = (props) => {
   const { theme } = useGlobalContext();
 
+  const [usingTab, setUsingTab] = createSignal(false);
+
+  const keyboardFocus = (e: KeyboardEvent) => {
+    if (e.code === 'Tab') {
+      setUsingTab(true);
+      document.removeEventListener('keydown', keyboardFocus, false);
+    }
+  };
+
+  document.addEventListener('keydown', keyboardFocus, false);
+
+  onCleanup(() => {
+    document.removeEventListener('keydown', keyboardFocus, false);
+  });
+
   let layer_1: HTMLCanvasElement;
   let layer_2: HTMLCanvasElement;
   let layer_3: HTMLCanvasElement;
@@ -203,10 +218,9 @@ const Board: Component<BoardProps> = (props) => {
         tabIndex={0}
         class={twMerge(
           'relative z-20 select-none',
-          // TODO figure out how to show focus ring only when using tab
           'focus-visible:outline-none',
-          // 'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-4',
-          // 'focus-visible:ring-white dark:focus-visible:ring-offset-background-dark',
+          usingTab() && 'focus-visible:ring-4 focus-visible:ring-offset-4',
+          usingTab() && 'focus-visible:ring-white dark:focus-visible:ring-offset-background-dark',
         )}
         width={canvasWidth() * scale}
         height={canvasHeight() * scale}
