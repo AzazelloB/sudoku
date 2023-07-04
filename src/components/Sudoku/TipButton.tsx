@@ -104,7 +104,7 @@ const TipButton: Component<TipButtonProps> = (props) => {
         class="left-0"
       >
         <p class="text-sm">
-          <strong>{getMessage()}</strong>
+          <strong class="font-semibold">{getMessage()}</strong>
         </p>
       </Popover.Content>
     </Popover>

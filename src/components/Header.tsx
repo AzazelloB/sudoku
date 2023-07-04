@@ -27,7 +27,7 @@ const Header = () => {
           <Popover.Content>
             <div>
               <p class="text-sm">
-                <strong>Shift + /</strong> or "?" to show controls
+                <strong class="font-semibold">Shift + /</strong> or "?" to show controls
               </p>
             </div>
           </Popover.Content>

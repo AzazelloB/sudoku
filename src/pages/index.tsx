@@ -169,9 +169,9 @@ const HomePage = () => {
   return (
     <div class="flex justify-center lg:gap-12 gap-4 lg:flex-row flex-col">
       <div>
-        <h4 class="text-lg mb-1 font-bold">Difficulty</h4>
+        <h4 class="text-lg mb-1 tracking-widest">Difficulty</h4>
 
-        <div class="flex justify-between lg:items-center mb-6 lg:flex-row flex-col">
+        <div class="flex justify-between lg:items-center mb-6 lg:flex-row flex-col font-light">
           <div>
             <ButtonGroup>
               <ButtonGroup.Button

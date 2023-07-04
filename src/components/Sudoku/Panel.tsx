@@ -113,7 +113,7 @@ const Panel: Component<PanelProps> = (props) => {
     saveSnapshot();
   };
 
-  const className = 'text-lg';
+  const className = 'font-light text-lg';
 
   return (
     <div

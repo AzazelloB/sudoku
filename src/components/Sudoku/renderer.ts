@@ -134,7 +134,12 @@ export class Renderer {
   #drawShadow(ctx: CanvasRenderingContext2D) {
     // TODO big performance hit
     ctx.shadowColor = colors.background.dark;
-    ctx.shadowBlur = 15 * scale;
+
+    if (this.#theme === 'dark') {
+      ctx.shadowBlur = 15 * scale;
+    } else {
+      ctx.shadowBlur = 25 * scale;
+    }
   }
 
   drawControlSchema(ctx: CanvasRenderingContext2D) {
@@ -158,7 +163,7 @@ export class Renderer {
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = 'white';
-    ctx.font = `${fontSize}px Arial`;
+    ctx.font = `${fontSize}px Mitr`;
 
     const titleY = boxY + fontSize / 2 + 15 * scale;
 
@@ -177,7 +182,7 @@ export class Renderer {
       const section = Renderer.controlSections[i];
 
       ctx.textAlign = 'left';
-      ctx.font = `${sectionFontSize}px Arial`;
+      ctx.font = `${sectionFontSize}px Mitr`;
       ctx.fillText(
         section.title,
         this.#getPixel(boxX + 20 * scale),
@@ -190,7 +195,7 @@ export class Renderer {
         const control = section.controls[j];
 
         ctx.textAlign = 'left';
-        ctx.font = `${shortcutFontSize}px Arial`;
+        ctx.font = `${shortcutFontSize}px Mitr`;
         ctx.fillText(
           control.shortcut,
           this.#getPixel(boxX + 40 * scale),
@@ -198,7 +203,7 @@ export class Renderer {
         );
 
         ctx.textAlign = 'right';
-        ctx.font = `${shortcutFontSize}px Arial`;
+        ctx.font = `${shortcutFontSize}px Mitr`;
         ctx.fillText(
           control.description,
           boxWidth,
@@ -221,7 +226,7 @@ export class Renderer {
     ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = colors.background.light;
-    ctx.font = `${12 * scale}px Arial`;
+    ctx.font = `${12 * scale}px Mitr`;
     ctx.fillText(`FPS: ${Math.round(1 / dt)}`, this.#width - 2 * scale, 10 * scale);
   }
 
@@ -329,7 +334,7 @@ export class Renderer {
 
         if (cell.revealed) {
           ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
-          ctx.font = `${fontSize}px Arial`;
+          ctx.font = `${fontSize}px Mitr`;
           ctx.fillText(
             cell.answer.toString(),
             this.#getPixel(i * this.#cellWidth + this.#cellWidth / 2),
@@ -344,7 +349,7 @@ export class Renderer {
             ctx.fillStyle = colors.primary.dark;
           }
 
-          ctx.font = `${fontSize}px Arial`;
+          ctx.font = `${fontSize}px Mitr`;
           ctx.fillText(
             value.toString(),
             this.#getPixel(i * this.#cellWidth + this.#cellWidth / 2),
@@ -352,7 +357,7 @@ export class Renderer {
           );
         } else {
           ctx.fillStyle = colors.secondary[this.#theme === 'dark' ? 'light' : 'dark'];
-          ctx.font = `${fontSize / 2.4}px Arial`;
+          ctx.font = `${fontSize / 2.4}px Mitr`;
           cell.corner.forEach((value, valueI) => {
             ctx.fillText(
               value.toString(),
@@ -362,8 +367,8 @@ export class Renderer {
           });
 
           ctx.font = cell.middle.length > 4
-            ? `${fontSize / (cell.middle.length / 2)}px Arial`
-            : `${fontSize / 2.4}px Arial`;
+            ? `${fontSize / (cell.middle.length / 2)}px Mitr`
+            : `${fontSize / 2.4}px Mitr`;
           ctx.fillText(
             cell.middle.join(''),
             this.#getPixel(i * this.#cellWidth + (this.#cellWidth / 2)),
@@ -466,7 +471,11 @@ export class Renderer {
 
     const lineWidth = this.#width * 0.01;
 
-    ctx.strokeStyle = colors.secondary[this.#theme === 'dark' ? 'light' : 'dark'];
+    if (this.#theme === 'dark') {
+      ctx.strokeStyle = colors.secondary.light;
+    } else {
+      ctx.strokeStyle = colors.background['light-accent'];
+    }
     ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
     ctx.lineWidth = lineWidth;
 
