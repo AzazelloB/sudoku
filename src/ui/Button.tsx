@@ -16,7 +16,7 @@ const Button: Component<ButtonProps> = (props) => {
       // TODO button looses focus when clicked
       disabled={props.disabled || props.loading}
       class={twMerge(
-        'px-4 py-2 rounded-md transition-colors duration-200',
+        'px-4 py-2 rounded-md shadow-md transition-colors duration-200',
         'bg-primary text-white',
         'hover:bg-primary-dark hover:text-white disabled:bg-gray-600',
         props.variant === 'secondary' && 'bg-background-dark-accent',
