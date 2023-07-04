@@ -163,7 +163,7 @@ const HomePage = () => {
   };
 
   const handleCheck = () => {
-    setSolved(checkIfSolved());
+    setSolved(checkIfSolved(state.cells));
   };
 
   return (

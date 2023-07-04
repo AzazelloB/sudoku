@@ -193,12 +193,20 @@ const findNakedSingle = (cells: Cells): CellPosition[] | null => {
   return null;
 };
 
-const isBoardFinished = (): CellPosition[] | null => {
-  if (checkIfSolved()) {
-    return [];
+const isBoardFinished = (cells: Cells): CellPosition[] | null => {
+  for (let i = 0; i < cells.length; i++) {
+    const cell = cells[i];
+
+    if (cell === null) {
+      return null;
+    }
+
+    if (!isValid(cells, cell, i % cellsInColumn, Math.floor(i / cellsInRow))) {
+      return null;
+    }
   }
 
-  return null;
+  return [];
 };
 
 type UsefullTips = Exclude<TipType, TipType.NOTHING>;

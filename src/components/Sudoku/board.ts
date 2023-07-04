@@ -30,10 +30,8 @@ export const generateGrid = async (difficulty: DifficultyLevel) => {
   });
 };
 
-export const checkIfSolved = () => {
-  for (let i = 0; i < state.cells.length; i += 1) {
-    const cell = state.cells[i];
-
+export const checkIfSolved = (cells: Cell[]) => {
+  for (const cell of cells) {
     if (cell.revealed) {
       continue;
     }

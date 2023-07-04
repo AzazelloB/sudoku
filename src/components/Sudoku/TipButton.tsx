@@ -66,7 +66,7 @@ const TipButton: Component<TipButtonProps> = (props) => {
 
         const callback = (message: MessageEvent) => {
           const response = JSON.parse(message.data);
-          
+
           setTipType(response.type);
           publish('tip:added', response.cells);
           resolve(response);
