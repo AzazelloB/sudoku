@@ -21,7 +21,10 @@ const messages = {
     message: 'Naked single',
   },
   [TipType.NAKED_SINGLE]: {
-    message: 'Naked single',
+    message: 'Look closer, it\'s a naked single',
+  },
+  [TipType.BOARD_FINISHED]: {
+    message: 'You\'ve solved the puzzle, Genius!',
   },
 }
 

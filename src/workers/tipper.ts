@@ -1,9 +1,11 @@
+import { checkIfSolved } from '~/components/Sudoku/board';
 import { cellsInColumn, cellsInRow } from '~/components/Sudoku/settings';
 
 export enum TipType {
   NOTHING,
   EASY_NAKED_SINGLE,
   NAKED_SINGLE,
+  BOARD_FINISHED,
 }
 
 type Cell = number | null;
@@ -191,12 +193,21 @@ const findNakedSingle = (cells: Cells): CellPosition[] | null => {
   return null;
 };
 
+const isBoardFinished = (): CellPosition[] | null => {
+  if (checkIfSolved()) {
+    return [];
+  }
+
+  return null;
+};
+
 type UsefullTips = Exclude<TipType, TipType.NOTHING>;
 type TipFiner = (cells: Cells) => CellPosition[] | null;
 
 const tipCallbackMap: Record<UsefullTips, TipFiner> = {
   [TipType.EASY_NAKED_SINGLE]: findEasyNakedSingle,
   [TipType.NAKED_SINGLE]: findNakedSingle,
+  [TipType.BOARD_FINISHED]: isBoardFinished,
 };
 
 interface Result {

@@ -96,6 +96,8 @@ const Board: Component<BoardProps> = (props) => {
     };
 
     const flyInCells = (cells: CellPosition[]) => {
+      state.selectedCells.length = 0;
+      
       renderer.pushFlyInCells(cells, () => {
         cells.forEach(selectCell);
       });
