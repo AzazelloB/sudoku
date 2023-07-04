@@ -132,11 +132,9 @@ export class Renderer {
   }
 
   #drawShadow(ctx: CanvasRenderingContext2D) {
-    if (this.#theme) {
-      // TODO big performance hit
-      ctx.shadowColor = colors.background[this.#theme];
-      ctx.shadowBlur = 15 * scale;
-    }
+    // TODO big performance hit
+    ctx.shadowColor = colors.background.dark;
+    ctx.shadowBlur = 15 * scale;
   }
 
   drawControlSchema(ctx: CanvasRenderingContext2D) {
@@ -338,7 +336,14 @@ export class Renderer {
             this.#getPixel(j * this.#cellHeight + this.#cellHeight / 2),
           );
         } else if (value) {
-          ctx.fillStyle = colors.secondary[this.#theme === 'dark' ? 'light' : 'dark'];
+          if (this.#theme === 'dark') {
+            ctx.fillStyle = colors.secondary.light;
+          } else if (cell.colors.length > 0 && !cell.colors.includes('transparent')) {
+            ctx.fillStyle = colors.background.light;
+          } else {
+            ctx.fillStyle = colors.primary.dark;
+          }
+
           ctx.font = `${fontSize}px Arial`;
           ctx.fillText(
             value.toString(),
