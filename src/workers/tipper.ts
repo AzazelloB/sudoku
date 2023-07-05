@@ -88,7 +88,7 @@ const isValidForEasyNakedSingle = (cells: Cells, number: number, col: number, ro
   return true;
 };
 
-const findEasyNakedSingle = (cells: Cells): CellPosition[] | null => {
+export const findEasyNakedSingle = (cells: Cells): CellPosition[] | null => {
   for (let index = 0; index < cells.length; index++) {
     if (cells[index] !== null) {
       continue;
@@ -225,7 +225,7 @@ const findNakedSingle = (cells: Cells): CellPosition[] | null => {
   return null;
 };
 
-const isBoardFinished = (cells: Cells): CellPosition[] | null => {
+export const isBoardFinished = (cells: Cells): CellPosition[] | null => {
   for (let i = 0; i < cells.length; i++) {
     const cell = cells[i];
 
@@ -255,7 +255,7 @@ interface Result {
   cells: CellPosition[];
 }
 
-onmessage = ({ data: { cells } }: { data: { cells: Cells }}) => {
+export const onMessage = ({ data: { cells } }: { data: { cells: Cells }}) => {
   const numericKeys: TipType[] = Object.keys(TipType).map((x) => parseInt(x, 10)).filter((x) => !Number.isNaN(x));
 
   for (const tip of numericKeys) {
@@ -266,17 +266,21 @@ onmessage = ({ data: { cells } }: { data: { cells: Cells }}) => {
     const result = tipCallbackMap[tip](cells);
 
     if (result) {
-      postMessage(JSON.stringify({
+      return {
         type: tip,
         cells: result,
-      } satisfies Result));
-
-      return;
+      } satisfies Result;
     }
   }
 
-  postMessage(JSON.stringify({
+  return {
     type: TipType.NOTHING,
     cells: [],
-  } satisfies Result));
+  } satisfies Result;
+};
+
+onmessage = ({ data: { cells } }: { data: { cells: Cells }}) => {
+  const response = onMessage({ data: { cells } });
+
+  postMessage(JSON.stringify(response));
 };
