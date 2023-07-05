@@ -77,7 +77,7 @@ const Board: Component<BoardProps> = (props) => {
       const padding = 24;
 
       const size = Math.min(
-        window.innerWidth > 1024 ? window.innerWidth / 2 : window.innerWidth - (left * 2),
+        window.outerWidth > 1024 ? window.outerWidth / 2 : window.outerWidth - (left * 2),
         window.innerHeight - top - padding,
       );
 

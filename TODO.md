@@ -28,4 +28,4 @@
 - [x] Show keybinding on "?"
 - [x] FIX: Use worker to generate board
 - [x] FIX: FPS drops when a lot of "Normal" cells are filled
-- [ ] FIX: Mobile layout is fucked
+- [x] FIX: Mobile layout is fucked
