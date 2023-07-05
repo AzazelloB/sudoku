@@ -37,10 +37,16 @@ interface TipButtonProps {
 const TipButton: Component<TipButtonProps> = (props) => {
   let worker: Worker;
 
-  const [tipType, setTipType] = createSignal<TipType>(0);
+  const [tipType, setTipType] = createSignal<TipType | null>(null);
 
   const getMessage = () => {
-    return messages[tipType()].message;
+    const type = tipType();
+
+    if (type === null) {
+      return 'Thinking...';
+    }
+
+    return messages[type].message;
   };
 
   const handleTip = () => {
