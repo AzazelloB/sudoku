@@ -28,9 +28,10 @@ const handleMouseDown = (e: MouseEvent) => {
     (c) => c.col === state.highlightedCell!.col
         && c.row === state.highlightedCell!.row,
   );
+  const ctrl = e.ctrlKey || e.metaKey;
 
   if (selected && e.detail === 1) {
-    if (e.ctrlKey) {
+    if (ctrl) {
       deselectCell(state.highlightedCell);
     } else if (state.selectedCells.length === 1) {
       state.selectedCells.length = 0;
@@ -39,7 +40,7 @@ const handleMouseDown = (e: MouseEvent) => {
       selectCell(state.highlightedCell);
     }
   } else {
-    if (!e.ctrlKey) {
+    if (!ctrl) {
       state.selectedCells.length = 0;
     }
 
