@@ -145,13 +145,13 @@ export class Renderer {
   }
 
   drawControlSchema(ctx: CanvasRenderingContext2D) {
-    // TODO drops performance over time for some reason
     const boxX = Renderer.controlBoxPadding * scale;
     const boxY = Renderer.controlBoxPadding * scale;
     const boxWidth = this.#width - Renderer.controlBoxPadding * 2 * scale;
     const boxHeight = this.#width - Renderer.controlBoxPadding * 2 * scale;
 
     ctx.fillStyle = colors.background['dark-accent'];
+    ctx.beginPath();
     ctx.roundRect(
       boxX,
       boxY,
@@ -160,6 +160,7 @@ export class Renderer {
       [20 * scale],
     );
     ctx.fill();
+    ctx.closePath();
 
     const fontSize = this.#width / cellsInRow / 1.5;
     ctx.textAlign = 'left';
