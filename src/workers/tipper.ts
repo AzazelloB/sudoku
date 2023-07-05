@@ -88,10 +88,6 @@ const findEasyNakedSingle = (cells: Cells): CellPosition[] | null => {
     for (let i = 0; i < cellsInColumn; i++) {
       const colIndex = col + i * cellsInRow;
 
-      if (colIndex === index) {
-        continue;
-      }
-
       if (cells[colIndex] !== null) {
         continue;
       }
@@ -111,10 +107,6 @@ const findEasyNakedSingle = (cells: Cells): CellPosition[] | null => {
 
     for (let i = 0; i < cellsInRow; i++) {
       const rowIndex = row * cellsInRow + i;
-
-      if (rowIndex === index) {
-        continue;
-      }
 
       if (cells[rowIndex] !== null) {
         continue;
