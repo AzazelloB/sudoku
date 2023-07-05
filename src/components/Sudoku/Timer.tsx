@@ -28,7 +28,7 @@ const Timer: Component<TimerProps> = (props) => {
 
       <Control
         key="Space"
-        class="ml-4"
+        class="ml-2 px-2"
         variant="tertiary"
         onClick={props.onPausePlay}
       >

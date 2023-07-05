@@ -20,7 +20,7 @@ const Button: Component<ButtonProps> = (props) => {
         'bg-primary text-white',
         'hover:bg-primary-dark hover:text-white disabled:bg-gray-600',
         props.variant === 'secondary' && 'bg-background-dark-accent',
-        props.variant === 'tertiary' && 'bg-transparent text-black dark:text-white',
+        props.variant === 'tertiary' && 'bg-transparent text-black dark:text-white hover:bg-background-dark-accent',
         props.active && 'bg-primary-dark',
         props.loading && 'animate-pulse',
         props.shape === 'circle' && 'rounded-full aspect-square',
