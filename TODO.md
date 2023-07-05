@@ -29,3 +29,4 @@
 - [x] FIX: Use worker to generate board
 - [x] FIX: FPS drops when a lot of "Normal" cells are filled
 - [x] FIX: Mobile layout is fucked
+- [ ] Add animated clouds on pause
