@@ -245,7 +245,9 @@ function handleClickOutside(this: handleClickOutsideThis, e: MouseEvent) {
     return;
   }
 
-  state.selectedCells.length = 0;
+  if (state.selectedCells.length) {
+    state.selectedCells.length = 0;
+  }
 }
 
 interface initControlsParams {
