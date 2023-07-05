@@ -237,7 +237,7 @@ const HomePage = () => {
         </div>
 
         <div class="relative">
-          <div class="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 z-40">
+          <div class="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 z-50">
             <TipButton
               paused={paused}
             />

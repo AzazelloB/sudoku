@@ -177,6 +177,8 @@ const Board: Component<BoardProps> = (props) => {
 
       renderer.drawBackground(layer_4_ctx);
 
+      renderer.drawClouds(layer_4_ctx, dt);
+
       if (state.debug) {
         renderer.drawFPS(layer_4_ctx, fps);
       }

@@ -552,4 +552,88 @@ export class Renderer {
       }
     }
   }
+
+  #randomNoise(canvas: HTMLCanvasElement) {
+    const ctx = canvas.getContext('2d')!;
+
+    const x = 0;
+    const y = 0;
+    const r = 40 + (this.#theme === 'dark' ? 20 : 120);
+    const g = 50 + (this.#theme === 'dark' ? 20 : 120);
+    const b = 69 + (this.#theme === 'dark' ? 20 : 120);
+    const alpha = 255;
+    const imageData = ctx.getImageData(x, y, this.#width, this.#height);
+
+    const pixels = imageData.data;
+    const n = pixels.length;
+    let i = 0;
+
+    while (i < n) {
+      const brightness = (Math.random() * 256) | 0;
+
+      pixels[i++] = r;
+      pixels[i++] = g;
+      pixels[i++] = b;
+      pixels[i++] = brightness > 128 ? alpha : 0;
+    }
+
+    ctx.putImageData(imageData, x, y);
+
+    return canvas;
+  }
+
+  #noise: HTMLCanvasElement | null = null;
+
+  #seed = Math.random();
+
+  #xoff = 0;
+
+  #yoff = 0;
+
+  #xdir = 0;
+
+  #ydir = 0;
+
+  static cloudSpeed = 0.5;
+
+  drawClouds(ctx: CanvasRenderingContext2D, dt: number) {
+    if (this.#noise === null) {
+      this.#noise = this.#randomNoise(document.createElement('canvas'));
+
+      this.#xdir = Math.random() * 2 - 1;
+      this.#ydir = Math.random() * 2 - 1;
+    }
+
+    ctx.save();
+
+    const noiseCtx = this.#noise.getContext('2d')!;
+
+    // noise is not infinite
+    for (let size = 4; size <= this.#noise.width; size *= 2) {
+      const x = (this.#seed * (this.#noise.width - size)) | 0;
+      const y = (this.#seed * (this.#noise.height - size)) | 0;
+
+      const pixel = noiseCtx.getImageData(x, y, 1, 1).data;
+
+      // console.log(pixel);
+
+      ctx.globalAlpha = 4 / size;
+      ctx.drawImage(
+        this.#noise,
+        x + this.#xoff,
+        y + this.#yoff,
+        size,
+        size,
+        0,
+        0,
+        this.#width,
+        this.#height,
+      );
+    }
+
+    this.#xoff += this.#xdir * Renderer.cloudSpeed * dt;
+    this.#yoff += this.#ydir * Renderer.cloudSpeed * dt;
+
+    ctx.restore();
+  }
 }
