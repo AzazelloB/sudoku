@@ -151,9 +151,21 @@ const Board: Component<BoardProps> = (props) => {
 
     let frame: number;
 
+    let frames = 0;
+    let fps = 0;
+    let lastFpsUpdate = 0;
+
     const gameLoop = (timeStamp: number) => {
       const dt = (timeStamp - prevTimeStamp) / 1000;
       prevTimeStamp = timeStamp;
+
+      frames += 1;
+
+      if (timeStamp > lastFpsUpdate + 1000) {
+        fps = frames;
+        frames = 0;
+        lastFpsUpdate = timeStamp;
+      }
 
       renderer.drawBackground(layer_2_ctx);
 
@@ -166,7 +178,7 @@ const Board: Component<BoardProps> = (props) => {
       renderer.drawBackground(layer_4_ctx);
 
       if (state.debug) {
-        renderer.drawFPS(layer_4_ctx, dt);
+        renderer.drawFPS(layer_4_ctx, fps);
       }
 
       if (state.showControls) {
