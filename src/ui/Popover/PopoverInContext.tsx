@@ -4,13 +4,15 @@ import { ParentComponent, createSignal } from 'solid-js';
 import useClickOutside from '~/hooks/useClickOutside';
 
 const PopoverInContext: ParentComponent = (props) => {
-  const { setState } = useHeadlessDisclosureProperties();
+  const { isOpen, setState } = useHeadlessDisclosureProperties();
 
   const [ref, setRef] = createSignal<HTMLElement | null>(null);
 
   // TODO remove if PopoverOverlay is fixed
   useClickOutside(ref, () => {
-    setState(false);
+    if (isOpen()) {
+      setState(false);
+    }
   });
 
   return (
