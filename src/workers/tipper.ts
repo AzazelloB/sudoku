@@ -10,7 +10,48 @@ export enum TipType {
 type Cell = number | null;
 type Cells = Cell[];
 
-const isValid = (cells: Cells, number: number, col: number, row: number) => {
+const isValid = (cells: Cells, number: number, index: number) => {
+  const col = index % cellsInRow;
+  const row = Math.floor(index / cellsInRow);
+
+  // check row and col
+  for (let i = 0; i < cellsInRow; i++) {
+    const rowIndex = row * cellsInRow + i;
+    const colIndex = col + i * cellsInRow;
+
+    if (rowIndex !== index && cells[rowIndex] === number) {
+      return false;
+    }
+
+    if (colIndex !== index && cells[colIndex] === number) {
+      return false;
+    }
+  }
+
+  // check sudoku area
+  // assuming area is 3x3
+  const areaStartRow = Math.floor(row / 3) * 3;
+  const areaStartCol = Math.floor(col / 3) * 3;
+  const areaEndRow = areaStartRow + 3;
+  const areaEndCol = areaStartCol + 3;
+
+  for (let i = areaStartRow; i < areaEndRow; i++) {
+    for (let j = areaStartCol; j < areaEndCol; j++) {
+      const areaIndex = i * cellsInRow + j;
+
+      if (areaIndex !== index && cells[areaIndex] === number) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+};
+
+// TODO don't be a mega smooth brain and refactor isValidForEasyNakedSingle and isValid to be one function
+// this one need to take row and col as arguments
+// but rowIndex !== row check doesn't make sense so it check a cell against itself
+const isValidForEasyNakedSingle = (cells: Cells, number: number, col: number, row: number) => {
   // check row and col
   for (let i = 0; i < cellsInRow; i++) {
     const rowIndex = row * cellsInRow + i;
@@ -93,7 +134,7 @@ const findEasyNakedSingle = (cells: Cells): CellPosition[] | null => {
       }
 
       for (const number of possible) {
-        if (!isValid(cells, number, i, row)) {
+        if (!isValidForEasyNakedSingle(cells, number, i, row)) {
           avaliavleOnAxis.add(number);
         }
       }
@@ -113,7 +154,7 @@ const findEasyNakedSingle = (cells: Cells): CellPosition[] | null => {
       }
 
       for (const number of possible) {
-        if (!isValid(cells, number, col, i)) {
+        if (!isValidForEasyNakedSingle(cells, number, col, i)) {
           avaliavleOnAxis.add(number);
         }
       }
@@ -192,7 +233,7 @@ const isBoardFinished = (cells: Cells): CellPosition[] | null => {
       return null;
     }
 
-    if (!isValid(cells, cell, i % cellsInColumn, Math.floor(i / cellsInRow))) {
+    if (!isValid(cells, cell, i)) {
       return null;
     }
   }
