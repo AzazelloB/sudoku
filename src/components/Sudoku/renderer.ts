@@ -458,6 +458,19 @@ export class Renderer {
         );
       }
 
+      ctx.save();
+
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          ctx.clearRect(
+            this.#getPixel((this.animatedArea.x + i) * this.#cellWidth),
+            this.#getPixel((this.animatedArea.y + j) * this.#cellHeight),
+            this.#getPixel(this.#cellWidth),
+            this.#getPixel(this.#cellHeight),
+          );
+        }
+      }
+
       for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
           ctx.fillRect(
@@ -468,6 +481,8 @@ export class Renderer {
           );
         }
       }
+
+      ctx.restore();
 
       ctx.globalAlpha = 1;
     } else {

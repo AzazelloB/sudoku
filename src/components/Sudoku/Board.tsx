@@ -157,9 +157,9 @@ const Board: Component<BoardProps> = (props) => {
 
       renderer.drawBackground(layer_2_ctx);
 
-      renderer.drawHighlightedCell(layer_2_ctx, dt);
-
       renderer.drawHighlightedRowColArea(layer_2_ctx, dt);
+
+      renderer.drawHighlightedCell(layer_2_ctx, dt);
 
       renderer.drawFlyIn(layer_2_ctx, dt);
 
