@@ -22,7 +22,6 @@ interface Cell extends CellPosition {
 
 interface State {
   highlightedCell: CellPosition | null;
-  mouseDown: boolean;
   revealed: boolean;
   debug: boolean;
   showControls: boolean;

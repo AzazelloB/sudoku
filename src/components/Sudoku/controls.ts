@@ -19,11 +19,7 @@ import {
 } from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
 
-// TODO add double click check
-// on dbclick select all cells with same value current cell flickers
 const handleMouseDown = (e: MouseEvent) => {
-  state.mouseDown = true;
-
   if (state.highlightedCell === null) {
     return;
   }
@@ -33,7 +29,7 @@ const handleMouseDown = (e: MouseEvent) => {
         && c.row === state.highlightedCell!.row,
   );
 
-  if (selected) {
+  if (selected && e.detail === 1) {
     if (e.ctrlKey) {
       deselectCell(state.highlightedCell);
     } else if (state.selectedCells.length === 1) {
@@ -49,10 +45,6 @@ const handleMouseDown = (e: MouseEvent) => {
 
     selectCell(state.highlightedCell);
   }
-};
-
-const handleMouseUp = () => {
-  state.mouseDown = false;
 };
 
 interface handleMouseMoveThis {
@@ -83,14 +75,13 @@ function handleMouseMove(this: handleMouseMoveThis, e: MouseEvent) {
     row,
   };
 
-  if (state.mouseDown) {
+  if (e.buttons === 1) {
     selectCell(state.highlightedCell);
   }
 }
 
 const handleMouseLeave = () => {
   state.highlightedCell = null;
-  state.mouseDown = false;
 };
 
 const handleDoubleClick = () => {
@@ -271,7 +262,6 @@ export const initControls = ({
   const outiseClickHandler = handleClickOutside.bind({ canvas, panel });
 
   canvas.addEventListener('mousedown', handleMouseDown);
-  canvas.addEventListener('mouseup', handleMouseUp);
   canvas.addEventListener('mousemove', mouseMoveHandler);
   canvas.addEventListener('mouseleave', handleMouseLeave);
   canvas.addEventListener('dblclick', handleDoubleClick);
@@ -281,7 +271,6 @@ export const initControls = ({
 
   return () => {
     canvas.removeEventListener('mousedown', handleMouseDown);
-    canvas.removeEventListener('mouseup', handleMouseUp);
     canvas.removeEventListener('mousemove', mouseMoveHandler);
     canvas.removeEventListener('mouseleave', handleMouseLeave);
     canvas.removeEventListener('dblclick', handleDoubleClick);

@@ -36,7 +36,6 @@ const handler: DeepProxyHandler<any> = {
 
 const proxy: State = new DeepProxy({
   highlightedCell: null,
-  mouseDown: false,
   revealed: false,
   debug: false,
   showControls: false,
