@@ -18,6 +18,9 @@ const messages = {
   [TipType.NOTHING]: {
     message: 'Even I don\'t know what to do',
   },
+  [TipType.TRY_THINKING]: {
+    message: 'Try thinking',
+  },
   [TipType.EASY_NAKED_SINGLE]: {
     message: 'Naked single',
   },

@@ -2,6 +2,7 @@ import { cellsInColumn, cellsInRow } from '~/components/Sudoku/settings';
 
 export enum TipType {
   NOTHING,
+  TRY_THINKING,
   EASY_NAKED_SINGLE,
   NAKED_SINGLE,
   BOARD_FINISHED,
@@ -9,6 +10,23 @@ export enum TipType {
 
 type Cell = number | null;
 type Cells = Cell[];
+
+let lastAttempt = Date.now();
+let attempts = 0;
+
+const checkAttempts = () => {
+  const ts = Date.now();
+  attempts++;
+
+  if (attempts >= 4 && ts - lastAttempt < 5000) {
+    attempts = 0;
+    return [];
+  }
+
+  lastAttempt = ts;
+
+  return null;
+};
 
 const isValid = (cells: Cells, number: number, index: number) => {
   const col = index % cellsInRow;
@@ -245,6 +263,7 @@ type UsefullTips = Exclude<TipType, TipType.NOTHING>;
 type TipFiner = (cells: Cells) => CellPosition[] | null;
 
 const tipCallbackMap: Record<UsefullTips, TipFiner> = {
+  [TipType.TRY_THINKING]: checkAttempts,
   [TipType.EASY_NAKED_SINGLE]: findEasyNakedSingle,
   [TipType.NAKED_SINGLE]: findNakedSingle,
   [TipType.BOARD_FINISHED]: isBoardFinished,
