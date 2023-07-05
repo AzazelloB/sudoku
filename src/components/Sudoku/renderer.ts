@@ -411,7 +411,7 @@ export class Renderer {
         this.animatedHighlightedCell.y = lerp(this.animatedHighlightedCell.y, y, Renderer.hightlightedCellSpeed * dt);
       }
 
-      ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
+      ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark-accent'];
       ctx.globalAlpha = 0.2;
       ctx.fillRect(
         this.#getPixel(this.animatedHighlightedCell.x),
@@ -437,7 +437,7 @@ export class Renderer {
         this.animatedArea.y = lerp(this.animatedArea.y, y, Renderer.hightlightedCellSpeed * dt);
       }
 
-      ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
+      ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark-accent'];
       ctx.globalAlpha = 0.1;
 
       for (let i = 0; i < cellsInRow; i += 1) {
@@ -494,7 +494,7 @@ export class Renderer {
     } else {
       ctx.strokeStyle = colors.background['light-accent'];
     }
-    ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
+    ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark-accent'];
     ctx.lineWidth = lineWidth;
 
     ctx.strokeRect(
