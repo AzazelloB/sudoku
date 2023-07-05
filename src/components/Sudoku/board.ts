@@ -3,31 +3,14 @@ import { DifficultyLevel } from '~/constants/difficulty';
 import { cellsInColumn, cellsInRow } from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
 
-import BoardGenerator from '~/workers/boardGenerator?worker';
-
-let worker: Worker;
+import { delegateTaskTo } from '~/utils/humanResources';
 
 export const generateGrid = async (difficulty: DifficultyLevel) => {
-  return new Promise((resolve, reject) => {
-    if (window.Worker) {
-      worker = worker instanceof Worker ? worker : new BoardGenerator();
-
-      worker.postMessage({
-        difficulty,
-      });
-
-      const callback = (message: MessageEvent) => {
-        state.cells = message.data;
-        resolve(message.data);
-
-        worker.removeEventListener('message', callback);
-      };
-
-      worker.addEventListener('message', callback);
-    } else {
-      reject(new Error('No worker object'));
-    }
+  const response = await delegateTaskTo('boardGenerator', {
+    difficulty,
   });
+
+  state.cells = response;
 };
 
 export const checkIfSolved = (cells: Cell[]) => {
