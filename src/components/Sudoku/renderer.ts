@@ -334,7 +334,16 @@ export class Renderer {
 
         const value = state.revealed ? cell.answer : cell.value;
 
+        if (this.#theme === 'dark') {
+          ctx.fillStyle = colors.secondary.light;
+        } else {
+          ctx.fillStyle = colors.secondary.light;
+        }
+
         if (cell.revealed) {
+          if (this.#theme === 'light') {
+            ctx.shadowBlur = 0;
+          }
           ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
           ctx.font = `${fontSize}px ${Renderer.fontFamily}`;
           ctx.fillText(
@@ -342,13 +351,18 @@ export class Renderer {
             this.#getPixel(i * this.#cellWidth + this.#cellWidth / 2),
             this.#getPixel(j * this.#cellHeight + this.#cellHeight / 2),
           );
+          if (this.#theme === 'light') {
+            ctx.strokeStyle = colors.background.light;
+            ctx.lineWidth = this.#getPixel(this.#width * 0.002);
+            ctx.strokeText(
+              cell.answer.toString(),
+              this.#getPixel(i * this.#cellWidth + this.#cellWidth / 2),
+              this.#getPixel(j * this.#cellHeight + this.#cellHeight / 2),
+            );
+          }
         } else if (value) {
-          if (this.#theme === 'dark') {
-            ctx.fillStyle = colors.secondary.light;
-          } else if (cell.colors.length > 0 && !cell.colors.includes('transparent')) {
-            ctx.fillStyle = colors.background.light;
-          } else {
-            ctx.fillStyle = colors.primary.dark;
+          if (this.#theme === 'light') {
+            ctx.shadowBlur = this.#width * 0.005;
           }
 
           ctx.font = `${fontSize}px ${Renderer.fontFamily}`;
@@ -358,7 +372,9 @@ export class Renderer {
             this.#getPixel(j * this.#cellHeight + this.#cellHeight / 2),
           );
         } else {
-          ctx.fillStyle = colors.secondary[this.#theme === 'dark' ? 'light' : 'dark'];
+          if (this.#theme === 'light') {
+            ctx.shadowBlur = this.#width * 0.004;
+          }
           ctx.font = `${fontSize / 2.4}px ${Renderer.fontFamily}`;
           cell.corner.forEach((value, valueI) => {
             ctx.fillText(
