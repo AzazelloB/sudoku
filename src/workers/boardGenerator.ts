@@ -87,7 +87,7 @@ const createSolutionCounter = () => {
   return function countSolutions(cells: Cells, count = 0) {
     iter++;
 
-    if (iter > 1_000_000) {
+    if (iter > 100_000) {
       throw new Error('enough');
     }
 
@@ -144,7 +144,7 @@ const mask = (cells: Cells, difficulty: DifficultyLevel): Cells => {
   }
 };
 
-onmessage = ({ data: { difficulty } }) => {
+export const onMessage = ({ data: { difficulty } }: { data: { difficulty: DifficultyLevel } }) => {
   const solved = new Array(cellsInRow * cellsInColumn).fill(null);
   solve(solved);
 
@@ -164,6 +164,12 @@ onmessage = ({ data: { difficulty } }) => {
       colors: [],
     });
   }
+
+  return cells;
+};
+
+onmessage = ({ data: { difficulty } }) => {
+  const cells = onMessage({ data: { difficulty } });
 
   postMessage(cells);
 };
