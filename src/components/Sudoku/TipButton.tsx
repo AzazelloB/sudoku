@@ -75,7 +75,7 @@ const TipButton: Component<TipButtonProps> = (props) => {
         as={Button}
         title="Get a tip"
         class={twMerge(
-          'p-3',
+          'p-2 lg:p-3',
           'transition-all ease-in-out duration-200',
           props.paused() && 'opacity-0 pointer-events-none',
         )}
