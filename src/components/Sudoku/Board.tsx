@@ -92,6 +92,12 @@ const Board: Component<BoardProps> = (props) => {
     onResize();
     window.addEventListener('resize', onResize);
 
+    document.fonts.ready.then(() => {
+      renderer.pushToRenderQueue(() => {
+        drawStaticLayers(layer_1_ctx, layer_3_ctx);
+      });
+    });
+
     onCleanup(() => {
       window.removeEventListener('resize', onResize);
     });
