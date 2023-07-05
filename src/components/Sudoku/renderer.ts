@@ -461,27 +461,19 @@ export class Renderer {
 
       ctx.save();
 
-      for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
-          ctx.clearRect(
-            this.#getPixel((this.animatedArea.x + i) * this.#cellWidth),
-            this.#getPixel((this.animatedArea.y + j) * this.#cellHeight),
-            this.#getPixel(this.#cellWidth),
-            this.#getPixel(this.#cellHeight),
-          );
-        }
-      }
+      ctx.clearRect(
+        this.#getPixel((this.animatedArea.x) * this.#cellWidth),
+        this.#getPixel((this.animatedArea.y) * this.#cellHeight),
+        this.#getPixel(this.#cellWidth * 3),
+        this.#getPixel(this.#cellHeight * 3),
+      );
 
-      for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
-          ctx.fillRect(
-            this.#getPixel((this.animatedArea.x + i) * this.#cellWidth),
-            this.#getPixel((this.animatedArea.y + j) * this.#cellHeight),
-            this.#getPixel(this.#cellWidth),
-            this.#getPixel(this.#cellHeight),
-          );
-        }
-      }
+      ctx.fillRect(
+        this.#getPixel((this.animatedArea.x) * this.#cellWidth),
+        this.#getPixel((this.animatedArea.y) * this.#cellHeight),
+        this.#getPixel(this.#cellWidth * 3),
+        this.#getPixel(this.#cellHeight * 3),
+      );
 
       ctx.restore();
 
