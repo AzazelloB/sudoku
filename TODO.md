@@ -15,7 +15,7 @@
 - [x] Coloring the grid
 - [x] Double click to select same color
 - [x] Stop timer forever after solved
-- [ ] Hint system
+- [x] Hint system
 - [ ] Restrict features to lvl of difficulty
 - [x] Scale board according to window size
 - [ ] Touch support
