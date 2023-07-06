@@ -553,14 +553,18 @@ export class Renderer {
     }
   }
 
-  #randomNoise(canvas: HTMLCanvasElement) {
+  #generateRandomNoise() {
+    const canvas = document.createElement('canvas');
+    canvas.width = this.#width;
+    canvas.height = this.#height;
+
     const ctx = canvas.getContext('2d')!;
 
     const x = 0;
     const y = 0;
-    const r = 40 + (this.#theme === 'dark' ? 20 : 120);
-    const g = 50 + (this.#theme === 'dark' ? 20 : 120);
-    const b = 69 + (this.#theme === 'dark' ? 20 : 120);
+    // const r = 40 + (this.#theme === 'dark' ? 20 : 120);
+    // const g = 50 + (this.#theme === 'dark' ? 20 : 120);
+    // const b = 69 + (this.#theme === 'dark' ? 20 : 120);
     const alpha = 255;
     const imageData = ctx.getImageData(x, y, this.#width, this.#height);
 
@@ -571,10 +575,10 @@ export class Renderer {
     while (i < n) {
       const brightness = (Math.random() * 256) | 0;
 
-      pixels[i++] = r;
-      pixels[i++] = g;
-      pixels[i++] = b;
-      pixels[i++] = brightness > 128 ? alpha : 0;
+      pixels[i++] = brightness;
+      pixels[i++] = brightness;
+      pixels[i++] = brightness;
+      pixels[i++] = alpha;
     }
 
     ctx.putImageData(imageData, x, y);
@@ -582,7 +586,40 @@ export class Renderer {
     return canvas;
   }
 
-  #noise: HTMLCanvasElement | null = null;
+  #generatePerlinNoise() {
+    if (this.#randomNoise === null) {
+      this.#randomNoise = this.#generateRandomNoise();
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width = this.#width;
+    canvas.height = this.#height;
+    const ctx = canvas.getContext('2d')!;
+
+    for (let size = 4; size <= this.#randomNoise.width; size *= 2) {
+      const x = (this.#seed * (this.#randomNoise.width - size)) | 0;
+      const y = (this.#seed * (this.#randomNoise.height - size)) | 0;
+
+      ctx.globalAlpha = 4 / size;
+      ctx.drawImage(
+        this.#randomNoise,
+        x,
+        y,
+        size,
+        size,
+        0,
+        0,
+        this.#width,
+        this.#height,
+      );
+    }
+
+    return canvas;
+  }
+
+  #randomNoise: HTMLCanvasElement | null = null;
+
+  #perlinNoise: HTMLCanvasElement | null = null;
 
   #seed = Math.random();
 
@@ -597,43 +634,55 @@ export class Renderer {
   static cloudSpeed = 0.5;
 
   drawClouds(ctx: CanvasRenderingContext2D, dt: number) {
-    if (this.#noise === null) {
-      this.#noise = this.#randomNoise(document.createElement('canvas'));
+    if (this.#perlinNoise === null) {
+      this.#perlinNoise = this.#generatePerlinNoise();
 
       this.#xdir = Math.random() * 2 - 1;
       this.#ydir = Math.random() * 2 - 1;
     }
 
-    ctx.save();
+    // ctx.save();
 
-    const noiseCtx = this.#noise.getContext('2d')!;
+    // const imageData = this.#perlinNoise.getContext('2d')!.getImageData(0, 0, this.#width, this.#height);
 
-    // noise is not infinite
-    for (let size = 4; size <= this.#noise.width; size *= 2) {
-      const x = (this.#seed * (this.#noise.width - size)) | 0;
-      const y = (this.#seed * (this.#noise.height - size)) | 0;
+    // const pixels = imageData.data;
+    // const n = pixels.length;
+    // let i = 0;
 
-      const pixel = noiseCtx.getImageData(x, y, 1, 1).data;
+    // while (i < n) {
+    //   pixels[i] = pixels[i++];
+    //   pixels[i] = pixels[i++];
+    //   pixels[i] = pixels[i++];
+    //   pixels[i] = pixels[i++] > 128 ? 255 : 0;
+    // }
 
-      // console.log(pixel);
+    // ctx.putImageData(imageData, 0, 0);
 
-      ctx.globalAlpha = 4 / size;
-      ctx.drawImage(
-        this.#noise,
-        x + this.#xoff,
-        y + this.#yoff,
-        size,
-        size,
-        0,
-        0,
-        this.#width,
-        this.#height,
-      );
+    const x = 0;
+    const y = 0;
+    const w = this.#width / 3;
+    const h = this.#height / 3;
+
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        // tile semalessly
+        ctx.drawImage(
+          this.#perlinNoise,
+          x,
+          y,
+          this.#perlinNoise.width,
+          this.#perlinNoise.height,
+          i * w,
+          j * h,
+          w,
+          h,
+        );
+      }
     }
 
     this.#xoff += this.#xdir * Renderer.cloudSpeed * dt;
     this.#yoff += this.#ydir * Renderer.cloudSpeed * dt;
 
-    ctx.restore();
+    // ctx.restore();
   }
 }
