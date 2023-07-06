@@ -26,6 +26,7 @@ interface TipDataWithExplanation extends TipData {
   hasExplanation: true;
   name: string;
   description: string;
+  content?: string;
 }
 
 interface TipDataWithoutExplanation extends TipData {
@@ -48,6 +49,7 @@ const tips: Tips = {
     hasExplanation: true,
     name: 'Naked single',
     description: 'is a cell that has only one possible value.',
+    content: 'Pro tip: You can double click on a cell to select similar cells.',
   },
   [TipType.NAKED_SINGLE]: {
     message: 'Look closer, it\'s a naked single',
@@ -141,11 +143,12 @@ const TipButton: Component<TipButtonProps> = (props) => {
             class="max-w-sm lg:max-w-xl"
           >
             {({ closeModal }) => (
-              <div class="flex flex-col items-center">
+              <div class="flex flex-col">
                 <SequencedBoard
                   animation={animation as unknown as Animation}
                   width={400}
                   height={400}
+                  class="mx-auto"
                 />
 
                 <p class="mt-6 text-lg">
@@ -153,8 +156,12 @@ const TipButton: Component<TipButtonProps> = (props) => {
                   &nbsp;{tipExp().description}
                 </p>
 
+                <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                  {tipExp().content}
+                </p>
+
                 <Button
-                  class="ml-auto mt-4"
+                  class="ml-auto mt-6"
                   onClick={closeModal}
                 >
                   Close

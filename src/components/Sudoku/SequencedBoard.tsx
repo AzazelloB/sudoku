@@ -43,6 +43,7 @@ interface SequencedBoardProps {
   cropY?: number;
   cropWidth?: number;
   cropHeight?: number;
+  class?: string;
 }
 
 const defaultProps = {
@@ -239,6 +240,7 @@ const SequencedBoard: Component<SequencedBoardProps> = (potentialProps) => {
       ref={canvas!}
       width={canvasWidth() * scale}
       height={canvasHeight() * scale}
+      class={props.class}
       style={{
         width: `${canvasWidth()}px`,
         height: `${canvasHeight()}px`,
