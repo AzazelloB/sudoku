@@ -212,7 +212,7 @@ const HomePage = () => {
             <Control
               as={Button}
               key="R"
-              class="mr-4"
+              class="lg:mr-4"
               loading={generatingNewBoard()}
               onClick={handleNewGame}
             >
