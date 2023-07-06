@@ -6,7 +6,6 @@ import {
   cellsInRow,
   scale,
 } from '~/components/Sudoku/settings';
-import { state } from '~/components/Sudoku/state';
 
 export class Renderer {
   #renderQueue: CallableFunction[] = [];
@@ -109,6 +108,31 @@ export class Renderer {
 
   setTheme(theme: Theme) {
     this.#theme = theme;
+  }
+
+  setCrop(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number) {
+    ctx.scale(
+      this.#width / width,
+      this.#height / height,
+    );
+
+    ctx.translate(
+      -x,
+      -y,
+    );
+  }
+
+  getAnimatedHighlightedCellPosition(): CellPosition | null {
+    if (!this.animatedHighlightedCell) {
+      return null;
+    }
+
+    const { x, y } = this.animatedHighlightedCell;
+
+    return {
+      col: Math.round(x / this.#cellWidth),
+      row: Math.round(y / this.#cellHeight),
+    };
   }
 
   pushToRenderQueue(fn: CallableFunction) {
@@ -237,12 +261,12 @@ export class Renderer {
     ctx.clearRect(0, 0, this.#width, this.#height);
   }
 
-  drawCellColors(ctx: CanvasRenderingContext2D) {
+  drawCellColors(ctx: CanvasRenderingContext2D, cells: Cell[]) {
     this.#drawShadow(ctx);
 
     for (let i = 0; i < cellsInRow; i += 1) {
       for (let j = 0; j < cellsInColumn; j += 1) {
-        const cell = state.cells[j * cellsInRow + i];
+        const cell = cells[j * cellsInRow + i];
 
         if (cell.colors.length === 0) {
           continue;
@@ -323,7 +347,7 @@ export class Renderer {
     ctx.globalAlpha = 1;
   }
 
-  drawValues(ctx: CanvasRenderingContext2D) {
+  drawValues(ctx: CanvasRenderingContext2D, cells: Cell[], revealed = false) {
     this.#drawShadow(ctx);
 
     ctx.textAlign = 'center';
@@ -331,9 +355,9 @@ export class Renderer {
     const fontSize = this.#width / cellsInRow / 1.5;
     for (let i = 0; i < cellsInRow; i += 1) {
       for (let j = 0; j < cellsInColumn; j += 1) {
-        const cell = state.cells[j * cellsInRow + i];
+        const cell = cells[j * cellsInRow + i];
 
-        const value = state.revealed ? cell.answer : cell.value;
+        const value = revealed ? cell.answer : cell.value;
 
         if (this.#theme === 'dark') {
           ctx.fillStyle = colors.secondary.light;
@@ -400,10 +424,10 @@ export class Renderer {
     ctx.shadowBlur = 0;
   }
 
-  drawHighlightedCell(ctx: CanvasRenderingContext2D, dt:number) {
-    if (state.highlightedCell) {
-      const x = state.highlightedCell.col * this.#cellWidth;
-      const y = state.highlightedCell.row * this.#cellHeight;
+  drawHighlightedCell(ctx: CanvasRenderingContext2D, dt: number, highlightedCell: CellPosition | null) {
+    if (highlightedCell) {
+      const x = highlightedCell.col * this.#cellWidth;
+      const y = highlightedCell.row * this.#cellHeight;
 
       if (this.animatedHighlightedCell === null) {
         this.animatedHighlightedCell = { x, y };
@@ -426,10 +450,14 @@ export class Renderer {
     }
   }
 
-  drawHighlightedRowColArea(ctx: CanvasRenderingContext2D, dt: number) {
-    if (state.highlightedCell !== null && this.animatedHighlightedCell !== null) {
-      const x = Math.floor(state.highlightedCell.col / 3) * 3;
-      const y = Math.floor(state.highlightedCell.row / 3) * 3;
+  drawHighlightedRowColArea(
+    ctx: CanvasRenderingContext2D,
+    dt: number,
+    highlightedCell: CellPosition | null,
+  ) {
+    if (highlightedCell !== null && this.animatedHighlightedCell !== null) {
+      const x = Math.floor(highlightedCell.col / 3) * 3;
+      const y = Math.floor(highlightedCell.row / 3) * 3;
 
       if (this.animatedArea === null) {
         this.animatedArea = { x, y };
@@ -483,8 +511,8 @@ export class Renderer {
     }
   }
 
-  drawSelection(ctx: CanvasRenderingContext2D) {
-    state.selectedCells.forEach((cell) => {
+  drawSelection(ctx: CanvasRenderingContext2D, selectedCells: CellPosition[]) {
+    selectedCells.forEach((cell) => {
       this.drawSelectedCell(ctx, {
         x: cell.col * this.#cellWidth,
         y: cell.row * this.#cellHeight,

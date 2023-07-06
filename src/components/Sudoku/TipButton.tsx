@@ -1,5 +1,5 @@
 import {
-  Accessor, Component, createSignal, Show,
+  Accessor, Component, createSignal, Ref, Show,
 } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 
@@ -14,6 +14,8 @@ import Modal from '~/ui/Modal';
 import Link from '~/ui/Link';
 
 import { state } from '~/components/Sudoku/state';
+import SequencedBoard, { Animation } from '~/components/Sudoku/SequencedBoard';
+import animation from '~/components/Sudoku/nakedSingleAnimation.json';
 
 interface TipData {
   message: string;
@@ -58,6 +60,8 @@ const tips: Tips = {
 };
 
 interface TipButtonProps {
+  ref: Ref<HTMLDivElement>;
+  modalRef: Ref<HTMLDivElement>;
   paused: Accessor<boolean>;
 }
 
@@ -91,63 +95,76 @@ const TipButton: Component<TipButtonProps> = (props) => {
   const tipExp = () => tips[tipType()!] as TipDataWithExplanation;
 
   return (
-    <Modal>
-      <Popover>
-        <Popover.Button
-          as={Button}
-          title="Get a tip"
-          class={twMerge(
-            'p-2 lg:p-3',
-            'transition-all ease-in-out duration-200',
-            props.paused() && 'opacity-0 pointer-events-none',
-          )}
-          variant="secondary"
-          shape="circle"
-          onClick={handleTip}
-        >
-          <Bulb class="w-4 h-4" />
-        </Popover.Button>
+    <div
+      ref={props.ref}
+    >
+      <Modal>
+        <Popover>
+          <Popover.Button
+            as={Button}
+            title="Get a tip"
+            class={twMerge(
+              'p-2 lg:p-3',
+              'transition-all ease-in-out duration-200',
+              props.paused() && 'opacity-0 pointer-events-none',
+            )}
+            variant="secondary"
+            shape="circle"
+            onClick={handleTip}
+          >
+            <Bulb class="w-4 h-4" />
+          </Popover.Button>
 
-        <Popover.Content
-          class="left-0 flex flex-col"
-        >
-            <Show when={tipType()} fallback="Thinking...">
-              <p class="text-sm">
-                <strong class="font-semibold">{tip().message}</strong>
-              </p>
+          <Popover.Content
+            class="left-0 flex flex-col"
+          >
+              <Show when={tipType()} fallback="Thinking...">
+                <p class="text-sm">
+                  <strong class="font-semibold">{tip().message}</strong>
+                </p>
 
-              <Show when={tipType() && tips[tipType()!].hasExplanation}>
-                <Modal.Button
-                  as={Link}
-                  class="ml-auto mt-1 text-xs text-gray-400"
-                >
-                  What's that?
-                </Modal.Button>
+                <Show when={tipType() && tips[tipType()!].hasExplanation}>
+                  <Modal.Button
+                    as={Link}
+                    class="ml-auto mt-1 text-xs text-gray-400"
+                  >
+                    What's that?
+                  </Modal.Button>
+                </Show>
               </Show>
-            </Show>
-        </Popover.Content>
-      </Popover>
+          </Popover.Content>
+        </Popover>
 
-      <Show when={tipType() && tips[tipType()!].hasExplanation}>
-        <Modal.Content>
-          {({ closeModal }) => (
-            <div class="flex flex-col">
-              <p class="text-lg">
-                <strong class="font-semibold">{tipExp().name}</strong>
-                &nbsp;{tipExp().description}
-              </p>
+        <Show when={tipType() && tips[tipType()!].hasExplanation}>
+          <Modal.Content
+            ref={props.modalRef}
+            class="max-w-sm lg:max-w-xl"
+          >
+            {({ closeModal }) => (
+              <div class="flex flex-col items-center">
+                <SequencedBoard
+                  animation={animation as unknown as Animation}
+                  width={400}
+                  height={400}
+                />
 
-              <Button
-                class="ml-auto mt-4"
-                onClick={closeModal}
-              >
-                Close
-              </Button>
-            </div>
-          )}
-        </Modal.Content>
-      </Show>
-    </Modal>
+                <p class="mt-6 text-lg">
+                  <strong class="font-semibold">{tipExp().name}</strong>
+                  &nbsp;{tipExp().description}
+                </p>
+
+                <Button
+                  class="ml-auto mt-4"
+                  onClick={closeModal}
+                >
+                  Close
+                </Button>
+              </div>
+            )}
+          </Modal.Content>
+        </Show>
+      </Modal>
+    </div>
   );
 };
 

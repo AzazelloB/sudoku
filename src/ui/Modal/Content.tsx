@@ -5,13 +5,15 @@ import {
   TransitionChild,
   DialogOverlay,
 } from 'solid-headless';
-import classNames from 'classnames';
-import { Component, JSX } from 'solid-js';
+import { Component, JSX, Ref } from 'solid-js';
 import { Portal } from 'solid-js/web';
+import { twMerge } from 'tailwind-merge';
 
 import { useModalContext } from '~/context/ModalContext';
 
 interface ContentProps {
+  ref?: Ref<HTMLDivElement>;
+  class?: string;
   children: (props: { closeModal: () => void }) => JSX.Element;
 }
 
@@ -23,14 +25,14 @@ const Content: Component<ContentProps> = (props) => {
   };
 
   return (
-    <Portal>
+    <Portal ref={props.ref}>
       <Transition
         appear
         show={open()}
       >
         <Dialog
           isOpen
-          class="fixed inset-0 z-30 overflow-y-auto"
+          class="fixed inset-0 z-50 overflow-y-auto"
           onClose={closeModal}
         >
           <div class="h-full flex items-center justify-center">
@@ -53,9 +55,10 @@ const Content: Component<ContentProps> = (props) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <DialogPanel class={classNames(
+              <DialogPanel class={twMerge(
                 'w-full max-w-md px-8 py-6 overflow-hidden transition-all transform',
                 'bg-background dark:bg-background-dark-accent shadow-xl rounded-2xl',
+                props.class,
               )}>
                 {props.children({ closeModal })}
               </DialogPanel>

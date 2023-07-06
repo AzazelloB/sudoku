@@ -20,9 +20,9 @@ import { selectCell } from '~/components/Sudoku/board';
 
 interface BoardProps {
   paused: () => boolean;
-  panel: Accessor<HTMLElement | null>;
   mode: Accessor<InsertionMode>;
   tool: Accessor<Tool>;
+  clickOutsideExceptions: Accessor<HTMLElement | null>[];
 }
 
 const Board: Component<BoardProps> = (props) => {
@@ -60,12 +60,12 @@ const Board: Component<BoardProps> = (props) => {
     renderer.drawBackground(layer_1_ctx);
     renderer.drawBackground(layer_3_ctx);
 
-    renderer.drawCellColors(layer_1_ctx);
+    renderer.drawCellColors(layer_1_ctx, state.cells);
     renderer.drawGrid(layer_1_ctx);
 
-    renderer.drawSelection(layer_3_ctx);
+    renderer.drawSelection(layer_3_ctx, state.selectedCells);
 
-    renderer.drawValues(layer_3_ctx);
+    renderer.drawValues(layer_3_ctx, state.cells, state.revealed);
   };
 
   onMount(() => {
@@ -169,9 +169,9 @@ const Board: Component<BoardProps> = (props) => {
 
       renderer.drawBackground(layer_2_ctx);
 
-      renderer.drawHighlightedRowColArea(layer_2_ctx, dt);
+      renderer.drawHighlightedRowColArea(layer_2_ctx, dt, state.highlightedCell);
 
-      renderer.drawHighlightedCell(layer_2_ctx, dt);
+      renderer.drawHighlightedCell(layer_2_ctx, dt, state.highlightedCell);
 
       renderer.drawFlyIn(layer_2_ctx, dt);
 
@@ -202,9 +202,9 @@ const Board: Component<BoardProps> = (props) => {
 
     const cleanup = initControls({
       canvas: layer_2,
-      panel: props.panel()!,
       mode: props.mode(),
       tool: props.tool(),
+      clickOutsideExceptions: props.clickOutsideExceptions.map((ref) => ref()),
     });
 
     onCleanup(cleanup);

@@ -28,12 +28,13 @@ import {
 import Panel from '~/components/Sudoku/Panel';
 import CheckModal from '~/components/Sudoku/CheckModal';
 import Timer from '~/components/Sudoku/Timer';
-
 import TipButton from '~/components/Sudoku/TipButton';
 
 const HomePage = () => {
   const [cells, setCells] = useLocalStorage<Cell[]>('cells', []);
 
+  const [tipBtnRef, setTipBtnRef] = createSignal<HTMLElement | null>(null);
+  const [modalRef, setModalRef] = createSignal<HTMLElement | null>(null);
   const [panelRef, setPanelRef] = createSignal<HTMLElement | null>(null);
 
   const [mode, setMode] = createSignal<InsertionMode>('middle');
@@ -239,6 +240,8 @@ const HomePage = () => {
         <div class="relative">
           <div class="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 z-40">
             <TipButton
+              ref={setTipBtnRef}
+              modalRef={setModalRef}
               paused={paused}
             />
           </div>
@@ -274,10 +277,10 @@ const HomePage = () => {
             },
           )}>
             <Board
-              panel={panelRef}
               mode={mode}
               tool={tool}
               paused={paused}
+              clickOutsideExceptions={[panelRef, tipBtnRef, modalRef]}
             />
           </div>
         </div>

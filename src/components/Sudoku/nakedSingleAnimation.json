@@ -1,0 +1,874 @@
+{
+  "sequence": [
+    {
+      "name": "highlightedCell",
+      "steps": [
+        {
+          "col": 0,
+          "row": 0
+        },
+        {
+          "col": 8,
+          "row": 1
+        }
+      ]
+    },
+    {
+      "name": "selectedCells",
+      "atOnce": true,
+      "steps": [
+        {
+          "col": 8,
+          "row": 1
+        },
+        {
+          "col": 5,
+          "row": 3
+        },
+        {
+          "col": 4,
+          "row": 8
+        }
+      ]
+    },
+    {
+      "name": "highlightedCell",
+      "steps": [
+        {
+          "col": 8,
+          "row": 1
+        },
+        {
+          "col": 3,
+          "row": 0
+        }
+      ]
+    },
+    {
+      "name": "cells",
+      "steps": [
+        {
+          "col": 3,
+          "row": 0,
+          "value": 6
+        }
+      ]
+    }
+  ],
+  "state": {
+    "highlightedCell": null,
+    "selectedCells": [],
+    "cells": [
+      {
+        "value": null,
+        "answer": 1,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 0,
+        "row": 0,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 2,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 1,
+        "row": 0,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 8,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 2,
+        "row": 0,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 6,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 3,
+        "row": 0,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 3,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 4,
+        "row": 0,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 7,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 5,
+        "row": 0,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 5,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 6,
+        "row": 0,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 4,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 7,
+        "row": 0,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 9,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 8,
+        "row": 0,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 3,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 0,
+        "row": 1,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 5,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 1,
+        "row": 1,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 9,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 2,
+        "row": 1,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 8,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 3,
+        "row": 1,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 2,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 4,
+        "row": 1,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 4,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 5,
+        "row": 1,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 1,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 6,
+        "row": 1,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 7,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 7,
+        "row": 1,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 6,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 8,
+        "row": 1,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 6,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 0,
+        "row": 2,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 4,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 1,
+        "row": 2,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 7,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 2,
+        "row": 2,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 9,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 3,
+        "row": 2,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 1,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 4,
+        "row": 2,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 5,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 5,
+        "row": 2,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 2,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 6,
+        "row": 2,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 8,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 7,
+        "row": 2,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 3,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 8,
+        "row": 2,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 9,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 0,
+        "row": 3,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 8,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 1,
+        "row": 3,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 5,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 2,
+        "row": 3,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 1,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 3,
+        "row": 3,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 4,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 4,
+        "row": 3,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 6,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 5,
+        "row": 3,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 7,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 6,
+        "row": 3,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 3,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 7,
+        "row": 3,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 2,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 8,
+        "row": 3,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 4,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 0,
+        "row": 4,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 3,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 1,
+        "row": 4,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 2,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 2,
+        "row": 4,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 5,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 3,
+        "row": 4,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 7,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 4,
+        "row": 4,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 9,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 5,
+        "row": 4,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 8,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 6,
+        "row": 4,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 6,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 7,
+        "row": 4,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 1,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 8,
+        "row": 4,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 7,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 0,
+        "row": 5,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 6,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 1,
+        "row": 5,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 1,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 2,
+        "row": 5,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 3,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 3,
+        "row": 5,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 8,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 4,
+        "row": 5,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 2,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 5,
+        "row": 5,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 4,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 6,
+        "row": 5,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 9,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 7,
+        "row": 5,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 5,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 8,
+        "row": 5,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 8,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 0,
+        "row": 6,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 1,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 1,
+        "row": 6,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 6,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 2,
+        "row": 6,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 4,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 3,
+        "row": 6,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 5,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 4,
+        "row": 6,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 3,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 5,
+        "row": 6,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 9,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 6,
+        "row": 6,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 2,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 7,
+        "row": 6,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 7,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 8,
+        "row": 6,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 5,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 0,
+        "row": 7,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 7,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 1,
+        "row": 7,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 3,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 2,
+        "row": 7,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 2,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 3,
+        "row": 7,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 9,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 4,
+        "row": 7,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 8,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 5,
+        "row": 7,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 6,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 6,
+        "row": 7,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 1,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 7,
+        "row": 7,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 4,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 8,
+        "row": 7,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 2,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 0,
+        "row": 8,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 9,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 1,
+        "row": 8,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 4,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 2,
+        "row": 8,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 7,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 3,
+        "row": 8,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 6,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 4,
+        "row": 8,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 1,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 5,
+        "row": 8,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 3,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 6,
+        "row": 8,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 5,
+        "revealed": true,
+        "corner": [],
+        "middle": [],
+        "col": 7,
+        "row": 8,
+        "colors": []
+      },
+      {
+        "value": null,
+        "answer": 8,
+        "revealed": false,
+        "corner": [],
+        "middle": [],
+        "col": 8,
+        "row": 8,
+        "colors": []
+      }
+    ]
+  }
+}

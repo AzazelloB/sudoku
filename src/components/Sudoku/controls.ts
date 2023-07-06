@@ -227,12 +227,12 @@ function handleKeyboardDown(this: handleKeyboardDownThis, e: KeyboardEvent) {
 
 interface handleClickOutsideThis {
   canvas: HTMLCanvasElement;
-  panel: HTMLElement;
+  exceptions: (HTMLElement | null)[];
 }
 
 function handleClickOutside(this: handleClickOutsideThis, e: MouseEvent) {
   if ((this.canvas && this.canvas.contains(e.target as Node))
-   || (this.panel && this.panel.contains(e.target as Node))
+   || this.exceptions.some((el) => el && el.contains(e.target as Node))
   ) {
     return;
   }
@@ -244,23 +244,23 @@ function handleClickOutside(this: handleClickOutsideThis, e: MouseEvent) {
 
 interface initControlsParams {
   canvas: HTMLCanvasElement;
-  panel: HTMLElement;
   mode: InsertionMode;
   tool: Tool;
+  clickOutsideExceptions: (HTMLElement | null)[];
 }
 
 export const initControls = ({
   canvas,
-  panel,
   mode,
   tool,
+  clickOutsideExceptions,
 }: initControlsParams) => {
   const mouseMoveHandler = handleMouseMove.bind({ canvas });
   const keyboardDownHandler = handleKeyboardDown.bind({
     mode,
     tool,
   });
-  const outiseClickHandler = handleClickOutside.bind({ canvas, panel });
+  const outiseClickHandler = handleClickOutside.bind({ canvas, exceptions: clickOutsideExceptions });
 
   canvas.addEventListener('mousedown', handleMouseDown);
   canvas.addEventListener('mousemove', mouseMoveHandler);
