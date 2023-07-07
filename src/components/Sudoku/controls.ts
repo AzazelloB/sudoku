@@ -49,6 +49,10 @@ const handleMouseDown = (e: MouseEvent) => {
   }
 };
 
+const handleTouchStart = () => {
+  state.selectedCells.length = 0;
+};
+
 function handleMove(col: number, row: number, selecting: boolean) {
   if (state.highlightedCell && state.highlightedCell.col === col && state.highlightedCell.row === row) {
     return;
@@ -283,6 +287,7 @@ export const initControls = ({
   canvas.addEventListener('mousedown', handleMouseDown);
   canvas.addEventListener('mousemove', mouseMoveHandler);
   canvas.addEventListener('touchmove', touchMoveHandler);
+  canvas.addEventListener('touchstart', handleTouchStart);
   canvas.addEventListener('mouseleave', handleMouseLeave);
   canvas.addEventListener('dblclick', handleDoubleClick);
 
@@ -293,6 +298,7 @@ export const initControls = ({
     canvas.removeEventListener('mousedown', handleMouseDown);
     canvas.removeEventListener('mousemove', mouseMoveHandler);
     canvas.removeEventListener('touchmove', touchMoveHandler);
+    canvas.removeEventListener('touchstart', handleTouchStart);
     canvas.removeEventListener('mouseleave', handleMouseLeave);
     canvas.removeEventListener('dblclick', handleDoubleClick);
 
