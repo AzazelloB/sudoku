@@ -21,7 +21,10 @@ const Timer: Component<TimerProps> = (props) => {
       props.class,
     )}>
       <span
-        class="pt-1 font-mono font-bold"
+        class={twMerge(
+          'pt-1 font-mono font-bold',
+          formatTime(props.time()).length > 5 ? 'text-xs lg:text-sm' : 'text-md',
+        )}
       >
         {formatTime(props.time())}
       </span>
