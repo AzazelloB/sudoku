@@ -1,3 +1,5 @@
+import { state } from '~/components/Sudoku/state';
+
 interface Shortcut {
   code: KeyboardEvent['code'];
   ctrl?: boolean;
@@ -6,6 +8,10 @@ interface Shortcut {
 }
 
 export const onShortcut = (e: KeyboardEvent, callback: CallableFunction, shortcut: Shortcut) => {
+  if (state.castSpell) {
+    return;
+  }
+
   if (shortcut.code !== e.code) {
     return;
   }

@@ -117,7 +117,6 @@ const handleDoubleClick = () => {
   selectSimilarCells(cell);
 };
 
-let command = '';
 let lastKeyTime = 0;
 
 interface KeyboardDownThis {
@@ -239,24 +238,6 @@ function handleKeyboardDown(this: KeyboardDownThis, e: KeyboardEvent) {
       break;
 
     default:
-      break;
-  }
-
-  switch (e.code) {
-    case 'KeyH':
-    case 'KeyE':
-    case 'KeyL':
-    case 'KeyP':
-      command += e.code[3];
-
-      if (command === 'HELP') {
-        state.revealed = !state.revealed;
-        command = '';
-      }
-      break;
-
-    default:
-      command = '';
       break;
   }
 }

@@ -38,10 +38,10 @@ const proxy: State = new DeepProxy({
   highlightedCell: null,
   revealed: false,
   debug: false,
+  castSpell: false,
   showControls: false,
   selectedCells: [],
   cells: [],
-  flashedCells: [],
   historyCursor: 0,
   history: [],
 }, handler);

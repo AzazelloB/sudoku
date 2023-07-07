@@ -24,9 +24,9 @@ interface State {
   highlightedCell: CellPosition | null;
   revealed: boolean;
   debug: boolean;
+  castSpell: boolean;
   showControls: boolean;
   selectedCells: CellPosition[];
-  flashedCells: CellPosition[];
   cells: Cell[];
   historyCursor: number;
   history: string[];
