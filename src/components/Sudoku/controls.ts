@@ -286,8 +286,9 @@ export const initControls = ({
 
   canvas.addEventListener('mousedown', handleMouseDown);
   canvas.addEventListener('mousemove', mouseMoveHandler);
-  canvas.addEventListener('touchmove', touchMoveHandler);
-  canvas.addEventListener('touchstart', handleTouchStart);
+  // passive promises bworser to not preventDefault. Do not disappoint it
+  canvas.addEventListener('touchmove', touchMoveHandler, { passive: true });
+  canvas.addEventListener('touchstart', handleTouchStart, { passive: true });
   canvas.addEventListener('mouseleave', handleMouseLeave);
   canvas.addEventListener('dblclick', handleDoubleClick);
 
