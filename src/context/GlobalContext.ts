@@ -20,6 +20,7 @@ function useGlobalState() {
     if (e.code === 'Backquote') {
       if (!ctrl && !shift && !alt) {
         state.castSpell = !state.castSpell;
+        spell = '';
         return;
       }
     }
