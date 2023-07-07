@@ -1,1 +1,0 @@
-if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('https://azazellob.github.io/sudoku/sw.js', { scope: 'https://azazellob.github.io/sudoku/' })})}
