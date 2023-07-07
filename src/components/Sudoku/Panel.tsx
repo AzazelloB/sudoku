@@ -133,7 +133,11 @@ const Panel: Component<PanelProps> = (props) => {
         onClick={[props.setMode, 'normal']}
       >
         <span class="hidden lg:block">Normal</span>
-        <div class="flex justify-center items-center lg:hidden w-full aspect-square border-2 text-2xl">1</div>
+        <div
+          class="flex justify-center items-center lg:hidden w-full aspect-square rounded-md border-2 text-2xl"
+        >
+          1
+        </div>
       </Control>
       <Control
         as={Button}
@@ -143,7 +147,11 @@ const Panel: Component<PanelProps> = (props) => {
         onClick={[props.setMode, 'middle']}
       >
         <span class="hidden lg:block">Middle</span>
-        <div class="flex justify-center items-center lg:hidden w-full aspect-square border-2 text-xs">12</div>
+        <div
+          class="flex justify-center items-center lg:hidden w-full aspect-square rounded-md border-2 text-xs"
+        >
+          12
+      </div>
       </Control>
       <Control
         as={Button}
@@ -153,7 +161,7 @@ const Panel: Component<PanelProps> = (props) => {
         onClick={[props.setMode, 'corner']}
       >
         <span class="hidden lg:block">Corner</span>
-        <div class="grid grid-cols-2 lg:hidden w-full aspect-square border-2 text-xs">
+        <div class="grid grid-cols-2 lg:hidden w-full aspect-square rounded-md border-2 text-xs">
           <div>1</div>
           <div>2</div>
           <div>3</div>
