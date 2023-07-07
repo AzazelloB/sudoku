@@ -5,9 +5,8 @@ import {
   Setter,
   Show, onCleanup, onMount,
 } from 'solid-js';
-import classNames from 'classnames';
-
 import { twMerge } from 'tailwind-merge';
+
 import { colors } from '~/constants/theme';
 
 import Button from '~/ui/Button';
@@ -25,6 +24,9 @@ import {
   handleUndo,
   saveSnapshot,
 } from '~/components/Sudoku/history';
+import Bakcspace from '~/ui/icons/Backspace';
+import Undo from '~/ui/icons/Undo';
+import Redo from '~/ui/icons/Redo';
 
 const tools: Tool[] = ['digits', 'colors'];
 
@@ -113,42 +115,49 @@ const Panel: Component<PanelProps> = (props) => {
     saveSnapshot();
   };
 
-  const className = 'font-light text-lg';
+  const className = 'font-light text-lg flex items-center justify-center';
 
   return (
     <div
       ref={props.ref}
       class={twMerge(
-        'grid grid-cols-3 lg:grid-cols-4 gap-4 text-6xl aspect-square select-none',
+        'grid grid-cols-4 gap-4 text-3xl lg:text-6xl aspect-square select-none',
         props.class,
       )}
     >
       <Control
         as={Button}
         key="Z"
-        class={classNames(className, 'row-start-4 lg:row-start-auto')}
+        class={twMerge(className, 'row-start-auto px-2 py-2 lg:px-4 lg:py-2')}
         active={props.mode() === 'normal'}
         onClick={[props.setMode, 'normal']}
       >
-        Normal
+        <span class="hidden lg:block">Normal</span>
+        <div class="flex justify-center items-center lg:hidden w-full aspect-square border-2 text-2xl">1</div>
       </Control>
       <Control
         as={Button}
         key="X"
-        class={classNames(className, 'row-start-4 col-start-2 lg:row-start-2 lg:col-start-auto')}
+        class={twMerge(className, 'row-start-2 col-start-auto px-2 py-2 lg:px-4 lg:py-2')}
         active={props.mode() === 'middle'}
         onClick={[props.setMode, 'middle']}
       >
-        Middle
+        <span class="hidden lg:block">Middle</span>
+        <div class="flex justify-center items-center lg:hidden w-full aspect-square border-2 text-xs">12</div>
       </Control>
       <Control
         as={Button}
         key="C"
-        class={classNames(className, 'row-start-4 col-start-3 lg:row-start-3 lg:col-start-auto')}
+        class={twMerge(className, 'row-start-3 col-start-auto px-2 py-2 lg:px-4 lg:py-2')}
         active={props.mode() === 'corner'}
         onClick={[props.setMode, 'corner']}
       >
-        Corner
+        <span class="hidden lg:block">Corner</span>
+        <div class="grid grid-cols-2 lg:hidden w-full aspect-square border-2 text-xs">
+          <div>1</div>
+          <div>2</div>
+          <div>3</div>
+        </div>
       </Control>
 
       <Show
@@ -322,7 +331,8 @@ const Panel: Component<PanelProps> = (props) => {
         class={className}
         onClick={handleClear}
       >
-        Clear
+        <span class="hidden lg:block">Clear</span>
+        <Bakcspace class="block lg:hidden w-6 h-6" />
       </Control>
       <Control
         as={Button}
@@ -332,7 +342,8 @@ const Panel: Component<PanelProps> = (props) => {
         class={className}
         onClick={handleUndo}
       >
-        Undo
+        <span class="hidden lg:block">Undo</span>
+        <Undo class="block lg:hidden w-6 h-6" />
       </Control>
       <Control
         as={Button}
@@ -343,14 +354,15 @@ const Panel: Component<PanelProps> = (props) => {
         class={className}
         onClick={handleRedo}
       >
-        Redo
+        <span class="hidden lg:block">Redo</span>
+        <Redo class="block lg:hidden w-6 h-6" />
       </Control>
 
       <Control
         as={Button}
         key="M"
         corenr={3}
-        class="text-lg capitalize"
+        class={`${className} capitalize`}
         onClick={[props.setTool, getNextTool(props.tool())]}
       >
         {getNextTool(props.tool())}

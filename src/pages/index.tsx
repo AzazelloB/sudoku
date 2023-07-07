@@ -14,6 +14,7 @@ import { publish } from '~/utils/pubSub';
 import Button from '~/ui/Button';
 import ButtonGroup from '~/ui/ButtonGroup';
 import Control from '~/ui/Control';
+import FullScreen from '~/ui/icons/FullScreen';
 
 import Board from '~/components/Sudoku/Board';
 import {
@@ -167,13 +168,21 @@ const HomePage = () => {
     setSolved(checkIfSolved(state.cells));
   };
 
+  const toggleFullScreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  };
+
   return (
     <div class="flex justify-center lg:gap-12 gap-4 lg:flex-row flex-col">
       <div>
         <h4 class="text-lg mb-1 tracking-widest">Difficulty</h4>
 
-        <div class="flex justify-between lg:items-center mb-6 lg:flex-row flex-col font-light">
-          <div>
+        <div class="flex justify-between lg:items-center mb-4 lg:mb-6 lg:flex-row flex-col font-light">
+          <div class="flex justify-between">
             <ButtonGroup>
               <ButtonGroup.Button
                 first
@@ -199,6 +208,14 @@ const HomePage = () => {
                 Hard
               </ButtonGroup.Button>
             </ButtonGroup>
+
+            <Button
+              class="block lg:hidden ml-4"
+              variant="secondary"
+              onClick={toggleFullScreen}
+            >
+              <FullScreen class="w-6 h-6" />
+            </Button>
           </div>
 
           <Timer
@@ -289,7 +306,7 @@ const HomePage = () => {
       <div>
         <Panel
           ref={setPanelRef}
-          class="mt-8"
+          class="mt-0 lg:mt-8"
           mode={mode}
           setMode={setMode}
           tool={tool}
