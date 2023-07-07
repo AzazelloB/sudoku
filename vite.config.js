@@ -5,7 +5,8 @@ import checker from 'vite-plugin-checker';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 
-const baseURL = 'https://azazellob.github.io/sudoku/';
+// should end with /
+const baseURL = 'https://azazellob.github.io/sudoku';
 
 export default defineConfig({
   base: baseURL,
@@ -26,9 +27,9 @@ export default defineConfig({
         'mask-icon.svg',
       ],
       manifest: {
-        id: baseURL,
-        start_url: baseURL,
-        scope: baseURL,
+        id: `${baseURL}/`,
+        start_url: `${baseURL}/`,
+        scope: `${baseURL}/`,
         name: 'Sudoku',
         short_name: 'Sudoku',
         theme_color: '#167D7F',
