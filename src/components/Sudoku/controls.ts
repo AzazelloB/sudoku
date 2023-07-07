@@ -18,6 +18,7 @@ import {
   cellsInColumn, cellsInRow, scale,
 } from '~/components/Sudoku/settings';
 import { state } from '~/components/Sudoku/state';
+import { onShortcut } from '~/utils/controls';
 
 const handleMouseDown = (e: MouseEvent) => {
   if (state.highlightedCell === null) {
@@ -149,15 +150,74 @@ function handleKeyboardDown(this: KeyboardDownThis, e: KeyboardEvent) {
     return;
   }
 
+  onShortcut(e, () => {
+    clearSelectedCells();
+    saveSnapshot();
+  }, {
+    code: 'Delete',
+  });
+
+  onShortcut(e, () => {
+    clearSelectedCells();
+    saveSnapshot();
+  }, {
+    code: 'Backspace',
+  });
+
+  const onDoubleShift = () => {
+    const now = Date.now();
+
+    if (now - lastKeyTime < 500) {
+      const selectedCell = state.selectedCells[state.selectedCells.length - 1];
+
+      if (selectedCell) {
+        const cell = state.cells.find(
+          (c) => c.col === selectedCell.col
+              && c.row === selectedCell.row,
+        );
+
+        if (cell) {
+          selectSimilarCells(cell);
+        }
+      }
+    }
+
+    lastKeyTime = now;
+  };
+
+  onShortcut(e, onDoubleShift, {
+    code: 'ShiftLeft',
+  });
+
+  onShortcut(e, onDoubleShift, {
+    code: 'ShiftRight',
+  });
+
+  onShortcut(e, handleUndo, {
+    code: 'KeyZ',
+    ctrl: true,
+  });
+
+  onShortcut(e, handleRedo, {
+    code: 'KeyZ',
+    ctrl: true,
+    shift: true,
+  });
+
+  onShortcut(e, selectAllCells, {
+    code: 'KeyA',
+    ctrl: true,
+  });
+
+  onShortcut(e, () => {
+    state.debug = !state.debug;
+  }, {
+    code: 'KeyD',
+  });
+
   const ctrl = e.ctrlKey || e.metaKey;
 
   switch (e.code) {
-    case 'Delete':
-    case 'Backspace':
-      clearSelectedCells();
-      saveSnapshot();
-      break;
-
     case 'ArrowUp':
       e.preventDefault();
       moveSelectedCell('up', e.shiftKey, ctrl);
@@ -176,48 +236,6 @@ function handleKeyboardDown(this: KeyboardDownThis, e: KeyboardEvent) {
     case 'ArrowRight':
       e.preventDefault();
       moveSelectedCell('right', e.shiftKey, ctrl);
-      break;
-
-    case 'ShiftLeft':
-    case 'ShiftRight': {
-      const now = Date.now();
-
-      if (now - lastKeyTime < 500) {
-        const selectedCell = state.selectedCells[state.selectedCells.length - 1];
-        const cell = state.cells.find(
-          (c) => c.col === selectedCell.col
-              && c.row === selectedCell.row,
-        );
-
-        if (cell) {
-          selectSimilarCells(cell);
-        }
-      }
-
-      lastKeyTime = now;
-      break;
-    }
-
-    case 'KeyZ':
-      if (ctrl) {
-        if (e.shiftKey) {
-          handleRedo();
-        } else {
-          handleUndo();
-        }
-      }
-      break;
-
-    case 'KeyA':
-      if (ctrl) {
-        e.preventDefault();
-
-        selectAllCells();
-      }
-      break;
-
-    case 'KeyD':
-      state.debug = !state.debug;
       break;
 
     default:

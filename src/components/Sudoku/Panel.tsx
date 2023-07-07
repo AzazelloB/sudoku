@@ -27,6 +27,7 @@ import {
 import Bakcspace from '~/ui/icons/Backspace';
 import Undo from '~/ui/icons/Undo';
 import Redo from '~/ui/icons/Redo';
+import { onShortcut } from '~/utils/controls';
 
 const tools: Tool[] = ['digits', 'colors'];
 
@@ -48,30 +49,33 @@ interface PanelProps {
 
 const Panel: Component<PanelProps> = (props) => {
   const handleKeyboardDown = (e: KeyboardEvent) => {
-    const ctrl = e.ctrlKey || e.metaKey;
+    // eslint-disable-next-line solid/reactivity
+    onShortcut(e, () => {
+      props.setMode('normal');
+    }, {
+      code: 'KeyZ',
+    });
 
-    switch (e.code) {
-      case 'KeyZ':
-        if (!ctrl && !e.shiftKey) {
-          props.setMode('normal');
-        }
-        break;
+    // eslint-disable-next-line solid/reactivity
+    onShortcut(e, () => {
+      props.setMode('middle');
+    }, {
+      code: 'KeyX',
+    });
 
-      case 'KeyX':
-        props.setMode('middle');
-        break;
+    // eslint-disable-next-line solid/reactivity
+    onShortcut(e, () => {
+      props.setMode('corner');
+    }, {
+      code: 'KeyC',
+    });
 
-      case 'KeyC':
-        props.setMode('corner');
-        break;
-
-      case 'KeyM':
-        props.setTool(getNextTool(props.tool()));
-        break;
-
-      default:
-        break;
-    }
+    // eslint-disable-next-line solid/reactivity
+    onShortcut(e, () => {
+      props.setTool(getNextTool(props.tool()));
+    }, {
+      code: 'KeyM',
+    });
   };
 
   onMount(() => {

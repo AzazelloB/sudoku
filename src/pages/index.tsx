@@ -8,7 +8,7 @@ import { Transition, TransitionChild } from 'solid-headless';
 
 import { DifficultyLevel } from '~/constants/difficulty';
 import useLocalStorage from '~/hooks/useLocalStorage';
-import { canRedefineControls } from '~/utils/controls';
+import { onShortcut } from '~/utils/controls';
 import { publish } from '~/utils/pubSub';
 
 import Button from '~/ui/Button';
@@ -50,37 +50,30 @@ const HomePage = () => {
   const [checkModalOpen, setCheckModalOpen] = createSignal(false);
 
   const handleKeyboardDown = (e: KeyboardEvent) => {
-    switch (e.code) {
-      case 'Slash':
-        if (e.shiftKey) {
-          if (!state.showControls) {
-            state.showControls = true;
-            publish('showControls', state.showControls);
-          }
-        }
-        break;
+    onShortcut(e, () => {
+      if (!state.showControls) {
+        state.showControls = true;
+        publish('showControls', state.showControls);
+      }
+    }, {
+      code: 'Slash',
+      shift: true,
+    });
 
-      case 'Space':
-        if (canRedefineControls()) {
-          handlePausePlay();
-        }
-        break;
+    onShortcut(e, restartGame, {
+      code: 'KeyR',
+    });
 
-      case 'KeyR':
-        restartGame();
-        break;
+    onShortcut(e, handlePausePlay, {
+      code: 'Space',
+    });
 
-      case 'Enter':
-        if (canRedefineControls()) {
-          e.preventDefault();
-          setCheckModalOpen(true);
-          handleCheck();
-        }
-        break;
-
-      default:
-        break;
-    }
+    onShortcut(e, () => {
+      setCheckModalOpen(true);
+      handleCheck();
+    }, {
+      code: 'Enter',
+    });
   };
 
   const handleKeyboardUp = (e: KeyboardEvent) => {
