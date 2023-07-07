@@ -32,38 +32,37 @@ const Content: Component<ContentProps> = (props) => {
       >
         <Dialog
           isOpen
-          class="fixed inset-0 z-50 overflow-y-auto"
+          class="fixed inset-0 z-50 overflow-y-auto flex justify-center"
           onClose={closeModal}
         >
-          <div class="h-full flex items-center justify-center">
-            <TransitionChild
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <DialogOverlay class="fixed inset-0 bg-background-dark bg-opacity-50" />
-            </TransitionChild>
+          <TransitionChild
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <DialogOverlay class="fixed inset-0 bg-background-dark bg-opacity-50" />
+          </TransitionChild>
 
-            <TransitionChild
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <DialogPanel class={twMerge(
-                'w-full max-w-md px-8 py-6 overflow-hidden transition-all transform',
-                'bg-background dark:bg-background-dark-accent shadow-xl rounded-2xl',
-                props.class,
-              )}>
-                {props.children({ closeModal })}
-              </DialogPanel>
-            </TransitionChild>
-          </div>
+          <TransitionChild
+            class="my-auto"
+            enter="ease-out duration-300"
+            enterFrom="opacity-0 scale-95"
+            enterTo="opacity-100 scale-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100 scale-100"
+            leaveTo="opacity-0 scale-95"
+          >
+            <DialogPanel class={twMerge(
+              'w-full max-w-md px-8 py-6 overflow-hidden transition-all transform',
+              'bg-background dark:bg-background-dark-accent shadow-xl rounded-2xl',
+              props.class,
+            )}>
+              {props.children({ closeModal })}
+            </DialogPanel>
+          </TransitionChild>
         </Dialog>
       </Transition>
     </Portal>

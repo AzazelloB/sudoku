@@ -16,6 +16,7 @@ import Link from '~/ui/Link';
 import { state } from '~/components/Sudoku/state';
 import SequencedBoard, { Animation } from '~/components/Sudoku/SequencedBoard';
 import animation from '~/components/Sudoku/nakedSingleAnimation.json';
+import { cellsInRow } from '~/components/Sudoku/settings';
 
 interface TipData {
   message: string;
@@ -26,7 +27,8 @@ interface TipDataWithExplanation extends TipData {
   hasExplanation: true;
   name: string;
   description: string;
-  content?: string;
+  explanation?: string;
+  smallText?: string;
   animation?: Animation;
 }
 
@@ -50,7 +52,10 @@ const tips: Tips = {
     hasExplanation: true,
     name: 'Naked single',
     description: 'is a cell that has only one possible value.',
-    content: 'Pro tip: You can double click on a cell to select similar cells.',
+    explanation: `Every column, row and box must contain non repeating digits from 0 to ${cellsInRow}.
+    So if other cells eliminate all possibilities for a cell to be something other then a single digit
+    you can safely put it in there.`,
+    smallText: 'Pro tip: You can double click on a cell to select similar cells.',
     animation: animation as unknown as Animation,
   },
   [TipType.NAKED_SINGLE]: {
@@ -160,9 +165,17 @@ const TipButton: Component<TipButtonProps> = (props) => {
                   &nbsp;{tipExp().description}
                 </p>
 
-                <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                  {tipExp().content}
-                </p>
+                <Show when={tipExp().explanation}>
+                  <p class="mt-4 text-lg">
+                    {tipExp().explanation}
+                  </p>
+                </Show>
+
+                <Show when={tipExp().smallText}>
+                  <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                    {tipExp().smallText}
+                  </p>
+                </Show>
 
                 <Button
                   class="ml-auto mt-6"
