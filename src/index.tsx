@@ -2,9 +2,10 @@
 import { render } from 'solid-js/web';
 import { Router } from '@solidjs/router';
 
+import { GlobalProvider } from '~/context/GlobalContext';
+
 import './index.css';
 import App from './App';
-import { GlobalProvider } from '~/context/GlobalContext';
 
 const root = document.getElementById('root');
 

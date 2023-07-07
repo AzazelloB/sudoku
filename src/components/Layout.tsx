@@ -3,6 +3,7 @@ import {
 } from 'solid-js';
 
 import Header from '~/components/Header';
+import ReloadPrompt from '~/components/ReloadPrompt';
 
 const Layout: ParentComponent = (props) => {
   const [isFS, setFS] = createSignal(!!document.fullscreenElement);
@@ -19,6 +20,8 @@ const Layout: ParentComponent = (props) => {
 
   return (
     <>
+      <ReloadPrompt />
+
       <Show when={!isFS()}>
         <Header />
       </Show>

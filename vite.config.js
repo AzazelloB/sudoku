@@ -2,15 +2,62 @@
 import { defineConfig } from 'vite';
 import solidPlugin from 'vite-plugin-solid';
 import checker from 'vite-plugin-checker';
+import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 
+const baseURL = 'https://azazellob.github.io/sudoku';
+
 export default defineConfig({
-  base: 'https://azazellob.github.io/sudoku',
+  base: baseURL,
   plugins: [
     solidPlugin(),
     checker({
       typescript: true,
       terminal: false,
+    }),
+    VitePWA({
+      workbox: {
+        globPatterns: ['**/*'],
+      },
+      registerType: 'autoUpdate',
+      includeAssets: [
+        'favicon.ico',
+        'apple-touch-icon.png',
+        'mask-icon.svg',
+      ],
+      manifest: {
+        id: baseURL,
+        start_url: baseURL,
+        scope: baseURL,
+        name: 'Sudoku',
+        short_name: 'Sudoku',
+        theme_color: '#167D7F',
+        background_color: '#111827',
+        icons: [
+          {
+            src: 'pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any',
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
+          },
+        ],
+      },
     }),
   ],
   server: {
