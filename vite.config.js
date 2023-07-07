@@ -5,7 +5,7 @@ import checker from 'vite-plugin-checker';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 
-const baseURL = 'https://azazellob.github.io/sudoku';
+const baseURL = 'https://azazellob.github.io/sudoku/';
 
 export default defineConfig({
   base: baseURL,
