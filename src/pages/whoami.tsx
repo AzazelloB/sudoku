@@ -3,7 +3,7 @@ import { Component } from 'solid-js';
 import { ROUTES } from '~/constants/routes';
 
 const WhoamiPage: Component = () => {
-  window.open('https://github.com/AzazelloB/sudoku', '_blank');
+  window.open('https://github.com/AzazelloB/sudoku', '_self');
 
   return <Navigate href={ROUTES.HOME} />;
 };
