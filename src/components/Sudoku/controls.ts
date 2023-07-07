@@ -48,21 +48,7 @@ const handleMouseDown = (e: MouseEvent) => {
   }
 };
 
-interface handleMouseMoveThis {
-  canvas: HTMLCanvasElement;
-}
-
-function handleMouseMove(this: handleMouseMoveThis, e: MouseEvent) {
-  const cellWidth = this.canvas.width / cellsInRow;
-  const cellHeight = this.canvas.height / cellsInColumn;
-
-  const rect = this.canvas.getBoundingClientRect();
-  const x = (e.clientX - rect.left) * scale;
-  const y = (e.clientY - rect.top) * scale;
-
-  const col = Math.floor(x / cellWidth);
-  const row = Math.floor(y / cellHeight);
-
+function handleMove(col: number, row: number, selecting: boolean) {
   if (state.highlightedCell && state.highlightedCell.col === col && state.highlightedCell.row === row) {
     return;
   }
@@ -76,9 +62,41 @@ function handleMouseMove(this: handleMouseMoveThis, e: MouseEvent) {
     row,
   };
 
-  if (e.buttons === 1) {
+  if (selecting) {
     selectCell(state.highlightedCell);
   }
+}
+
+interface MouseMoveThis {
+  canvas: HTMLCanvasElement;
+}
+
+function handleMouseMove(this: MouseMoveThis, e: MouseEvent) {
+  const cellWidth = this.canvas.width / cellsInRow;
+  const cellHeight = this.canvas.height / cellsInColumn;
+
+  const rect = this.canvas.getBoundingClientRect();
+  const x = (e.clientX - rect.left) * scale;
+  const y = (e.clientY - rect.top) * scale;
+
+  const col = Math.floor(x / cellWidth);
+  const row = Math.floor(y / cellHeight);
+
+  handleMove(col, row, e.buttons === 1);
+}
+
+function handleTouchMove(this: MouseMoveThis, e: TouchEvent) {
+  const cellWidth = this.canvas.width / cellsInRow;
+  const cellHeight = this.canvas.height / cellsInColumn;
+
+  const rect = this.canvas.getBoundingClientRect();
+  const x = (e.touches[0].clientX - rect.left) * scale;
+  const y = (e.touches[0].clientY - rect.top) * scale;
+
+  const col = Math.floor(x / cellWidth);
+  const row = Math.floor(y / cellHeight);
+
+  handleMove(col, row, true);
 }
 
 const handleMouseLeave = () => {
@@ -98,15 +116,15 @@ const handleDoubleClick = () => {
   selectSimilarCells(cell);
 };
 
-let pass = '';
+let command = '';
 let lastKeyTime = 0;
 
-interface handleKeyboardDownThis {
+interface KeyboardDownThis {
   tool: Tool;
   mode: InsertionMode;
 }
 
-function handleKeyboardDown(this: handleKeyboardDownThis, e: KeyboardEvent) {
+function handleKeyboardDown(this: KeyboardDownThis, e: KeyboardEvent) {
   const isNumber = e.keyCode >= 48 && e.keyCode <= 57;
 
   if (isNumber) {
@@ -211,26 +229,26 @@ function handleKeyboardDown(this: handleKeyboardDownThis, e: KeyboardEvent) {
     case 'KeyE':
     case 'KeyL':
     case 'KeyP':
-      pass += e.code[3];
+      command += e.code[3];
 
-      if (pass === 'HELP') {
+      if (command === 'HELP') {
         state.revealed = !state.revealed;
-        pass = '';
+        command = '';
       }
       break;
 
     default:
-      pass = '';
+      command = '';
       break;
   }
 }
 
-interface handleClickOutsideThis {
+interface ClickOutsideThis {
   canvas: HTMLCanvasElement;
   exceptions: (HTMLElement | null)[];
 }
 
-function handleClickOutside(this: handleClickOutsideThis, e: MouseEvent) {
+function handleClickOutside(this: ClickOutsideThis, e: MouseEvent) {
   if ((this.canvas && this.canvas.contains(e.target as Node))
    || this.exceptions.some((el) => el && el.contains(e.target as Node))
   ) {
@@ -256,6 +274,7 @@ export const initControls = ({
   clickOutsideExceptions,
 }: initControlsParams) => {
   const mouseMoveHandler = handleMouseMove.bind({ canvas });
+  const touchMoveHandler = handleTouchMove.bind({ canvas });
   const keyboardDownHandler = handleKeyboardDown.bind({
     mode,
     tool,
@@ -264,6 +283,7 @@ export const initControls = ({
 
   canvas.addEventListener('mousedown', handleMouseDown);
   canvas.addEventListener('mousemove', mouseMoveHandler);
+  canvas.addEventListener('touchmove', touchMoveHandler);
   canvas.addEventListener('mouseleave', handleMouseLeave);
   canvas.addEventListener('dblclick', handleDoubleClick);
 
@@ -273,6 +293,7 @@ export const initControls = ({
   return () => {
     canvas.removeEventListener('mousedown', handleMouseDown);
     canvas.removeEventListener('mousemove', mouseMoveHandler);
+    canvas.removeEventListener('touchmove', touchMoveHandler);
     canvas.removeEventListener('mouseleave', handleMouseLeave);
     canvas.removeEventListener('dblclick', handleDoubleClick);
 
