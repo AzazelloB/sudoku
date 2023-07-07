@@ -268,7 +268,7 @@ export class Renderer {
       for (let j = 0; j < cellsInColumn; j += 1) {
         const cell = cells[j * cellsInRow + i];
 
-        if (cell.colors.length === 0) {
+        if (!cell || cell.colors.length === 0) {
           continue;
         }
 
@@ -356,6 +356,10 @@ export class Renderer {
     for (let i = 0; i < cellsInRow; i += 1) {
       for (let j = 0; j < cellsInColumn; j += 1) {
         const cell = cells[j * cellsInRow + i];
+
+        if (!cell) {
+          continue;
+        }
 
         const value = revealed ? cell.answer : cell.value;
 
