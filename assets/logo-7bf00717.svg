@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="440" height="440" viewBox="20 -15 400 480">
+<defs>
+    <style>
+      .cls-1 {
+        fill: #111827;
+      }
+
+      .cls-2 {
+        fill: none;
+        stroke: #fff;
+        stroke-width: 30px;
+      }
+
+      .cls-3, .cls-4 {
+        fill: #fff;
+      }
+
+      .cls-3 {
+        transform: translate(-166px, -96px);
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <g>
+    <rect class="cls-1" x="0" y="0" width="440" height="440" rx="60" ry="60"/>
+    <rect class="cls-2" x="0" y="0" width="440" height="440" rx="60" ry="60"/>
+    <path class="cls-3" d="M319,238h50a10,10,0,0,1,10,10v50a10,10,0,0,1-10,10H319a10,10,0,0,1-10-10V248A10,10,0,0,1,319,238Zm86,0h50a10,10,0,0,1,10,10v50a10,10,0,0,1-10,10H405a10,10,0,0,1-10-10V248A10,10,0,0,1,405,238Zm-86,86h50a10,10,0,0,1,10,10v50a10,10,0,0,1-10,10H319a10,10,0,0,1-10-10V334A10,10,0,0,1,319,324Zm86,0h50a10,10,0,0,1,10,10v50a10,10,0,0,1-10,10H405a10,10,0,0,1-10-10V334A10,10,0,0,1,405,324Z"/>
+
+    <circle class="cls-4" cx="88" cy="176" r="8"/>
+    <circle class="cls-4" cx="88" cy="262" r="8"/>
+    
+    <circle class="cls-4" cx="356" cy="176" r="8"/>
+    <circle class="cls-4" cx="356" cy="262" r="8"/>
+
+    <circle class="cls-4" cx="179" cy="353" r="8"/>
+    <circle class="cls-4" cx="179" cy="85" r="8"/>
+    <circle class="cls-1" cx="179" cy="176" r="8"/>
+    <circle class="cls-1" cx="179" cy="262" r="8"/>
+    
+    <circle class="cls-4" cx="265" cy="353" r="8"/>
+    <circle class="cls-4" cx="265" cy="85" r="8"/>
+    <circle class="cls-1" cx="265" cy="176" r="8"/>
+    <circle class="cls-1" cx="265" cy="262" r="8"/>
+  </g>
+</svg>
