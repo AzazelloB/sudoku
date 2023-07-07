@@ -23,7 +23,7 @@ const Layout: ParentComponent = (props) => {
         <Header />
       </Show>
 
-      <main class="px-8 py-4 lg:py-6">
+      <main class="px-8 py-2 lg:py-6">
         {props.children}
       </main>
     </>
