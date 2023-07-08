@@ -1,8 +1,9 @@
-import { cellsInColumn, cellsInRow } from '~/components/Sudoku/settings';
+import { cellsInColumn, cellsInRow } from '~/components/Board/settings';
 
 export enum TipType {
   NOTHING,
   TRY_THINKING,
+  MISTAKE,
   EASY_NAKED_SINGLE,
   NAKED_SINGLE,
   BOARD_FINISHED,
@@ -24,6 +25,73 @@ const checkAttempts = () => {
   }
 
   lastAttempt = ts;
+
+  return null;
+};
+
+const checkMistakes = (cells: Cells) => {
+  const seen = new Map();
+
+  for (let i = 0; i < cellsInColumn; i++) {
+    seen.clear();
+
+    for (let j = 0; j < cellsInRow; j++) {
+      const index = i + j * cellsInRow;
+
+      if (cells[index] === null) {
+        continue;
+      }
+
+      if (seen.has(cells[index])) {
+        return [seen.get(cells[index]), { col: i, row: j }];
+      }
+
+      seen.set(cells[index], { col: i, row: j });
+    }
+  }
+
+  for (let j = 0; j < cellsInRow; j++) {
+    seen.clear();
+
+    for (let i = 0; i < cellsInColumn; i++) {
+      const index = i + j * cellsInColumn;
+
+      if (cells[index] === null) {
+        continue;
+      }
+
+      if (seen.has(cells[index])) {
+        return [seen.get(cells[index]), { col: i, row: j }];
+      }
+
+      seen.set(cells[index], { col: i, row: j });
+    }
+  }
+
+  for (let i = 0; i < cellsInColumn; i += 3) {
+    for (let j = 0; j < cellsInRow; j += 3) {
+      seen.clear();
+
+      for (let k = 0; k < 3; k++) {
+        for (let l = 0; l < 3; l++) {
+          const col = i + k;
+          const row = j + l;
+
+          const index = col + row * cellsInRow;
+
+          if (cells[index] === null) {
+            continue;
+          }
+
+          if (seen.has(cells[index])) {
+            return [seen.get(cells[index]), { col, row }];
+          }
+
+          seen.set(cells[index], { col, row });
+        }
+      }
+    }
+  }
 
   return null;
 };
@@ -264,6 +332,7 @@ type TipFiner = (cells: Cells) => CellPosition[] | null;
 
 const tipCallbackMap: Record<UsefullTips, TipFiner> = {
   [TipType.TRY_THINKING]: checkAttempts,
+  [TipType.MISTAKE]: checkMistakes,
   [TipType.EASY_NAKED_SINGLE]: findEasyNakedSingle,
   [TipType.NAKED_SINGLE]: findNakedSingle,
   [TipType.BOARD_FINISHED]: isBoardFinished,
