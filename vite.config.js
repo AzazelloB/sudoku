@@ -72,7 +72,4 @@ export default defineConfig({
       { find: '~', replacement: path.resolve(__dirname, 'src') },
     ],
   },
-  test: {
-    files: ['src/**/*.test.ts'],
-  },
 });
