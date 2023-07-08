@@ -12,11 +12,11 @@ import { twMerge } from 'tailwind-merge';
 import { useGlobalContext } from '~/context/GlobalContext';
 import { subscribe, unsubscribe } from '~/utils/pubSub';
 
-import { initControls } from '~/components/Sudoku/controls';
-import { Renderer } from '~/components/Sudoku/renderer';
-import { initialHeight, initialWidth, scale } from '~/components/Sudoku/settings';
-import { state } from '~/components/Sudoku/state';
-import { selectCell } from '~/components/Sudoku/board';
+import { initControls } from '~/components/Board/controls';
+import { Renderer } from '~/components/Board/renderer';
+import { initialHeight, initialWidth, scale } from '~/components/Board/settings';
+import { state } from '~/components/Board/state';
+import { selectCell } from '~/components/Board/board';
 
 interface BoardProps {
   paused: () => boolean;

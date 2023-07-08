@@ -12,12 +12,12 @@ import {
   selectAllCells,
   selectCell,
   selectSimilarCells,
-} from '~/components/Sudoku/board';
-import { handleRedo, handleUndo, saveSnapshot } from '~/components/Sudoku/history';
+} from '~/components/Board/board';
+import { handleRedo, handleUndo, saveSnapshot } from '~/components/Board/history';
 import {
   cellsInColumn, cellsInRow, scale,
-} from '~/components/Sudoku/settings';
-import { state } from '~/components/Sudoku/state';
+} from '~/components/Board/settings';
+import { state } from '~/components/Board/state';
 import { onShortcut } from '~/utils/controls';
 
 const handleMouseDown = (e: MouseEvent) => {

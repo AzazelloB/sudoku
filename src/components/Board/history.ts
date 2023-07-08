@@ -1,5 +1,5 @@
-import { historyLimit } from '~/components/Sudoku/settings';
-import { state } from '~/components/Sudoku/state';
+import { historyLimit } from '~/components/Board/settings';
+import { state } from '~/components/Board/state';
 
 export const clearHistory = () => {
   state.history.length = 0;

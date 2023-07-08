@@ -1,8 +1,8 @@
 import { Component } from 'solid-js';
 
-import animation from '~/components/Sudoku/nakedSingleAnimation.json';
+import animation from '~/animations/nakedSingle.json';
 
-import BoardOnDemand, { Animation } from '~/components/Sudoku/SequencedBoard';
+import BoardOnDemand, { Animation } from '~/components/Board/SequencedBoard';
 
 const PlaygroundPage: Component = () => {
   return (

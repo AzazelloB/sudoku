@@ -2,7 +2,7 @@
 import { DifficultyLevel, difficultyLevels } from '~/constants/difficulty';
 import { shuffleArray } from '~/utils/array';
 
-import { cellsInColumn, cellsInRow } from '~/components/Sudoku/settings';
+import { cellsInColumn, cellsInRow } from '~/components/Board/settings';
 
 type Cells = (number | null)[];
 

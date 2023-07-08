@@ -1,7 +1,7 @@
 import { DifficultyLevel } from '~/constants/difficulty';
 
-import { cellsInColumn, cellsInRow } from '~/components/Sudoku/settings';
-import { state } from '~/components/Sudoku/state';
+import { cellsInColumn, cellsInRow } from '~/components/Board/settings';
+import { state } from '~/components/Board/state';
 
 import { delegateTaskTo } from '~/utils/humanResources';
 

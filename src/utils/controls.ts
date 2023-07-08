@@ -1,4 +1,4 @@
-import { state } from '~/components/Sudoku/state';
+import { state } from '~/components/Board/state';
 
 interface Shortcut {
   code: KeyboardEvent['code'];

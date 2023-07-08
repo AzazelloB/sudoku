@@ -18,12 +18,12 @@ import {
   insertMiddle,
   insertValue,
   insertColor,
-} from '~/components/Sudoku/board';
+} from '~/components/Board/board';
 import {
   handleRedo,
   handleUndo,
   saveSnapshot,
-} from '~/components/Sudoku/history';
+} from '~/components/Board/history';
 import Bakcspace from '~/ui/icons/Backspace';
 import Undo from '~/ui/icons/Undo';
 import Redo from '~/ui/icons/Redo';

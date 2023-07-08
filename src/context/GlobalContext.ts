@@ -1,5 +1,5 @@
 import { createEffect, onCleanup, onMount } from 'solid-js';
-import { state } from '~/components/Sudoku/state';
+import { state } from '~/components/Board/state';
 
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { createContext } from '~/utils/createContext';

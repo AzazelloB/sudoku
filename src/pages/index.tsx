@@ -16,20 +16,20 @@ import ButtonGroup from '~/ui/ButtonGroup';
 import Control from '~/ui/Control';
 import FullScreen from '~/ui/icons/FullScreen';
 
-import Board from '~/components/Sudoku/Board';
+import Board from '~/components/Board/Board';
 import {
   checkIfSolved,
   generateGrid,
-} from '~/components/Sudoku/board';
-import { state } from '~/components/Sudoku/state';
+} from '~/components/Board/board';
+import { state } from '~/components/Board/state';
 import {
   clearHistory,
   saveSnapshot,
-} from '~/components/Sudoku/history';
-import Panel from '~/components/Sudoku/Panel';
-import CheckModal from '~/components/Sudoku/CheckModal';
-import Timer from '~/components/Sudoku/Timer';
-import TipButton from '~/components/Sudoku/TipButton';
+} from '~/components/Board/history';
+import Panel from '~/components/Panel';
+import CheckModal from '~/components/CheckModal';
+import Timer from '~/components/Timer';
+import TipButton from '~/components/TipButton';
 
 const HomePage = () => {
   const [cells, setCells] = useLocalStorage<Cell[]>('cells', []);

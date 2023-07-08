@@ -5,7 +5,7 @@ import {
   cellsInColumn,
   cellsInRow,
   scale,
-} from '~/components/Sudoku/settings';
+} from '~/components/Board/settings';
 
 export class Renderer {
   #renderQueue: CallableFunction[] = [];

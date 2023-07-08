@@ -16,7 +16,7 @@ import { AsProp } from '~/utils/asPropType';
 
 import Button from '~/ui/Button';
 
-import { state } from '~/components/Sudoku/state';
+import { state } from '~/components/Board/state';
 
 interface Alternative {
   key: string;
