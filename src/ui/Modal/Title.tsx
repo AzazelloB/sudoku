@@ -7,7 +7,7 @@ const Title: ParentComponent = (props) => {
   return (
     <DialogTitle
       as="h3"
-      class="text-3xl font-medium mb-4 text-black dark:text-white"
+      class="mb-4 text-3xl font-medium text-black dark:text-white"
     >
       {props.children}
     </DialogTitle>

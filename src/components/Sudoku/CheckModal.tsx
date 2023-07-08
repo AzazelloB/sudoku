@@ -36,12 +36,12 @@ const CheckModal: Component<CheckModalProps> = (props) => {
 
       <Modal.Content>
         {({ closeModal }) => (
-          <div class="flex flex-col w-60">
+          <div class="flex w-60 flex-col">
             <Modal.Title>
               {props.solved() ? 'Congratulations!' : 'Sorry!'}
             </Modal.Title>
 
-            <p class="text-black dark:text-white opacity-60">
+            <p class="text-black opacity-60 dark:text-white">
               {props.solved() ? (
                 <>
                   Your time: {formatTime(props.time())}

@@ -223,7 +223,7 @@ const Board: Component<BoardProps> = (props) => {
     <div class="relative">
       <canvas
         ref={layer_1!}
-        class="absolute inset-0 pointer-events-none z-10"
+        class="pointer-events-none absolute inset-0 z-10"
         width={canvasWidth() * scale}
         height={canvasHeight() * scale}
         style={{
@@ -249,7 +249,7 @@ const Board: Component<BoardProps> = (props) => {
       />
       <canvas
         ref={layer_3!}
-        class="absolute inset-0 pointer-events-none z-30"
+        class="pointer-events-none absolute inset-0 z-30"
         width={canvasWidth() * scale}
         height={canvasHeight() * scale}
         style={{
@@ -259,7 +259,7 @@ const Board: Component<BoardProps> = (props) => {
       />
       <canvas
         ref={layer_4!}
-        class="absolute inset-0 pointer-events-none z-40"
+        class="pointer-events-none absolute inset-0 z-40"
         width={canvasWidth() * scale}
         height={canvasHeight() * scale}
         style={{

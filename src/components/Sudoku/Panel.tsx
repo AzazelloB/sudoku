@@ -138,7 +138,7 @@ const Panel: Component<PanelProps> = (props) => {
       >
         <span class="hidden lg:block">Normal</span>
         <div
-          class="flex justify-center items-center lg:hidden w-full aspect-square rounded-md border-2 text-2xl"
+          class="flex aspect-square w-full items-center justify-center rounded-md border-2 text-2xl lg:hidden"
         >
           1
         </div>
@@ -152,7 +152,7 @@ const Panel: Component<PanelProps> = (props) => {
       >
         <span class="hidden lg:block">Middle</span>
         <div
-          class="flex justify-center items-center lg:hidden w-full aspect-square rounded-md border-2 text-xs"
+          class="flex aspect-square w-full items-center justify-center rounded-md border-2 text-xs lg:hidden"
         >
           12
       </div>
@@ -165,7 +165,7 @@ const Panel: Component<PanelProps> = (props) => {
         onClick={[props.setMode, 'corner']}
       >
         <span class="hidden lg:block">Corner</span>
-        <div class="grid grid-cols-2 items-center lg:hidden w-full aspect-square rounded-md border-2 text-xs">
+        <div class="grid aspect-square w-full grid-cols-2 items-center rounded-md border-2 text-xs lg:hidden">
           <div>1</div>
           <div>2</div>
           <div>3</div>
@@ -260,7 +260,7 @@ const Panel: Component<PanelProps> = (props) => {
           corenr={3}
           onClick={[handleColor, colors.cell.seven]}
         >
-          <div class="bg-cell-seven w-full aspect-square" />
+          <div class="aspect-square w-full bg-cell-seven" />
         </Control>
         <Control
           as={Button}
@@ -268,7 +268,7 @@ const Panel: Component<PanelProps> = (props) => {
           corenr={3}
           onClick={[handleColor, colors.cell.eight]}
         >
-          <div class="bg-cell-eight w-full aspect-square" />
+          <div class="aspect-square w-full bg-cell-eight" />
         </Control>
         <Control
           as={Button}
@@ -276,7 +276,7 @@ const Panel: Component<PanelProps> = (props) => {
           corenr={3}
           onClick={[handleColor, colors.cell.nine]}
         >
-          <div class="bg-cell-nine w-full aspect-square" />
+          <div class="aspect-square w-full bg-cell-nine" />
         </Control>
 
         <Control
@@ -285,7 +285,7 @@ const Panel: Component<PanelProps> = (props) => {
           corenr={3}
           onClick={[handleColor, colors.cell.four]}
         >
-          <div class="bg-cell-four w-full aspect-square" />
+          <div class="aspect-square w-full bg-cell-four" />
         </Control>
         <Control
           as={Button}
@@ -293,7 +293,7 @@ const Panel: Component<PanelProps> = (props) => {
           corenr={3}
           onClick={[handleColor, colors.cell.five]}
         >
-          <div class="bg-cell-five w-full aspect-square" />
+          <div class="aspect-square w-full bg-cell-five" />
         </Control>
         <Control
           as={Button}
@@ -301,7 +301,7 @@ const Panel: Component<PanelProps> = (props) => {
           corenr={3}
           onClick={[handleColor, colors.cell.six]}
         >
-          <div class="bg-cell-six w-full aspect-square" />
+          <div class="aspect-square w-full bg-cell-six" />
         </Control>
 
         <Control
@@ -310,7 +310,7 @@ const Panel: Component<PanelProps> = (props) => {
           corenr={3}
           onClick={[handleColor, colors.cell.one]}
         >
-          <div class="bg-background-light dark:bg-background-dark w-full aspect-square" />
+          <div class="aspect-square w-full bg-background-light dark:bg-background-dark" />
         </Control>
         <Control
           as={Button}
@@ -318,7 +318,7 @@ const Panel: Component<PanelProps> = (props) => {
           corenr={3}
           onClick={[handleColor, colors.cell.two]}
         >
-          <div class="bg-cell-two w-full aspect-square" />
+          <div class="aspect-square w-full bg-cell-two" />
         </Control>
         <Control
           as={Button}
@@ -326,7 +326,7 @@ const Panel: Component<PanelProps> = (props) => {
           corenr={3}
           onClick={[handleColor, colors.cell.tree]}
         >
-          <div class="bg-cell-tree w-full aspect-square" />
+          <div class="aspect-square w-full bg-cell-tree" />
         </Control>
       </Show>
 
@@ -344,7 +344,7 @@ const Panel: Component<PanelProps> = (props) => {
         onClick={handleClear}
       >
         <span class="hidden lg:block">Clear</span>
-        <Bakcspace class="block lg:hidden w-6 h-6" />
+        <Bakcspace class="block h-6 w-6 lg:hidden" />
       </Control>
       <Control
         as={Button}
@@ -355,7 +355,7 @@ const Panel: Component<PanelProps> = (props) => {
         onClick={handleUndo}
       >
         <span class="hidden lg:block">Undo</span>
-        <Undo class="block lg:hidden w-6 h-6" />
+        <Undo class="block h-6 w-6 lg:hidden" />
       </Control>
       <Control
         as={Button}
@@ -367,7 +367,7 @@ const Panel: Component<PanelProps> = (props) => {
         onClick={handleRedo}
       >
         <span class="hidden lg:block">Redo</span>
-        <Redo class="block lg:hidden w-6 h-6" />
+        <Redo class="block h-6 w-6 lg:hidden" />
       </Control>
 
       <Control

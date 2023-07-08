@@ -32,7 +32,7 @@ const Content: Component<ContentProps> = (props) => {
       >
         <Dialog
           isOpen
-          class="fixed inset-0 z-50 overflow-y-auto flex justify-center"
+          class="fixed inset-0 z-50 flex justify-center overflow-y-auto"
           onClose={closeModal}
         >
           <TransitionChild
@@ -43,7 +43,7 @@ const Content: Component<ContentProps> = (props) => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <DialogOverlay class="fixed inset-0 bg-background-dark bg-opacity-50" />
+            <DialogOverlay class="fixed inset-0 bg-background-dark/50" />
           </TransitionChild>
 
           <TransitionChild

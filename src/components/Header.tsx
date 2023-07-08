@@ -19,9 +19,9 @@ const Header = () => {
         <Popover>
           <Popover.Button
             as={Button}
-            class="p-2 mr-4"
+            class="mr-4 p-2"
           >
-            <Question class="w-5 h-5" />
+            <Question class="h-5 w-5" />
           </Popover.Button>
 
           <Popover.Content>

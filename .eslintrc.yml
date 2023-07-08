@@ -4,6 +4,7 @@ env:
 extends:
   - airbnb-base
   - eslint:recommended
+  - plugin:tailwindcss/recommended
   - plugin:@typescript-eslint/eslint-recommended
   - plugin:@typescript-eslint/recommended
   - plugin:solid/typescript

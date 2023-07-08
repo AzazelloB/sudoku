@@ -121,7 +121,7 @@ const TipButton: Component<TipButtonProps> = (props) => {
             shape="circle"
             onClick={handleTip}
           >
-            <Bulb class="w-4 h-4" />
+            <Bulb class="h-4 w-4" />
           </Popover.Button>
 
           <Popover.Content

@@ -170,11 +170,11 @@ const HomePage = () => {
   };
 
   return (
-    <div class="flex justify-center lg:gap-12 gap-4 lg:flex-row flex-col">
+    <div class="flex flex-col justify-center gap-4 lg:flex-row lg:gap-12">
       <div>
-        <h4 class="text-lg mb-1 tracking-widest">Difficulty</h4>
+        <h4 class="mb-1 text-lg tracking-widest">Difficulty</h4>
 
-        <div class="flex justify-between lg:items-center mb-4 lg:mb-6 lg:flex-row flex-col font-light">
+        <div class="mb-4 flex flex-col justify-between font-light lg:mb-6 lg:flex-row lg:items-center">
           <div class="flex justify-between">
             <ButtonGroup>
               <ButtonGroup.Button
@@ -203,11 +203,11 @@ const HomePage = () => {
             </ButtonGroup>
 
             <Button
-              class="block lg:hidden ml-4"
+              class="ml-4 block lg:hidden"
               variant="secondary"
               onClick={toggleFullScreen}
             >
-              <FullScreen class="w-6 h-6" />
+              <FullScreen class="h-6 w-6" />
             </Button>
           </div>
 
@@ -215,10 +215,10 @@ const HomePage = () => {
             time={time}
             paused={paused}
             onPausePlay={handlePausePlay}
-            class="hidden lg:flex mx-4"
+            class="mx-4 hidden lg:flex"
           />
 
-          <div class="flex mt-4 lg:mt-0 justify-between">
+          <div class="mt-4 flex justify-between lg:mt-0">
             <Control
               as={Button}
               key="R"
@@ -229,12 +229,12 @@ const HomePage = () => {
               Restart
             </Control>
 
-            <Timer
-              time={time}
-              paused={paused}
-              onPausePlay={handlePausePlay}
-              class="flex lg:hidden mx-4"
-            />
+                  <Timer
+                    time={time}
+                    paused={paused}
+                    onPausePlay={handlePausePlay}
+                    class="mx-4 flex lg:hidden"
+                  />
 
             <CheckModal
               open={checkModalOpen}
@@ -248,7 +248,7 @@ const HomePage = () => {
         </div>
 
         <div class="relative">
-          <div class="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 z-40">
+          <div class="absolute left-0 top-0 z-40 -translate-x-1/2 -translate-y-1/2">
             <TipButton
               ref={setTipBtnRef}
               modalRef={setModalRef}
@@ -258,7 +258,7 @@ const HomePage = () => {
 
           <Transition
             show={paused()}
-            class="absolute z-10 inset-0 overflow-hidden"
+            class="absolute inset-0 z-10 overflow-hidden"
           >
             <TransitionChild
               class="h-full"
@@ -269,7 +269,7 @@ const HomePage = () => {
               leaveFrom="translate-y-0"
               leaveTo="-translate-y-full"
             >
-              <div class="h-full flex items-center justify-center">
+              <div class="flex h-full items-center justify-center">
                 <div class={classNames(
                   'bg-background dark:bg-background-dark-accent rounded-md shadow-lg px-12 py-5',
                   'text-4xl',

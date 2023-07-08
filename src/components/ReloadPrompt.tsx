@@ -37,7 +37,7 @@ const ReloadPrompt: Component = () => {
 
   return (
     <Show when={offlineReady() || needRefresh()}>
-      <div class="fixed z-50 w-full top-0 px-8 py-6 bg-background-dark-accent flex justify-between items-center">
+      <div class="fixed top-0 z-50 flex w-full items-center justify-between bg-background-dark-accent px-8 py-6">
         <Show
           fallback={<span>New content available, click on reload button to update.</span>}
           when={offlineReady()}
