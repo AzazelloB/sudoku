@@ -23,6 +23,7 @@ const CheckModal: Component<CheckModalProps> = (props) => {
 
   return (
     <Modal
+      id="check"
       open={props.open}
       setOpen={props.setOpen}
     >

@@ -107,7 +107,9 @@ const TipButton: Component<TipButtonProps> = (props) => {
     <div
       ref={props.ref}
     >
-      <Modal>
+      <Modal
+        id="tip"
+      >
         <Popover>
           <Popover.Button
             as={Button}

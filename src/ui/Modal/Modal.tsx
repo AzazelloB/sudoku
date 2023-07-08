@@ -1,5 +1,5 @@
-import { Accessor, ParentComponent, Setter } from 'solid-js';
-import { ModalProvider } from '~/context/ModalContext';
+import { ParentComponent } from 'solid-js';
+import { ModalProvider, Params } from '~/context/ModalContext';
 
 import Button from '~/ui/Modal/Button';
 import Content from '~/ui/Modal/Content';
@@ -11,10 +11,7 @@ interface ModalComponent {
   Content: typeof Content;
 }
 
-interface ModalProps {
-  open?: Accessor<boolean>;
-  setOpen?: Setter<boolean>;
-}
+type ModalProps = Params;
 
 const Modal: ParentComponent<ModalProps> & ModalComponent = (props) => {
   return (
