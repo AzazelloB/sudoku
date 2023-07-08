@@ -10,10 +10,10 @@ import Question from '~/ui/icons/Question';
 const Header = () => {
   return (
     <header class={classNames(
-      'bg-primary text-white px-8 py-4 drop-shadow-lg',
+      'bg-primary text-white px-8 py-4 shadow-lg',
       'flex justify-between items-center',
     )}>
-      <img src={logo} alt="logo" width={50} height={50} />
+      <img src={logo} alt="logo" class="h-12 w-12" />
 
       <div class="flex">
         <Popover>
