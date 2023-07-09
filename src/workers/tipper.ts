@@ -114,58 +114,18 @@ const isValid = (cells: Cells, number: number, index: number) => {
     }
   }
 
-  // check sudoku area
-  // assuming area is 3x3
-  const areaStartRow = Math.floor(row / 3) * 3;
-  const areaStartCol = Math.floor(col / 3) * 3;
-  const areaEndRow = areaStartRow + 3;
-  const areaEndCol = areaStartCol + 3;
+  // check sudoku box
+  // assuming box is 3x3
+  const boxStartRow = Math.floor(row / 3) * 3;
+  const boxStartCol = Math.floor(col / 3) * 3;
+  const boxEndRow = boxStartRow + 3;
+  const boxEndCol = boxStartCol + 3;
 
-  for (let i = areaStartRow; i < areaEndRow; i++) {
-    for (let j = areaStartCol; j < areaEndCol; j++) {
-      const areaIndex = i * cellsInRow + j;
+  for (let i = boxStartRow; i < boxEndRow; i++) {
+    for (let j = boxStartCol; j < boxEndCol; j++) {
+      const boxIndex = i * cellsInRow + j;
 
-      if (areaIndex !== index && cells[areaIndex] === number) {
-        return false;
-      }
-    }
-  }
-
-  return true;
-};
-
-// TODO don't be a mega smooth brain and refactor isValidForEasyNakedSingle and isValid to be one function
-// this one need to take row and col as arguments
-// but rowIndex !== row check doesn't make sense so it check a cell against itself
-const isValidForEasyNakedSingle = (cells: Cells, number: number, col: number, row: number) => {
-  // check row and col
-  for (let i = 0; i < cellsInRow; i++) {
-    const rowIndex = row * cellsInRow + i;
-    const colIndex = col + i * cellsInRow;
-
-    if (rowIndex !== row && cells[rowIndex] === number) {
-      return false;
-    }
-
-    if (colIndex !== col && cells[colIndex] === number) {
-      return false;
-    }
-  }
-
-  // check sudoku area
-  // assuming area is 3x3
-  const areaStartRow = Math.floor(row / 3) * 3;
-  const areaStartCol = Math.floor(col / 3) * 3;
-  const areaEndRow = areaStartRow + 3;
-  const areaEndCol = areaStartCol + 3;
-
-  const indexInCells = row * cellsInRow + col;
-
-  for (let i = areaStartRow; i < areaEndRow; i++) {
-    for (let j = areaStartCol; j < areaEndCol; j++) {
-      const areaIndex = i * cellsInRow + j;
-
-      if (areaIndex !== indexInCells && cells[areaIndex] === number) {
+      if (boxIndex !== index && cells[boxIndex] === number) {
         return false;
       }
     }
@@ -175,78 +135,74 @@ const isValidForEasyNakedSingle = (cells: Cells, number: number, col: number, ro
 };
 
 export const findEasyNakedSingle = (cells: Cells): CellPosition[] | null => {
-  for (let index = 0; index < cells.length; index++) {
-    if (cells[index] !== null) {
-      continue;
-    }
+  const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-    const col = index % cellsInColumn;
-    const row = Math.floor(index / cellsInRow);
-
-    const available = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    const possible = [];
-
-    // find avbaliable in an area
-    avLoop: while (available.length) {
-      const number = available.pop();
-
-      // check sudoku area
-      // assuming area is 3x3
-      const areaStartRow = Math.floor(row / 3) * 3;
-      const areaStartCol = Math.floor(col / 3) * 3;
-      const areaEndRow = areaStartRow + 3;
-      const areaEndCol = areaStartCol + 3;
-
-      for (let i = areaStartRow; i < areaEndRow; i++) {
-        for (let j = areaStartCol; j < areaEndCol; j++) {
-          const areaIndex = i * cellsInRow + j;
-
-          if (areaIndex !== index && cells[areaIndex] === number) {
-            continue avLoop;
-          }
-        }
-      }
-
-      possible.push(number!);
-    }
-
-    const avaliavleOnAxis = new Set<number>();
+  for (const number of numbers) {
+    const seenInCol: number[] = [];
+    const seenInRow: number[] = [];
 
     for (let i = 0; i < cellsInColumn; i++) {
-      const colIndex = col + i * cellsInRow;
+      for (let j = 0; j < cellsInRow; j++) {
+        const index = i + j * cellsInColumn;
 
-      if (cells[colIndex] !== null) {
-        continue;
-      }
-
-      for (const number of possible) {
-        if (!isValidForEasyNakedSingle(cells, number, i, row)) {
-          avaliavleOnAxis.add(number);
+        if (cells[index] === number) {
+          seenInCol.push(i);
+          seenInRow.push(j);
         }
       }
     }
 
-    if (possible.filter(avaliavleOnAxis.has, avaliavleOnAxis).length === 1) {
-      return [{ col, row }];
-    }
+    const avaliableInCol = [0, 1, 2, 3, 4, 5, 6, 7, 8].filter((i) => !seenInCol.includes(i));
+    const avaliableInRow = [0, 1, 2, 3, 4, 5, 6, 7, 8].filter((i) => !seenInRow.includes(i));
+    const seenInBox = new Map();
 
-    avaliavleOnAxis.clear();
+    for (let i = 0; i < avaliableInCol.length; i++) {
+      loop: for (let j = 0; j < avaliableInRow.length; j++) {
+        const col = avaliableInCol[i];
+        const row = avaliableInRow[j];
+        const index = col + row * cellsInColumn;
 
-    for (let i = 0; i < cellsInRow; i++) {
-      const rowIndex = row * cellsInRow + i;
+        if (cells[index] !== null) {
+          continue;
+        }
 
-      if (cells[rowIndex] !== null) {
-        continue;
-      }
+        const boxStartRow = Math.floor(row / 3) * 3;
+        const boxStartCol = Math.floor(col / 3) * 3;
+        const boxEndRow = boxStartRow + 3;
+        const boxEndCol = boxStartCol + 3;
 
-      for (const number of possible) {
-        if (!isValidForEasyNakedSingle(cells, number, col, i)) {
-          avaliavleOnAxis.add(number);
+        for (let i = boxStartRow; i < boxEndRow; i++) {
+          for (let j = boxStartCol; j < boxEndCol; j++) {
+            const boxIndex = i * cellsInRow + j;
+
+            if (cells[boxIndex] === number) {
+              continue loop;
+            }
+          }
+        }
+
+        const key = `${boxStartCol}x${boxStartRow}`;
+
+        if (seenInBox.has(key)) {
+          seenInBox.set(key, {
+            count: seenInBox.get(key).count + 1,
+            col,
+            row,
+          });
+        } else {
+          seenInBox.set(key, {
+            count: 1,
+            col,
+            row,
+          });
         }
       }
     }
 
-    if (possible.filter(avaliavleOnAxis.has, avaliavleOnAxis).length === 1) {
+    const boxWithOne = [...seenInBox.entries()].find(([, value]) => value.count === 1);
+
+    if (boxWithOne) {
+      const { col, row } = boxWithOne[1];
       return [{ col, row }];
     }
   }
@@ -283,18 +239,18 @@ const findNakedSingle = (cells: Cells): CellPosition[] | null => {
         }
       }
 
-      // check sudoku area
-      // assuming area is 3x3
-      const areaStartRow = Math.floor(row / 3) * 3;
-      const areaStartCol = Math.floor(col / 3) * 3;
-      const areaEndRow = areaStartRow + 3;
-      const areaEndCol = areaStartCol + 3;
+      // check sudoku box
+      // assuming box is 3x3
+      const boxStartRow = Math.floor(row / 3) * 3;
+      const boxStartCol = Math.floor(col / 3) * 3;
+      const boxEndRow = boxStartRow + 3;
+      const boxEndCol = boxStartCol + 3;
 
-      for (let i = areaStartRow; i < areaEndRow; i++) {
-        for (let j = areaStartCol; j < areaEndCol; j++) {
-          const areaIndex = i * cellsInRow + j;
+      for (let i = boxStartRow; i < boxEndRow; i++) {
+        for (let j = boxStartCol; j < boxEndCol; j++) {
+          const boxIndex = i * cellsInRow + j;
 
-          if (areaIndex !== index && cells[areaIndex] === number) {
+          if (boxIndex !== index && cells[boxIndex] === number) {
             continue avLoop;
           }
         }
