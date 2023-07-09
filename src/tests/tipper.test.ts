@@ -32,10 +32,10 @@ const solvedBoard = [
 ];
 
 it('tipper tests', async () => {
-  expect(findEasyNakedSingle(board)).toEqual([{ col: 7, row: 2 }]);
+  expect(findEasyNakedSingle(board)).toEqual([{ col: 0, row: 3 }]);
   expect(onMessage({ data: { cells: board } })).toEqual({
     type: TipType.EASY_NAKED_SINGLE,
-    cells: [{ col: 7, row: 2 }],
+    cells: [{ col: 0, row: 3 }],
   });
 
   expect(isBoardFinished(board)).toBeNull();
