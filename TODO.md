@@ -9,7 +9,7 @@
 - [x] FIX: reset timer on difficulty change
 - [x] Cell hover animation
 - [x] Row, col highlighting
-- [ ] Make pretty
+- [x] Make pretty
 - [x] Interface for inputing digits, colors, switching input mode, delete, undo, redo
 - [x] Double click to select cells with same didgit
 - [x] Coloring the grid
