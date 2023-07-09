@@ -15,7 +15,7 @@ const DarkModeToggle = () => {
   return (
     <button
       class={classNames(
-        'bg-primary-dark dark:bg-primary-light hover:opacity-80 p-2 rounded-lg',
+        'bg-primary-700 dark:bg-primary-300 hover:opacity-80 p-2 rounded-lg',
       )}
       onClick={toggleTheme}
     >

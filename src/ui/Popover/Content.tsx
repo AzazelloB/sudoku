@@ -34,7 +34,7 @@ const Content: ParentComponent<ContentProps> = (props) => {
           unmount
           class={twMerge(
             'absolute right-0 mt-1 z-50 w-max max-w-sm px-4 py-2',
-            'bg-background-dark-accent text-white rounded-md shadow-md',
+            'bg-bgfg-800 text-white rounded-md shadow-md',
             props.class,
           )}
         >

@@ -37,7 +37,7 @@ const ReloadPrompt: Component = () => {
 
   return (
     <Show when={offlineReady() || needRefresh()}>
-      <div class="fixed top-0 z-50 flex w-full items-center justify-between bg-background-dark-accent px-8 py-6">
+      <div class="fixed top-0 z-50 flex w-full items-center justify-between bg-bgfg-800 px-8 py-6">
         <Show
           fallback={<span>New content available, click on reload button to update.</span>}
           when={offlineReady()}
@@ -49,7 +49,12 @@ const ReloadPrompt: Component = () => {
           <Button onClick={() => updateServiceWorker(true)}>Reload</Button>
         </Show>
 
-        <Button onClick={close}>Close</Button>
+        <Button
+          variant="secondary"
+          onClick={close}
+        >
+          Close
+        </Button>
       </div>
    </Show>
   );

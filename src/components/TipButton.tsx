@@ -190,6 +190,7 @@ const TipButton: Component<TipButtonProps> = (props) => {
 
                 <Button
                   class="ml-auto mt-6"
+                  variant="secondary"
                   onClick={closeModal}
                 >
                   Close

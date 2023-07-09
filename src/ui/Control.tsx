@@ -80,7 +80,7 @@ const Control = <T extends Component<ComponentProps<typeof Button>>>(props: AsPr
       <Show when={showControls()}>
         <div class={twMerge(
           'absolute z-10 px-2 py-1 shadow-md rounded-md',
-          'text-xs text-white bg-background-dark-accent',
+          'text-xs text-white bg-bgfg-800',
           local.corenr === 1 && '-top-4 left-2',
           local.corenr === 2 && '-top-4 right-2',
           local.corenr === 3 && '-bottom-4 right-2',

@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 import { colors } from '~/constants/theme';
 import { lerp } from '~/utils/math';
 
@@ -159,7 +160,7 @@ export class Renderer {
 
   #drawShadow(ctx: CanvasRenderingContext2D) {
     // TODO big performance hit
-    ctx.shadowColor = colors.background.dark;
+    ctx.shadowColor = colors.bgfg[900];
 
     if (this.#theme === 'dark') {
       ctx.shadowBlur = 15 * scale;
@@ -174,7 +175,7 @@ export class Renderer {
     const boxWidth = this.#width - Renderer.controlBoxPadding * 2 * scale;
     const boxHeight = this.#width - Renderer.controlBoxPadding * 2 * scale;
 
-    ctx.fillStyle = colors.background['dark-accent'];
+    ctx.fillStyle = colors.bgfg[800];
     ctx.beginPath();
     ctx.roundRect(
       boxX,
@@ -245,14 +246,14 @@ export class Renderer {
   }
 
   drawFPS(ctx: CanvasRenderingContext2D, fps: number) {
-    ctx.fillStyle = colors.background['dark-accent'];
+    ctx.fillStyle = colors.bgfg[800];
     const w = 55 * scale;
     const h = 17 * scale;
     ctx.fillRect(this.#width - w, 0, w, h);
 
     ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = colors.background.light;
+    ctx.fillStyle = colors.bgfg[100];
     ctx.font = `${12 * scale}px ${Renderer.fontFamily}`;
     ctx.fillText(`FPS: ${Math.round(fps)}`, this.#width - 2 * scale, 10 * scale);
   }
@@ -308,7 +309,7 @@ export class Renderer {
   }
 
   drawGrid(ctx: CanvasRenderingContext2D) {
-    ctx.strokeStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
+    ctx.strokeStyle = colors.bgfg[this.#theme === 'dark' ? 100 : 900];
     const thickLineWidth = this.#width * 0.006;
     const thinLineWidth = this.#width * 0.002;
 
@@ -364,25 +365,27 @@ export class Renderer {
         const value = revealed ? cell.answer : cell.value;
 
         if (this.#theme === 'dark') {
-          ctx.fillStyle = colors.secondary.light;
+          ctx.fillStyle = colors.secondary.DEFAULT;
         } else {
-          ctx.fillStyle = colors.secondary.light;
+          ctx.fillStyle = colors.primary[600];
+          ctx.shadowBlur = 0;
         }
 
         if (cell.revealed) {
-          if (this.#theme === 'light') {
-            ctx.shadowBlur = 0;
+          ctx.fillStyle = colors.bgfg[this.#theme === 'dark' ? 100 : 900];
+          if (this.#theme === 'dark') {
+            ctx.font = `${fontSize}px ${Renderer.fontFamily}`;
+          } else {
+            ctx.font = `500 ${fontSize}px ${Renderer.fontFamily}`;
           }
-          ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
-          ctx.font = `${fontSize}px ${Renderer.fontFamily}`;
           ctx.fillText(
             cell.answer.toString(),
             this.#getPixel(i * this.#cellWidth + this.#cellWidth / 2),
             this.#getPixel(j * this.#cellHeight + this.#cellHeight / 2),
           );
           if (this.#theme === 'light') {
-            ctx.strokeStyle = colors.background.light;
-            ctx.lineWidth = this.#getPixel(this.#width * 0.002);
+            ctx.strokeStyle = colors.bgfg[100];
+            ctx.lineWidth = this.#getPixel(this.#width * 0.003);
             ctx.strokeText(
               cell.answer.toString(),
               this.#getPixel(i * this.#cellWidth + this.#cellWidth / 2),
@@ -390,10 +393,6 @@ export class Renderer {
             );
           }
         } else if (value) {
-          if (this.#theme === 'light') {
-            ctx.shadowBlur = this.#width * 0.005;
-          }
-
           ctx.font = `${fontSize}px ${Renderer.fontFamily}`;
           ctx.fillText(
             value.toString(),
@@ -401,9 +400,6 @@ export class Renderer {
             this.#getPixel(j * this.#cellHeight + this.#cellHeight / 2),
           );
         } else {
-          if (this.#theme === 'light') {
-            ctx.shadowBlur = this.#width * 0.004;
-          }
           ctx.font = `${fontSize / 2.4}px ${Renderer.fontFamily}`;
           cell.corner.forEach((value, valueI) => {
             ctx.fillText(
@@ -440,7 +436,7 @@ export class Renderer {
         this.animatedHighlightedCell.y = lerp(this.animatedHighlightedCell.y, y, Renderer.hightlightedCellSpeed * dt);
       }
 
-      ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark-accent'];
+      ctx.fillStyle = colors.bgfg[this.#theme === 'dark' ? 100 : 700];
       ctx.globalAlpha = 0.2;
       ctx.fillRect(
         this.#getPixel(this.animatedHighlightedCell.x),
@@ -470,7 +466,7 @@ export class Renderer {
         this.animatedArea.y = lerp(this.animatedArea.y, y, Renderer.hightlightedCellSpeed * dt);
       }
 
-      ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark-accent'];
+      ctx.fillStyle = colors.bgfg[this.#theme === 'dark' ? 100 : 800];
       ctx.globalAlpha = 0.1;
 
       for (let i = 0; i < cellsInRow; i += 1) {
@@ -530,11 +526,11 @@ export class Renderer {
     const lineWidth = this.#width * 0.01;
 
     if (this.#theme === 'dark') {
-      ctx.strokeStyle = colors.secondary.light;
+      ctx.strokeStyle = colors.secondary.DEFAULT;
     } else {
-      ctx.strokeStyle = colors.background['light-accent'];
+      ctx.strokeStyle = colors.secondary[300];
     }
-    ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark-accent'];
+    ctx.fillStyle = colors.bgfg[this.#theme === 'dark' ? 100 : 300];
     ctx.lineWidth = lineWidth;
 
     ctx.strokeRect(
