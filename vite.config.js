@@ -33,7 +33,7 @@ export default defineConfig({
         name: 'Sudoku',
         short_name: 'Sudoku',
         theme_color: '#138686',
-        background_color: '#111827',
+        background_color: '#0f1624',
         icons: [
           {
             src: 'pwa-192x192.png',
