@@ -18,7 +18,7 @@
 - [x] Hint system
 - [ ] Restrict features to lvl of difficulty
 - [x] Scale board according to window size
-- [ ] Touch support
+- [x] Touch support
 - [ ] MacOS support
 - [x] Ctrl + A
 - [ ] Add save check and show notification if it's not compatible anymore
