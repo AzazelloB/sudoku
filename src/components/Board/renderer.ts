@@ -361,7 +361,18 @@ export class Renderer {
           continue;
         }
 
-        const value = revealed ? cell.answer : cell.value;
+        if (revealed) {
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = colors.background[this.#theme === 'dark' ? 'light' : 'dark'];
+          ctx.globalAlpha = 0.2;
+          ctx.font = `${fontSize}px ${Renderer.fontFamily}`;
+          ctx.fillText(
+            cell.answer.toString(),
+            this.#getPixel(i * this.#cellWidth + this.#cellWidth / 2),
+            this.#getPixel(j * this.#cellHeight + this.#cellHeight / 2),
+          );
+          ctx.globalAlpha = 1;
+        }
 
         if (this.#theme === 'dark') {
           ctx.fillStyle = colors.secondary.light;
@@ -389,14 +400,14 @@ export class Renderer {
               this.#getPixel(j * this.#cellHeight + this.#cellHeight / 2),
             );
           }
-        } else if (value) {
+        } else if (cell.value) {
           if (this.#theme === 'light') {
             ctx.shadowBlur = this.#width * 0.005;
           }
 
           ctx.font = `${fontSize}px ${Renderer.fontFamily}`;
           ctx.fillText(
-            value.toString(),
+            cell.value.toString(),
             this.#getPixel(i * this.#cellWidth + this.#cellWidth / 2),
             this.#getPixel(j * this.#cellHeight + this.#cellHeight / 2),
           );
