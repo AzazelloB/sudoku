@@ -146,7 +146,7 @@ const TipButton: Component<TipButtonProps> = (props) => {
                 <Show when={tipType() && tips[tipType()!].hasExplanation}>
                   <Modal.Button
                     as={Link}
-                    class="ml-auto mt-1 text-xs text-gray-400"
+                    class="ml-auto mt-1 text-xs text-bgfg-400"
                   >
                     What's that?
                   </Modal.Button>
@@ -183,13 +183,14 @@ const TipButton: Component<TipButtonProps> = (props) => {
                 </Show>
 
                 <Show when={tipExp().smallText}>
-                  <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                  <p class="mt-4 text-sm text-bgfg-400">
                     {tipExp().smallText}
                   </p>
                 </Show>
 
                 <Button
                   class="ml-auto mt-6"
+                  variant="secondary"
                   onClick={closeModal}
                 >
                   Close

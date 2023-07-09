@@ -43,7 +43,7 @@ const Content: Component<ContentProps> = (props) => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <DialogOverlay class="fixed inset-0 bg-background-dark/50" />
+            <DialogOverlay class="fixed inset-0 bg-bgfg-900/50" />
           </TransitionChild>
 
           <TransitionChild
@@ -57,7 +57,7 @@ const Content: Component<ContentProps> = (props) => {
           >
             <DialogPanel class={twMerge(
               'w-full max-w-md px-8 py-6 overflow-hidden transition-all transform',
-              'bg-background dark:bg-background-dark-accent shadow-xl rounded-2xl',
+              'bg-bgfg-100 dark:bg-bgfg-800 shadow-xl rounded-2xl',
               props.class,
             )}>
               {props.children({ closeModal })}

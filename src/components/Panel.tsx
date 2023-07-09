@@ -310,7 +310,7 @@ const Panel: Component<PanelProps> = (props) => {
           corenr={3}
           onClick={[handleColor, colors.cell.one]}
         >
-          <div class="aspect-square w-full bg-background-light dark:bg-background-dark" />
+          <div class="aspect-square w-full bg-bgfg-100 dark:bg-bgfg-900" />
         </Control>
         <Control
           as={Button}

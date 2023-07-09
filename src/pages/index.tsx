@@ -271,7 +271,7 @@ const HomePage = () => {
             >
               <div class="flex h-full items-center justify-center">
                 <div class={classNames(
-                  'bg-background dark:bg-background-dark-accent rounded-md shadow-lg px-12 py-5',
+                  'bg-bgfg-100 dark:bg-bgfg-800 rounded-md shadow-lg px-12 py-5',
                   'text-4xl',
                 )}>
                   Paused

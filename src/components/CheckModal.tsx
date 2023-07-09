@@ -67,6 +67,7 @@ const CheckModal: Component<CheckModalProps> = (props) => {
               )}
 
               <Button
+                variant="secondary"
                 onClick={closeModal}
               >
                 Close
