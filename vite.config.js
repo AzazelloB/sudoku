@@ -32,7 +32,7 @@ export default defineConfig({
         scope: `${baseURL}/`,
         name: 'Sudoku',
         short_name: 'Sudoku',
-        theme_color: '#167D7F',
+        theme_color: '#138686',
         background_color: '#111827',
         icons: [
           {
