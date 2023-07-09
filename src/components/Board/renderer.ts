@@ -161,12 +161,7 @@ export class Renderer {
   #drawShadow(ctx: CanvasRenderingContext2D) {
     // TODO big performance hit
     ctx.shadowColor = colors.bgfg[900];
-
-    if (this.#theme === 'dark') {
-      ctx.shadowBlur = 15 * scale;
-    } else {
-      ctx.shadowBlur = 25 * scale;
-    }
+    ctx.shadowBlur = 25 * scale;
   }
 
   drawControlSchema(ctx: CanvasRenderingContext2D) {
@@ -175,7 +170,7 @@ export class Renderer {
     const boxWidth = this.#width - Renderer.controlBoxPadding * 2 * scale;
     const boxHeight = this.#width - Renderer.controlBoxPadding * 2 * scale;
 
-    ctx.fillStyle = colors.bgfg[800];
+    ctx.fillStyle = colors.bgfg[this.#theme === 'dark' ? 800 : 200];
     ctx.beginPath();
     ctx.roundRect(
       boxX,
@@ -190,7 +185,7 @@ export class Renderer {
     const fontSize = this.#width / cellsInRow / 1.5;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = 'white';
+    ctx.fillStyle = colors.bgfg[this.#theme === 'dark' ? 100 : 800];
     ctx.font = `${fontSize}px ${Renderer.fontFamily}`;
 
     const titleY = boxY + fontSize / 2 + 15 * scale;

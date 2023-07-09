@@ -11,7 +11,7 @@ const Link: ParentComponent<LinkProps> = (props) => {
       {...props}
       class={twMerge(
         'cursor-pointer underline',
-        'hover:brightness-125 active:brightness-90',
+        'hover:brightness-90 active:brightness-110 dark:hover:brightness-125 dark:active:brightness-90',
         props.class,
       )}
     >
