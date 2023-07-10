@@ -16,7 +16,7 @@ const Header = () => {
       <img src={logo} alt="logo" class="h-12 w-12" />
 
       <div class="flex">
-        <Popover>
+        <Popover class="hidden lg:block">
           <Popover.Button
             as={Button}
             class="mr-4 p-2"
