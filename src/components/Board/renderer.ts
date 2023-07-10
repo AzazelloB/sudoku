@@ -279,8 +279,17 @@ export class Renderer {
         ctx.clip(path);
 
         for (let k = 0; k < cell.colors.length; k += 1) {
-          const color = cell.colors[k];
-          ctx.fillStyle = color;
+          const colorIndex = cell.colors[k];
+
+          if (this.#theme === 'dark') {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            ctx.fillStyle = colors.darkCell[colorIndex];
+          } else {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            ctx.fillStyle = colors.cell[colorIndex];
+          }
 
           const x = this.#getPixel(i * this.#cellWidth + this.#cellWidth / 2);
           const y = this.#getPixel(j * this.#cellHeight + this.#cellHeight / 2);

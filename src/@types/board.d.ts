@@ -17,7 +17,7 @@ interface Cell extends CellPosition {
   revealed: boolean,
   corner: number[],
   middle: number[],
-  colors: string[],
+  colors: number[],
 }
 
 interface State {

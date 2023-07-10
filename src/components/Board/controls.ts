@@ -1,5 +1,3 @@
-import { colors } from '~/constants/theme';
-
 import {
   checkBoundaries,
   clearSelectedCells,
@@ -145,7 +143,7 @@ function handleKeyboardDown(this: KeyboardDownThis, e: KeyboardEvent) {
         insertMiddle(number);
       }
     } else if (this.tool === 'colors') {
-      insertColor(Object.values(colors.cell)[number - 1]);
+      insertColor(number);
     }
 
     saveSnapshot();

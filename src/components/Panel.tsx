@@ -7,8 +7,6 @@ import {
 } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 
-import { colors } from '~/constants/theme';
-
 import Button from '~/ui/Button';
 import Control from '~/ui/Control';
 
@@ -108,8 +106,8 @@ const Panel: Component<PanelProps> = (props) => {
     saveSnapshot();
   };
 
-  const handleColor = (color: string) => {
-    insertColor(color);
+  const handleColor = (colorIndex: number) => {
+    insertColor(colorIndex);
 
     saveSnapshot();
   };
@@ -258,57 +256,57 @@ const Panel: Component<PanelProps> = (props) => {
           as={Button}
           key="7"
           corenr={3}
-          onClick={[handleColor, colors.cell.seven]}
+          onClick={[handleColor, 7]}
         >
-          <div class="aspect-square w-full bg-cell-seven" />
+          <div class="aspect-square w-full bg-cell-7 dark:bg-darkCell-7" />
         </Control>
         <Control
           as={Button}
           key="8"
           corenr={3}
-          onClick={[handleColor, colors.cell.eight]}
+          onClick={[handleColor, 8]}
         >
-          <div class="aspect-square w-full bg-cell-eight" />
+          <div class="aspect-square w-full bg-cell-8 dark:bg-darkCell-8" />
         </Control>
         <Control
           as={Button}
           key="9"
           corenr={3}
-          onClick={[handleColor, colors.cell.nine]}
+          onClick={[handleColor, 9]}
         >
-          <div class="aspect-square w-full bg-cell-nine" />
+          <div class="aspect-square w-full bg-cell-9 dark:bg-darkCell-9" />
         </Control>
 
         <Control
           as={Button}
           key="4"
           corenr={3}
-          onClick={[handleColor, colors.cell.four]}
+          onClick={[handleColor, 4]}
         >
-          <div class="aspect-square w-full bg-cell-four" />
+          <div class="aspect-square w-full bg-cell-4 dark:bg-darkCell-4" />
         </Control>
         <Control
           as={Button}
           key="5"
           corenr={3}
-          onClick={[handleColor, colors.cell.five]}
+          onClick={[handleColor, 5]}
         >
-          <div class="aspect-square w-full bg-cell-five" />
+          <div class="aspect-square w-full bg-cell-5 dark:bg-darkCell-5" />
         </Control>
         <Control
           as={Button}
           key="6"
           corenr={3}
-          onClick={[handleColor, colors.cell.six]}
+          onClick={[handleColor, 6]}
         >
-          <div class="aspect-square w-full bg-cell-six" />
+          <div class="aspect-square w-full bg-cell-6 dark:bg-darkCell-6" />
         </Control>
 
         <Control
           as={Button}
           key="1"
           corenr={3}
-          onClick={[handleColor, colors.cell.one]}
+          onClick={[handleColor, 1]}
         >
           <div class="aspect-square w-full bg-bgfg-100 dark:bg-bgfg-900" />
         </Control>
@@ -316,17 +314,17 @@ const Panel: Component<PanelProps> = (props) => {
           as={Button}
           key="2"
           corenr={3}
-          onClick={[handleColor, colors.cell.two]}
+          onClick={[handleColor, 2]}
         >
-          <div class="aspect-square w-full bg-cell-two" />
+          <div class="aspect-square w-full bg-cell-2 dark:bg-darkCell-2" />
         </Control>
         <Control
           as={Button}
           key="3"
           corenr={3}
-          onClick={[handleColor, colors.cell.tree]}
+          onClick={[handleColor, 3]}
         >
-          <div class="aspect-square w-full bg-cell-tree" />
+          <div class="aspect-square w-full bg-cell-3 dark:bg-darkCell-3" />
         </Control>
       </Show>
 

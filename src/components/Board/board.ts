@@ -258,24 +258,24 @@ export const insertMiddle = (value: number) => {
   });
 };
 
-export const insertColor = (color: string) => {
+export const insertColor = (colorIndex: number) => {
   let areWeRemoving: boolean | null = null;
 
   state.selectedCells.forEach((cell) => {
     const cellInGrid = state.cells[cell.row * cellsInRow + cell.col];
 
     if (areWeRemoving === null) {
-      areWeRemoving = cellInGrid.colors.includes(color);
+      areWeRemoving = cellInGrid.colors.includes(colorIndex);
     }
 
-    if (!areWeRemoving && cellInGrid.colors.includes(color)) {
+    if (!areWeRemoving && cellInGrid.colors.includes(colorIndex)) {
       return;
     }
 
     if (areWeRemoving) {
-      cellInGrid.colors = cellInGrid.colors.filter((c) => c !== color);
+      cellInGrid.colors = cellInGrid.colors.filter((c) => c !== colorIndex);
     } else {
-      cellInGrid.colors.push(color);
+      cellInGrid.colors.push(colorIndex);
       cellInGrid.colors.sort();
     }
   });
