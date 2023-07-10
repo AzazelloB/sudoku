@@ -31,13 +31,19 @@ export const onShortcut = (e: KeyboardEvent, callback: CallableFunction, shortcu
     return;
   }
 
-  if (canRedefineControls()) {
+  if (canRedefineControls(shortcut)) {
     e.preventDefault();
 
     callback();
   }
 };
 
-export const canRedefineControls = () => {
+const aNoNoList = ['Tab', 'Enter', 'Space', 'Escape'];
+
+export const canRedefineControls = (shortcut: Shortcut) => {
+  if (!aNoNoList.includes(shortcut.code)) {
+    return true;
+  }
+
   return document.activeElement?.tagName !== 'BUTTON';
 };
