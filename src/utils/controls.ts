@@ -1,5 +1,3 @@
-import { state } from '~/components/Board/state';
-
 interface Shortcut {
   code: KeyboardEvent['code'];
   ctrl?: boolean;
@@ -8,10 +6,6 @@ interface Shortcut {
 }
 
 export const onShortcut = (e: KeyboardEvent, callback: CallableFunction, shortcut: Shortcut) => {
-  if (state.castSpell) {
-    return;
-  }
-
   if (shortcut.code !== e.code) {
     return;
   }
@@ -41,6 +35,10 @@ export const onShortcut = (e: KeyboardEvent, callback: CallableFunction, shortcu
 const aNoNoList = ['Tab', 'Enter', 'Space', 'Escape'];
 
 export const canRedefineControls = (shortcut: Shortcut) => {
+  if (document.activeElement?.tagName === 'INPUT') {
+    return false;
+  }
+
   if (!aNoNoList.includes(shortcut.code)) {
     return true;
   }

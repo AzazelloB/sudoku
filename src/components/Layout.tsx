@@ -4,6 +4,7 @@ import {
 
 import Header from '~/components/Header';
 import ReloadPrompt from '~/components/ReloadPrompt';
+import SpellCaster from '~/components/SpellCaster';
 
 const Layout: ParentComponent = (props) => {
   const [isFS, setFS] = createSignal(!!document.fullscreenElement);
@@ -21,6 +22,8 @@ const Layout: ParentComponent = (props) => {
   return (
     <>
       <ReloadPrompt />
+
+      <SpellCaster />
 
       <Show when={!isFS()}>
         <Header />

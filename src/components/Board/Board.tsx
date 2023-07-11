@@ -238,7 +238,8 @@ const Board: Component<BoardProps> = (props) => {
           'relative z-20 select-none',
           'focus-visible:outline-none',
           usingTab() && 'focus-visible:ring-4 focus-visible:ring-offset-4',
-          usingTab() && 'focus-visible:ring-white dark:focus-visible:ring-offset-background-dark',
+          usingTab() && 'focus-visible:ring-bgfg-900 focus-visible:ring-offset-bgfg-100',
+          usingTab() && 'dark:focus-visible:ring-bgfg-100 dark:focus-visible:ring-offset-bgfg-900',
         )}
         width={canvasWidth() * scale}
         height={canvasHeight() * scale}

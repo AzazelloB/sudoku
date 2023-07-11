@@ -4,6 +4,7 @@ import {
   Setter,
   createEffect,
   createSignal,
+  onMount,
 } from 'solid-js';
 
 import { createContext } from '~/utils/createContext';
@@ -19,6 +20,12 @@ function useModalState(props: Params) {
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  onMount(() => {
+    if (props.open !== undefined) {
+      setOpen(props.open());
+    }
+  });
 
   createEffect(() => {
     if (props.open !== undefined) {
