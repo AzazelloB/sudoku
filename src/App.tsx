@@ -14,7 +14,7 @@ import PlaygroundPage from '~/pages/playground';
 
 function App() {
   return (
-    <Router source={hashIntegration()}>
+    <Router>
       <Routes>
         <Route path={ROUTES.HOME} element={<Layout><HomePage /></Layout>} />
         <Route path={ROUTES.WHOAMI} element={<WhoamiPage />} />

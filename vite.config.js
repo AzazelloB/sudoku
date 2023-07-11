@@ -5,8 +5,8 @@ import checker from 'vite-plugin-checker';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 
-// should end with /
-const baseURL = 'https://azazellob.github.io/sudoku';
+// shouldn't end with /
+const baseURL = 'https://number.place';
 
 export default defineConfig({
   base: baseURL,
@@ -19,6 +19,7 @@ export default defineConfig({
     VitePWA({
       workbox: {
         globPatterns: ['**/*'],
+        globIgnores: ['CNAME'],
       },
       registerType: 'autoUpdate',
       includeAssets: [
