@@ -2,7 +2,6 @@ import {
   Router,
   Route,
   Routes,
-  hashIntegration,
 } from '@solidjs/router';
 
 import { ROUTES } from '~/constants/routes';
