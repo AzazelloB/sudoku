@@ -7,7 +7,6 @@ const intervalMS = 60 * 60 * 1000;
 
 const ReloadPrompt: Component = () => {
   const {
-    offlineReady: [offlineReady, setOfflineReady],
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
   } = useRegisterSW({
@@ -24,37 +23,36 @@ const ReloadPrompt: Component = () => {
     onRegisterError(error) {
       console.log('SW registration error', error);
     },
-
-    onOfflineReady() {
-      setOfflineReady(true);
-    },
   });
 
+  const reload = () => {
+    updateServiceWorker(true);
+  };
+
   const close = () => {
-    setOfflineReady(false);
     setNeedRefresh(false);
   };
 
   return (
-    <Show when={offlineReady() || needRefresh()}>
+    <Show when={needRefresh()}>
       <div class="fixed top-0 z-50 flex w-full items-center justify-between bg-bgfg-200 px-8 py-6 dark:bg-bgfg-800">
-        <Show
-          fallback={<span>New content available, click on reload button to update.</span>}
-          when={offlineReady()}
-        >
-          <span>App ready to work offline</span>
-        </Show>
+        <span>New content available, click on reload button to update.</span>
 
-        <Show when={needRefresh()}>
-          <Button onClick={() => updateServiceWorker(true)}>Reload</Button>
-        </Show>
+        <div>
+          <Button
+            class="mr-4"
+            onClick={reload}
+          >
+            Reload
+          </Button>
 
-        <Button
-          variant="secondary"
-          onClick={close}
-        >
-          Close
-        </Button>
+          <Button
+            variant="secondary"
+            onClick={close}
+          >
+            Close
+          </Button>
+        </div>
       </div>
    </Show>
   );
