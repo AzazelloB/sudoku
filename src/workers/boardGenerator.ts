@@ -1,12 +1,13 @@
 /* eslint-disable no-param-reassign */
 import { DifficultyLevel, difficultyLevels } from '~/constants/difficulty';
+import { RuleType } from '~/constants/rules';
 import { shuffleArray } from '~/utils/array';
 
 import { cellsInColumn, cellsInRow } from '~/components/Board/settings';
 
 type Cells = (number | null)[];
 
-const isValid = (cells: Cells, number: number, index: number) => {
+const isValidNormalSudoku = (cells: Cells, number: number, index: number) => {
   const col = index % cellsInRow;
   const row = Math.floor(index / cellsInRow);
 
@@ -44,8 +45,68 @@ const isValid = (cells: Cells, number: number, index: number) => {
   return true;
 };
 
+const isValidKingsMove = (cells: Cells, number: number, index: number) => {
+  for (let i = -1; i <= 1; i++) {
+    for (let j = -1; j <= 1; j++) {
+      const kingIndex = index + (i * cellsInRow) + j;
+
+      if (kingIndex !== index && cells[kingIndex] === number) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+};
+
+const isValidKnightsMove = (cells: Cells, number: number, index: number) => {
+  const col = index % cellsInRow;
+  const row = Math.floor(index / cellsInRow);
+
+  const moves = [
+    { col: col - 2, row: row - 1 },
+    { col: col - 2, row: row + 1 },
+    { col: col - 1, row: row - 2 },
+    { col: col - 1, row: row + 2 },
+    { col: col + 1, row: row - 2 },
+    { col: col + 1, row: row + 2 },
+    { col: col + 2, row: row - 1 },
+    { col: col + 2, row: row + 1 },
+  ];
+
+  for (const move of moves) {
+    if (move.col >= 0 && move.col < cellsInRow && move.row >= 0 && move.row < cellsInRow) {
+      const moveIndex = move.row * cellsInRow + move.col;
+
+      if (cells[moveIndex] === number) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+};
+
+type Validator = (cells: Cells, number: number, index: number) => boolean
+
+const ruleValidaroMap: Record<RuleType, Validator> = {
+  [RuleType.NORMAL_SUDOKU]: isValidNormalSudoku,
+  [RuleType.KINGS_MOVE]: isValidKingsMove,
+  [RuleType.KNIGHTS_MOVE]: isValidKnightsMove,
+};
+
+const isValid = (rules: RuleType[], cells: Cells, number: number, index: number) => {
+  for (const rule of rules) {
+    if (!ruleValidaroMap[rule](cells, number, index)) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
 // expects an array filled with nulls only
-const solve = (cells: Cells, i = 0) => {
+const solve = (rules: RuleType[], cells: Cells, i = 0) => {
   if (i === cells.length) {
     return true;
   }
@@ -58,10 +119,10 @@ const solve = (cells: Cells, i = 0) => {
       1,
     );
 
-    if (isValid(cells, value, i)) {
+    if (isValid(rules, cells, value, i)) {
       cells[i] = value;
 
-      if (solve(cells, i + 1)) {
+      if (solve(rules, cells, i + 1)) {
         return true;
       }
     }
@@ -81,7 +142,7 @@ const getEmptyCellIndex = (cells: Cells) => {
   return null;
 };
 
-const createSolutionCounter = () => {
+const createSolutionCounter = (rules: RuleType[]) => {
   let iter = 0;
 
   return function countSolutions(cells: Cells, count = 0) {
@@ -100,7 +161,7 @@ const createSolutionCounter = () => {
 
     if (i !== null) {
       for (let num = 1; num <= 9; num++) {
-        if (isValid(cells, num, i)) {
+        if (isValid(rules, cells, num, i)) {
           cells[i] = num;
           count = countSolutions(cells, count);
           cells[i] = null;
@@ -114,9 +175,9 @@ const createSolutionCounter = () => {
   };
 };
 
-const mask = (cells: Cells, difficulty: DifficultyLevel): Cells => {
+const mask = (cells: Cells, difficulty: DifficultyLevel, rules: RuleType[]): Cells => {
   try {
-    const countSolutions = createSolutionCounter();
+    const countSolutions = createSolutionCounter(rules);
 
     const masked = cells.slice();
     const indexes = [...masked.keys()];
@@ -140,15 +201,22 @@ const mask = (cells: Cells, difficulty: DifficultyLevel): Cells => {
 
     return masked;
   } catch (e) {
-    return mask(cells, difficulty);
+    return mask(cells, difficulty, rules);
   }
 };
 
-export const onMessage = ({ data: { difficulty } }: { data: { difficulty: DifficultyLevel } }) => {
-  const solved = new Array(cellsInRow * cellsInColumn).fill(null);
-  solve(solved);
+type Params = {
+  data: {
+    difficulty: DifficultyLevel;
+    rules: RuleType[];
+  }
+}
 
-  const masked = mask(solved, difficulty);
+export const onMessage = ({ difficulty, rules }: Params['data']) => {
+  const solved = new Array(cellsInRow * cellsInColumn).fill(null);
+  solve(rules, solved);
+
+  const masked = mask(solved, difficulty, rules);
 
   const cells: Cell[] = [];
 
@@ -168,8 +236,11 @@ export const onMessage = ({ data: { difficulty } }: { data: { difficulty: Diffic
   return cells;
 };
 
-onmessage = ({ data: { difficulty } }) => {
-  const cells = onMessage({ data: { difficulty } });
+onmessage = ({ data: { difficulty, rules } }: Params) => {
+  const cells = onMessage({
+    difficulty,
+    rules,
+  });
 
   postMessage(cells);
 };

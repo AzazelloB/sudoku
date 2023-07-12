@@ -3,11 +3,12 @@ import {
   expect,
   it,
 } from 'vitest';
+import { RuleType } from '~/constants/rules';
 import { onMessage } from '~/workers/boardGenerator';
 
 it('board generator tests', async () => {
   const ts = Date.now();
-  onMessage({ data: { difficulty: 'hard' } });
+  onMessage({ difficulty: 'hard', rules: [RuleType.NORMAL_SUDOKU] });
 
   expect(Date.now() - ts).toBeLessThan(8000);
 });

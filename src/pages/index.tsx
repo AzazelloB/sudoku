@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import { Transition, TransitionChild } from 'solid-headless';
 
 import { DifficultyLevel } from '~/constants/difficulty';
+import { RuleType } from '~/constants/rules';
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { onShortcut } from '~/utils/controls';
 import { publish } from '~/utils/pubSub';
@@ -30,6 +31,7 @@ import Panel from '~/components/Panel';
 import CheckModal from '~/components/CheckModal';
 import Timer from '~/components/Timer';
 import TipButton from '~/components/TipButton';
+import Ruler from '~/components/Ruler';
 
 const HomePage = () => {
   const [cells, setCells] = useLocalStorage<Cell[]>('cells', []);
@@ -40,6 +42,8 @@ const HomePage = () => {
 
   const [mode, setMode] = createSignal<InsertionMode>('middle');
   const [tool, setTool] = createSignal<Tool>('digits');
+
+  const [rules, setRules] = createSignal<RuleType[]>([0, 1, 2]);
 
   const [difficulty, setDifficulty] = useLocalStorage<DifficultyLevel>('difficulty', 'normal');
   const [paused, setPause] = createSignal(false);
@@ -132,7 +136,7 @@ const HomePage = () => {
   const restartGame = async () => {
     setGeneratingNewBoard(true);
 
-    await generateGrid(difficulty());
+    await generateGrid(difficulty(), rules());
     setCells(state.cells);
 
     clearHistory();
@@ -304,6 +308,12 @@ const HomePage = () => {
           setMode={setMode}
           tool={tool}
           setTool={setTool}
+        />
+
+        <Ruler
+          class="mt-4 lg:mt-6"
+          rules={rules}
+          setRules={setRules}
         />
       </div>
     </div>

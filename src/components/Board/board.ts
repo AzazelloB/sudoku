@@ -1,13 +1,15 @@
 import { DifficultyLevel } from '~/constants/difficulty';
+import { RuleType } from '~/constants/rules';
 
 import { cellsInColumn, cellsInRow } from '~/components/Board/settings';
 import { state } from '~/components/Board/state';
 
 import { delegateTaskTo } from '~/utils/humanResources';
 
-export const generateGrid = async (difficulty: DifficultyLevel) => {
+export const generateGrid = async (difficulty: DifficultyLevel, rules: RuleType[]) => {
   const response = await delegateTaskTo('boardGenerator', {
     difficulty,
+    rules,
   });
 
   state.cells = response;
