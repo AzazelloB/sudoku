@@ -257,6 +257,7 @@ const HomePage = () => {
               ref={setTipBtnRef}
               modalRef={setModalRef}
               paused={paused}
+              rules={rules}
             />
           </div>
 

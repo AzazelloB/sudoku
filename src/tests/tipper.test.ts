@@ -1,5 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { expect, it } from 'vitest';
+import { RuleType } from '~/constants/rules';
 import {
   TipType,
   findEasyNakedSingle,
@@ -31,16 +32,18 @@ const solvedBoard = [
   5, 6, 2, 1, 7, 4, 3, 8, 9,
 ];
 
+const rules = [RuleType.NORMAL_SUDOKU];
+
 it('tipper tests', async () => {
-  expect(findEasyNakedSingle(board)).toEqual([{ col: 0, row: 3 }]);
-  expect(onMessage({ data: { cells: board } })).toEqual({
+  expect(findEasyNakedSingle(rules, board)).toEqual([{ col: 0, row: 3 }]);
+  expect(onMessage({ cells: board, rules })).toEqual({
     type: TipType.EASY_NAKED_SINGLE,
     cells: [{ col: 0, row: 3 }],
   });
 
-  expect(isBoardFinished(board)).toBeNull();
-  expect(isBoardFinished(solvedBoard)).toEqual([]);
-  expect(onMessage({ data: { cells: solvedBoard } })).toEqual({
+  expect(isBoardFinished(rules, board)).toBeNull();
+  expect(isBoardFinished(rules, solvedBoard)).toEqual([]);
+  expect(onMessage({ cells: solvedBoard, rules })).toEqual({
     type: TipType.BOARD_FINISHED,
     cells: [],
   });

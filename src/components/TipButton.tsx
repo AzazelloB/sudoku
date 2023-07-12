@@ -18,6 +18,7 @@ import Link from '~/ui/Link';
 import { state } from '~/components/Board/state';
 import SequencedBoard, { Animation } from '~/components/Board/SequencedBoard';
 import { cellsInRow } from '~/components/Board/settings';
+import { RuleType } from '~/constants/rules';
 
 interface TipData {
   message: string;
@@ -81,6 +82,7 @@ interface TipButtonProps {
   ref: Ref<HTMLDivElement>;
   modalRef: Ref<HTMLDivElement>;
   paused: Accessor<boolean>;
+  rules: Accessor<RuleType[]>;
 }
 
 const TipButton: Component<TipButtonProps> = (props) => {
@@ -103,6 +105,7 @@ const TipButton: Component<TipButtonProps> = (props) => {
 
     const response = await delegateTaskTo('tipper', {
       cells: maskedCells,
+      rules: props.rules(),
     });
 
     setTipType(response.type);

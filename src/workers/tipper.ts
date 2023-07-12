@@ -1,4 +1,6 @@
 import { cellsInColumn, cellsInRow } from '~/components/Board/settings';
+import { RuleType } from '~/constants/rules';
+import { isValid } from '~/utils/validation';
 
 export enum TipType {
   NOTHING,
@@ -15,7 +17,7 @@ type Cells = Cell[];
 let lastAttempt = Date.now();
 let attempts = 0;
 
-const checkAttempts = () => {
+const checkAttempts: TipFiner = () => {
   const ts = Date.now();
   attempts++;
 
@@ -29,7 +31,7 @@ const checkAttempts = () => {
   return null;
 };
 
-const checkMistakes = (cells: Cells) => {
+const checkMistakes: TipFiner = (rules, cells) => {
   const seen = new Map();
 
   for (let i = 0; i < cellsInColumn; i++) {
@@ -96,45 +98,7 @@ const checkMistakes = (cells: Cells) => {
   return null;
 };
 
-const isValid = (cells: Cells, number: number, index: number) => {
-  const col = index % cellsInRow;
-  const row = Math.floor(index / cellsInRow);
-
-  // check row and col
-  for (let i = 0; i < cellsInRow; i++) {
-    const rowIndex = row * cellsInRow + i;
-    const colIndex = col + i * cellsInRow;
-
-    if (rowIndex !== index && cells[rowIndex] === number) {
-      return false;
-    }
-
-    if (colIndex !== index && cells[colIndex] === number) {
-      return false;
-    }
-  }
-
-  // check sudoku box
-  // assuming box is 3x3
-  const boxStartRow = Math.floor(row / 3) * 3;
-  const boxStartCol = Math.floor(col / 3) * 3;
-  const boxEndRow = boxStartRow + 3;
-  const boxEndCol = boxStartCol + 3;
-
-  for (let i = boxStartRow; i < boxEndRow; i++) {
-    for (let j = boxStartCol; j < boxEndCol; j++) {
-      const boxIndex = i * cellsInRow + j;
-
-      if (boxIndex !== index && cells[boxIndex] === number) {
-        return false;
-      }
-    }
-  }
-
-  return true;
-};
-
-export const findEasyNakedSingle = (cells: Cells): CellPosition[] | null => {
+export const findEasyNakedSingle: TipFiner = (rules, cells): CellPosition[] | null => {
   const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   for (const number of numbers) {
@@ -210,7 +174,7 @@ export const findEasyNakedSingle = (cells: Cells): CellPosition[] | null => {
   return null;
 };
 
-const findNakedSingle = (cells: Cells): CellPosition[] | null => {
+const findNakedSingle: TipFiner = (rules, cells): CellPosition[] | null => {
   for (let index = 0; index < cells.length; index++) {
     if (cells[index] !== null) {
       continue;
@@ -267,7 +231,7 @@ const findNakedSingle = (cells: Cells): CellPosition[] | null => {
   return null;
 };
 
-export const isBoardFinished = (cells: Cells): CellPosition[] | null => {
+export const isBoardFinished: TipFiner = (rules, cells): CellPosition[] | null => {
   for (let i = 0; i < cells.length; i++) {
     const cell = cells[i];
 
@@ -275,7 +239,7 @@ export const isBoardFinished = (cells: Cells): CellPosition[] | null => {
       return null;
     }
 
-    if (!isValid(cells, cell, i)) {
+    if (!isValid(rules, cells, cell, i)) {
       return null;
     }
   }
@@ -284,7 +248,7 @@ export const isBoardFinished = (cells: Cells): CellPosition[] | null => {
 };
 
 type UsefullTips = Exclude<TipType, TipType.NOTHING>;
-type TipFiner = (cells: Cells) => CellPosition[] | null;
+type TipFiner = (rules: RuleType[], cells: Cells) => CellPosition[] | null;
 
 const tipCallbackMap: Record<UsefullTips, TipFiner> = {
   [TipType.TRY_THINKING]: checkAttempts,
@@ -299,7 +263,14 @@ interface Result {
   cells: CellPosition[];
 }
 
-export const onMessage = ({ data: { cells } }: { data: { cells: Cells }}) => {
+interface Params {
+  data: {
+    cells: Cells,
+    rules: RuleType[],
+  }
+}
+
+export const onMessage = ({ cells, rules }: Params['data']) => {
   const numericKeys: TipType[] = Object.keys(TipType).map((x) => parseInt(x, 10)).filter((x) => !Number.isNaN(x));
 
   for (const tip of numericKeys) {
@@ -307,7 +278,7 @@ export const onMessage = ({ data: { cells } }: { data: { cells: Cells }}) => {
       continue;
     }
 
-    const result = tipCallbackMap[tip](cells);
+    const result = tipCallbackMap[tip](rules, cells);
 
     if (result) {
       return {
@@ -323,8 +294,8 @@ export const onMessage = ({ data: { cells } }: { data: { cells: Cells }}) => {
   } satisfies Result;
 };
 
-onmessage = ({ data: { cells } }: { data: { cells: Cells }}) => {
-  const response = onMessage({ data: { cells } });
+onmessage = ({ data: { cells, rules } }: Params) => {
+  const response = onMessage({ cells, rules });
 
   postMessage(JSON.stringify(response));
 };
