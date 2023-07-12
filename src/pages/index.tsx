@@ -43,7 +43,7 @@ const HomePage = () => {
   const [mode, setMode] = createSignal<InsertionMode>('middle');
   const [tool, setTool] = createSignal<Tool>('digits');
 
-  const [rules, setRules] = createSignal<RuleType[]>([0, 1, 2]);
+  const [rules, setRules] = createSignal<RuleType[]>([RuleType.NORMAL_SUDOKU]);
 
   const [difficulty, setDifficulty] = useLocalStorage<DifficultyLevel>('difficulty', 'normal');
   const [paused, setPause] = createSignal(false);

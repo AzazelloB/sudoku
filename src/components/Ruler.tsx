@@ -4,6 +4,10 @@ import {
 import { twMerge } from 'tailwind-merge';
 
 import { RuleType } from '~/constants/rules';
+import { enumKeys } from '~/utils/enumKeys';
+
+import Select from '~/ui/Select';
+import { Option } from '~/ui/Select/Select';
 
 const ruleMessages: Record<RuleType, string> = {
   [RuleType.NORMAL_SUDOKU]: 'Normal Sudoku',
@@ -18,10 +22,29 @@ interface RulerProps {
 }
 
 const Ruler: Component<RulerProps> = (props) => {
+  const toOptions = (rules: RuleType[]) => rules.map((rule) => ({
+    label: ruleMessages[rule],
+    value: rule,
+  }));
+
+  const selected = () => toOptions(props.rules());
+
+  const setSelected = (options: Option[]) => {
+    const newSelected = options.map((option) => option.value as RuleType);
+    console.log(options);
+    props.setRules([...new Set(newSelected)]);
+  };
+
   return (
     <div class={twMerge(
       props.class,
     )}>
+      <Select
+        selected={selected}
+        setSelected={setSelected}
+        options={toOptions(enumKeys(RuleType))}
+      />
+
       <For each={props.rules()}>
         {(rule) => (
           <div class="flex items-center space-x-2">
