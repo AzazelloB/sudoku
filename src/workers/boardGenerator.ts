@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { DifficultyLevel, difficultyLevels } from '~/constants/difficulty';
+import { DifficultyLevel, difficultyLevels, ruleWeights } from '~/constants/difficulty';
 import { RuleType } from '~/constants/rules';
 import { isValid } from '~/utils/validation';
 import { shuffleArray } from '~/utils/array';
@@ -86,8 +86,13 @@ const mask = (cells: Cells, difficulty: DifficultyLevel, rules: RuleType[]): Cel
     const indexes = [...masked.keys()];
     shuffleArray(indexes);
 
-    const max = masked.length - 1 - difficultyLevels[difficulty];
-    for (let maskedCount = 0; maskedCount <= max;) {
+    let maskedMax = masked.length - 1 - difficultyLevels[difficulty];
+
+    for (const rule of rules) {
+      maskedMax += ruleWeights[rule];
+    }
+
+    for (let maskedCount = 0; maskedCount <= maskedMax;) {
       const randomIndex = indexes.pop()!;
 
       const value = masked[randomIndex];
