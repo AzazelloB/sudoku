@@ -7,7 +7,6 @@ import { RuleType } from '~/constants/rules';
 import { enumKeys } from '~/utils/enumKeys';
 
 import Select from '~/ui/Select';
-import { Option } from '~/ui/Select/Select';
 
 const ruleMessages: Record<RuleType, string> = {
   [RuleType.NORMAL_SUDOKU]: 'Normal Sudoku',
@@ -25,30 +24,25 @@ const Ruler: Component<RulerProps> = (props) => {
   const toOptions = (rules: RuleType[]) => rules.map((rule) => ({
     label: ruleMessages[rule],
     value: rule,
+    disabled: rule === RuleType.NORMAL_SUDOKU,
   }));
-
-  const selected = () => toOptions(props.rules());
-
-  const setSelected = (options: Option[]) => {
-    const newSelected = options.map((option) => option.value as RuleType);
-    console.log(options);
-    props.setRules([...new Set(newSelected)]);
-  };
 
   return (
     <div class={twMerge(
       props.class,
     )}>
       <Select
-        selected={selected}
-        setSelected={setSelected}
+        class="mb-3"
+        label="Select rules"
+        selected={props.rules}
+        setSelected={props.setRules}
         options={toOptions(enumKeys(RuleType))}
       />
 
       <For each={props.rules()}>
         {(rule) => (
           <div class="flex items-center space-x-2">
-            <div class="h-2 w-2 rounded-full bg-green-500" />
+            <span class="h-2 w-2 rounded-full bg-secondary-700" />
             <span>{ruleMessages[rule]}</span>
           </div>
         )}
