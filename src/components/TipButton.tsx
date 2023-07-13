@@ -89,6 +89,8 @@ const TipButton: Component<TipButtonProps> = (props) => {
   const [tipType, setTipType] = createSignal<TipType | null>(null);
 
   const handleTip = async () => {
+    setTipType(null);
+
     const maskedCells = [];
 
     for (let i = 0; i < state.cells.length; i++) {
