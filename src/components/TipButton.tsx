@@ -141,7 +141,7 @@ const TipButton: Component<TipButtonProps> = (props) => {
           <Popover.Content
             class="left-0 flex flex-col"
           >
-              <Show when={tipType()} fallback="Thinking...">
+              <Show when={tipType() !== null} fallback="Thinking...">
                 <p class="text-sm">
                   <strong class="font-semibold">{tip().message}</strong>
                 </p>
