@@ -41,6 +41,7 @@ const proxy: State = new DeepProxy({
   showControls: false,
   selectedCells: [],
   cells: [],
+  meta: [],
   historyCursor: 0,
   history: [],
 }, handler);

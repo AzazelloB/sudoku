@@ -108,6 +108,7 @@ const TipButton: Component<TipButtonProps> = (props) => {
     const response = await delegateTaskTo('tipper', {
       cells: maskedCells,
       rules: props.rules(),
+      meta: state.meta,
     });
 
     setTipType(response.type);

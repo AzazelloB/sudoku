@@ -1,9 +1,9 @@
-import { cellsInRow } from '~/components/Board/settings';
+import { cellsInColumn, cellsInRow } from '~/components/Board/settings';
 import { RuleType } from '~/constants/rules';
 
 type Cells = (number | null)[];
 
-const isValidNormalSudoku = (cells: Cells, number: number, index: number) => {
+const isValidNormalSudoku: Validator = (meta, cells, number, index) => {
   const col = index % cellsInRow;
   const row = Math.floor(index / cellsInRow);
 
@@ -41,7 +41,7 @@ const isValidNormalSudoku = (cells: Cells, number: number, index: number) => {
   return true;
 };
 
-const isValidKingsMove = (cells: Cells, number: number, index: number) => {
+const isValidKingsMove: Validator = (meta, cells, number, index) => {
   for (let i = -1; i <= 1; i++) {
     for (let j = -1; j <= 1; j++) {
       const kingIndex = index + (i * cellsInRow) + j;
@@ -55,7 +55,7 @@ const isValidKingsMove = (cells: Cells, number: number, index: number) => {
   return true;
 };
 
-const isValidKnightsMove = (cells: Cells, number: number, index: number) => {
+const isValidKnightsMove: Validator = (meta, cells, number, index) => {
   const col = index % cellsInRow;
   const row = Math.floor(index / cellsInRow);
 
@@ -83,17 +83,40 @@ const isValidKnightsMove = (cells: Cells, number: number, index: number) => {
   return true;
 };
 
-type Validator = (cells: Cells, number: number, index: number) => boolean
+const isValidKillerSudoku: Validator = (meta, cells, number, index) => {
+  const { cages } = meta;
+  const col = index % cellsInRow;
+  const row = Math.floor(index / cellsInRow);
+
+  for (const cage of cages) {
+    const cell = cage.path.find((c) => c.col === col && c.row === row);
+
+    if (!cell) {
+      continue;
+    }
+
+    const inCage = cage.path.find((c) => cells[c.col + c.row * cellsInColumn] === number);
+
+    if (inCage) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+type Validator = (meta: Meta, cells: Cells, number: number, index: number) => boolean
 
 const ruleValidaroMap: Record<RuleType, Validator> = {
   [RuleType.NORMAL_SUDOKU]: isValidNormalSudoku,
   [RuleType.KINGS_MOVE]: isValidKingsMove,
   [RuleType.KNIGHTS_MOVE]: isValidKnightsMove,
+  [RuleType.KILLER_SUDOKU]: isValidKillerSudoku,
 };
 
-export const isValid = (rules: RuleType[], cells: Cells, number: number, index: number) => {
+export const isValid = (rules: RuleType[], meta: Meta, cells: Cells, number: number, index: number) => {
   for (const rule of rules) {
-    if (!ruleValidaroMap[rule](cells, number, index)) {
+    if (!ruleValidaroMap[rule](meta, cells, number, index)) {
       return false;
     }
   }

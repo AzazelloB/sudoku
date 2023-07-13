@@ -62,6 +62,7 @@ const Board: Component<BoardProps> = (props) => {
 
     renderer.drawCellColors(layer_1_ctx, state.cells);
     renderer.drawGrid(layer_1_ctx);
+    renderer.drawMeta(layer_1_ctx, state.meta);
 
     renderer.drawSelection(layer_3_ctx, state.selectedCells);
 

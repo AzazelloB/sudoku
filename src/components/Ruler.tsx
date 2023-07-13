@@ -11,6 +11,7 @@ const ruleMessages: Record<RuleType, string> = {
   [RuleType.NORMAL_SUDOKU]: 'Normal Sudoku',
   [RuleType.KINGS_MOVE]: 'King\'s Move',
   [RuleType.KNIGHTS_MOVE]: 'Knight\'s Move',
+  [RuleType.KILLER_SUDOKU]: 'Killer Sudoku',
 };
 
 interface RulerProps {

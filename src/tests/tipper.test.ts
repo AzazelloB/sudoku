@@ -35,15 +35,15 @@ const solvedBoard = [
 const rules = [RuleType.NORMAL_SUDOKU];
 
 it('tipper tests', async () => {
-  expect(findEasyNakedSingle(rules, board)).toEqual([{ col: 0, row: 3 }]);
-  expect(onMessage({ cells: board, rules })).toEqual({
+  expect(findEasyNakedSingle(rules, {} as Meta, board)).toEqual([{ col: 0, row: 3 }]);
+  expect(onMessage({ cells: board, rules, meta: {} as Meta })).toEqual({
     type: TipType.EASY_NAKED_SINGLE,
     cells: [{ col: 0, row: 3 }],
   });
 
-  expect(isBoardFinished(rules, board)).toBeNull();
-  expect(isBoardFinished(rules, solvedBoard)).toEqual([]);
-  expect(onMessage({ cells: solvedBoard, rules })).toEqual({
+  expect(isBoardFinished(rules, {} as Meta, board)).toBeNull();
+  expect(isBoardFinished(rules, {} as Meta, solvedBoard)).toEqual([]);
+  expect(onMessage({ cells: solvedBoard, rules, meta: {} as Meta })).toEqual({
     type: TipType.BOARD_FINISHED,
     cells: [],
   });

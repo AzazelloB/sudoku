@@ -20,6 +20,16 @@ interface Cell extends CellPosition {
   colors: number[],
 }
 
+interface Cage {
+  size: number;
+  total: number;
+  path: CellPosition[];
+}
+
+interface Meta {
+  cages: Cage[];
+}
+
 interface State {
   highlightedCell: CellPosition | null;
   revealed: boolean;
@@ -27,6 +37,7 @@ interface State {
   showControls: boolean;
   selectedCells: CellPosition[];
   cells: Cell[];
+  meta: Meta;
   historyCursor: number;
   history: string[];
 }

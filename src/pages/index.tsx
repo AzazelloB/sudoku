@@ -39,6 +39,7 @@ const HomePage = () => {
   const { isFS } = useGlobalContext();
 
   const [cells, setCells] = useLocalStorage<Cell[]>('cells', []);
+  const [meta, setMeta] = useLocalStorage<Meta>('meta', {} as Meta);
 
   const [tipBtnRef, setTipBtnRef] = createSignal<HTMLElement | null>(null);
   const [modalRef, setModalRef] = createSignal<HTMLElement | null>(null);
@@ -131,6 +132,7 @@ const HomePage = () => {
       restartGame();
     } else {
       state.cells = cells();
+      state.meta = meta();
       handleCheck();
 
       clearHistory();
@@ -143,6 +145,7 @@ const HomePage = () => {
 
     await generateGrid(difficulty(), rules());
     setCells(state.cells);
+    setMeta(state.meta);
     setSavedRules(rules());
 
     clearHistory();

@@ -31,7 +31,7 @@ const checkAttempts: TipFiner = () => {
   return null;
 };
 
-const checkMistakes: TipFiner = (rules, cells) => {
+const checkMistakes: TipFiner = (rules, meta, cells) => {
   const seen = new Map();
 
   for (let i = 0; i < cellsInColumn; i++) {
@@ -98,7 +98,7 @@ const checkMistakes: TipFiner = (rules, cells) => {
   return null;
 };
 
-export const findEasyNakedSingle: TipFiner = (rules, cells): CellPosition[] | null => {
+export const findEasyNakedSingle: TipFiner = (rules, meta, cells): CellPosition[] | null => {
   const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   for (const number of numbers) {
@@ -174,7 +174,7 @@ export const findEasyNakedSingle: TipFiner = (rules, cells): CellPosition[] | nu
   return null;
 };
 
-const findNakedSingle: TipFiner = (rules, cells): CellPosition[] | null => {
+const findNakedSingle: TipFiner = (rules, meta, cells): CellPosition[] | null => {
   for (let index = 0; index < cells.length; index++) {
     if (cells[index] !== null) {
       continue;
@@ -231,7 +231,7 @@ const findNakedSingle: TipFiner = (rules, cells): CellPosition[] | null => {
   return null;
 };
 
-export const isBoardFinished: TipFiner = (rules, cells): CellPosition[] | null => {
+export const isBoardFinished: TipFiner = (rules, meta, cells): CellPosition[] | null => {
   for (let i = 0; i < cells.length; i++) {
     const cell = cells[i];
 
@@ -239,7 +239,8 @@ export const isBoardFinished: TipFiner = (rules, cells): CellPosition[] | null =
       return null;
     }
 
-    if (!isValid(rules, cells, cell, i)) {
+    // TODO pass real meta
+    if (!isValid(rules, meta, cells, cell, i)) {
       return null;
     }
   }
@@ -248,7 +249,7 @@ export const isBoardFinished: TipFiner = (rules, cells): CellPosition[] | null =
 };
 
 type UsefullTips = Exclude<TipType, TipType.NOTHING>;
-type TipFiner = (rules: RuleType[], cells: Cells) => CellPosition[] | null;
+type TipFiner = (rules: RuleType[], meta: Meta, cells: Cells) => CellPosition[] | null;
 
 const tipCallbackMap: Record<UsefullTips, TipFiner> = {
   [TipType.TRY_THINKING]: checkAttempts,
@@ -267,10 +268,11 @@ interface Params {
   data: {
     cells: Cells,
     rules: RuleType[],
+    meta: Meta,
   }
 }
 
-export const onMessage = ({ cells, rules }: Params['data']) => {
+export const onMessage = ({ cells, rules, meta }: Params['data']) => {
   const numericKeys: TipType[] = Object.keys(TipType).map((x) => parseInt(x, 10)).filter((x) => !Number.isNaN(x));
 
   for (const tip of numericKeys) {
@@ -278,7 +280,7 @@ export const onMessage = ({ cells, rules }: Params['data']) => {
       continue;
     }
 
-    const result = tipCallbackMap[tip](rules, cells);
+    const result = tipCallbackMap[tip](rules, meta, cells);
 
     if (result) {
       return {
@@ -294,8 +296,8 @@ export const onMessage = ({ cells, rules }: Params['data']) => {
   } satisfies Result;
 };
 
-onmessage = ({ data: { cells, rules } }: Params) => {
-  const response = onMessage({ cells, rules });
+onmessage = ({ data }: Params) => {
+  const response = onMessage(data);
 
   postMessage(JSON.stringify(response));
 };
