@@ -1,11 +1,11 @@
 import { Component, ComponentProps } from 'solid-js';
 import {
-  PopoverButton,
-} from 'solid-headless';
+  PopoverTrigger,
+} from '@ark-ui/solid/popover';
 
-const Button: Component<ComponentProps<typeof PopoverButton>> = (props) => {
+const Button: Component<ComponentProps<typeof PopoverTrigger>> = (props) => {
   return (
-    <PopoverButton {...props} />
+    <PopoverTrigger {...props} />
   );
 };
 

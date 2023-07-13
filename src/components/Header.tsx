@@ -17,11 +17,10 @@ const Header = () => {
 
       <div class="flex">
         <Popover class="hidden lg:block">
-          <Popover.Button
-            as={Button}
-            class="mr-4 p-2"
-          >
-            <Question class="h-5 w-5" />
+          <Popover.Button asChild>
+            <Button class="mr-4 p-2">
+              <Question class="h-5 w-5" />
+            </Button>
           </Popover.Button>
 
           <Popover.Content>

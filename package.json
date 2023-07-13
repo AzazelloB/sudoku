@@ -40,10 +40,10 @@
     "workbox-window": "^7.0.0"
   },
   "dependencies": {
+    "@ark-ui/solid": "^0.8.1",
     "@solidjs/router": "^0.8.2",
     "classnames": "^2.3.2",
     "proxy-deep": "^3.1.1",
-    "solid-headless": "^0.13.1",
     "solid-js": "^1.7.6",
     "tailwind-merge": "^1.13.2"
   }

@@ -4,7 +4,6 @@ import {
   onMount,
 } from 'solid-js';
 import classNames from 'classnames';
-import { Transition, TransitionChild } from 'solid-headless';
 
 import { DifficultyLevel } from '~/constants/difficulty';
 import { RuleType } from '~/constants/rules';
@@ -12,6 +11,7 @@ import useLocalStorage from '~/hooks/useLocalStorage';
 import { onShortcut } from '~/utils/controls';
 import { publish } from '~/utils/pubSub';
 
+import Transition from '~/ui/Transition';
 import Button from '~/ui/Button';
 import ButtonGroup from '~/ui/ButtonGroup';
 import Control from '~/ui/Control';
@@ -265,7 +265,7 @@ const HomePage = () => {
             show={paused()}
             class="absolute inset-0 z-10 overflow-hidden"
           >
-            <TransitionChild
+            <Transition.Child
               class="h-full"
               enter="transition ease-in-out duration-200 transform"
               enterFrom="-translate-y-full"
@@ -282,7 +282,7 @@ const HomePage = () => {
                   Paused
                 </div>
               </div>
-            </TransitionChild>
+            </Transition.Child>
           </Transition>
 
           <div class={classNames(

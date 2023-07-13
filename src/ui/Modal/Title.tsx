@@ -1,15 +1,17 @@
 import {
   DialogTitle,
-} from 'solid-headless';
+} from '@ark-ui/solid/dialog';
 import { ParentComponent } from 'solid-js';
 
 const Title: ParentComponent = (props) => {
   return (
     <DialogTitle
-      as="h3"
+      asChild
       class="mb-4 text-3xl font-medium text-black dark:text-white"
     >
-      {props.children}
+      <h3>
+        {props.children}
+      </h3>
     </DialogTitle>
   );
 };

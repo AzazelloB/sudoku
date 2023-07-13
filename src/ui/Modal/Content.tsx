@@ -1,15 +1,15 @@
 import {
   Dialog,
-  DialogPanel,
-  Transition,
-  TransitionChild,
-  DialogOverlay,
-} from 'solid-headless';
+  DialogContent,
+  DialogBackdrop,
+} from '@ark-ui/solid/dialog';
 import { Component, JSX, Ref } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 
 import { useModalContext } from '~/context/ModalContext';
+
+import Transition from '~/ui/Transition';
 
 interface ContentProps {
   ref?: Ref<HTMLDivElement>;
@@ -31,11 +31,11 @@ const Content: Component<ContentProps> = (props) => {
         show={open()}
       >
         <Dialog
-          isOpen
-          class="fixed inset-0 z-50 flex justify-center overflow-y-auto"
+          open
+          // class="fixed inset-0 z-50 flex justify-center overflow-y-auto"
           onClose={closeModal}
         >
-          <TransitionChild
+          <Transition.Child
             enter="ease-out duration-300"
             enterFrom="opacity-0"
             enterTo="opacity-100"
@@ -43,10 +43,10 @@ const Content: Component<ContentProps> = (props) => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <DialogOverlay class="fixed inset-0 bg-bgfg-900/50" />
-          </TransitionChild>
+            <DialogBackdrop class="fixed inset-0 bg-bgfg-900/50" />
+          </Transition.Child>
 
-          <TransitionChild
+          <Transition.Child
             class="my-auto"
             enter="ease-out duration-300"
             enterFrom="opacity-0 scale-95"
@@ -55,14 +55,14 @@ const Content: Component<ContentProps> = (props) => {
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <DialogPanel class={twMerge(
+            <DialogContent class={twMerge(
               'w-full max-w-md px-8 py-6 overflow-hidden transition-all transform',
               'bg-bgfg-100 dark:bg-bgfg-800 shadow-xl rounded-2xl',
               props.class,
             )}>
               {props.children({ closeModal })}
-            </DialogPanel>
-          </TransitionChild>
+            </DialogContent>
+          </Transition.Child>
         </Dialog>
       </Transition>
     </Portal>
