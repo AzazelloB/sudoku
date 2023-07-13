@@ -1,4 +1,5 @@
 import {
+  Show,
   createSignal,
   onCleanup,
   onMount,
@@ -6,6 +7,7 @@ import {
 import classNames from 'classnames';
 import { Transition, TransitionChild } from 'solid-headless';
 
+import { useGlobalContext } from '~/context/GlobalContext';
 import { DifficultyLevel } from '~/constants/difficulty';
 import { RuleType } from '~/constants/rules';
 import useLocalStorage from '~/hooks/useLocalStorage';
@@ -34,6 +36,8 @@ import TipButton from '~/components/TipButton';
 import Ruler from '~/components/Ruler';
 
 const HomePage = () => {
+  const { isFS } = useGlobalContext();
+
   const [cells, setCells] = useLocalStorage<Cell[]>('cells', []);
 
   const [tipBtnRef, setTipBtnRef] = createSignal<HTMLElement | null>(null);
@@ -43,9 +47,10 @@ const HomePage = () => {
   const [mode, setMode] = createSignal<InsertionMode>('middle');
   const [tool, setTool] = createSignal<Tool>('digits');
 
-  const [rules, setRules] = createSignal<RuleType[]>([RuleType.NORMAL_SUDOKU]);
-
   const [difficulty, setDifficulty] = useLocalStorage<DifficultyLevel>('difficulty', 'normal');
+  const [savedRules, setSavedRules] = useLocalStorage<RuleType[]>('rules', [RuleType.NORMAL_SUDOKU]);
+  const [rules, setRules] = createSignal<RuleType[]>(savedRules());
+
   const [paused, setPause] = createSignal(false);
   const [time, setTime] = useLocalStorage('time', 0);
   const [solved, setSolved] = createSignal(false);
@@ -138,6 +143,7 @@ const HomePage = () => {
 
     await generateGrid(difficulty(), rules());
     setCells(state.cells);
+    setSavedRules(rules());
 
     clearHistory();
     saveSnapshot();
@@ -311,11 +317,14 @@ const HomePage = () => {
           setTool={setTool}
         />
 
-        <Ruler
-          class="mt-4 lg:mt-6"
-          rules={rules}
-          setRules={setRules}
-        />
+        <Show when={!isFS()}>
+          <Ruler
+            class="mt-4 lg:mt-6"
+            savedRules={savedRules}
+            rules={rules}
+            setRules={setRules}
+          />
+        </Show>
       </div>
     </div>
   );

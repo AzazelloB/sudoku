@@ -1,4 +1,4 @@
-import { createEffect } from 'solid-js';
+import { createEffect, createSignal, onCleanup } from 'solid-js';
 
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { createContext } from '~/utils/createContext';
@@ -17,9 +17,22 @@ function useGlobalState() {
     }
   });
 
+  const [isFS, setFS] = createSignal(!!document.fullscreenElement);
+
+  const onFSChange = () => {
+    setFS(!!document.fullscreenElement);
+  };
+
+  document.addEventListener('fullscreenchange', onFSChange);
+
+  onCleanup(() => {
+    document.removeEventListener('fullscreenchange', onFSChange);
+  });
+
   return {
     theme,
     setTheme,
+    isFS,
   };
 }
 
