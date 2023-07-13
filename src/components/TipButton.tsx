@@ -4,6 +4,7 @@ import {
 import { twMerge } from 'tailwind-merge';
 
 import { TipType } from '~/workers/tipper';
+import { RuleType } from '~/constants/rules';
 import { delegateTaskTo } from '~/utils/humanResources';
 import { publish } from '~/utils/pubSub';
 import nakedSingeAnimation from '~/animations/nakedSingle.json';
@@ -18,7 +19,6 @@ import Link from '~/ui/Link';
 import { state } from '~/components/Board/state';
 import SequencedBoard, { Animation } from '~/components/Board/SequencedBoard';
 import { cellsInRow } from '~/components/Board/settings';
-import { RuleType } from '~/constants/rules';
 
 interface TipData {
   message: string;

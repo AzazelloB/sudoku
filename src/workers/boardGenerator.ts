@@ -78,6 +78,8 @@ const createSolutionCounter = (rules: RuleType[]) => {
   };
 };
 
+// optimization reference:
+// https://en.wikipedia.org/wiki/Sudoku_solving_algorithms#Stochastic_search_/_optimization_methods
 const mask = (cells: Cells, difficulty: DifficultyLevel, rules: RuleType[]): Cells => {
   try {
     const countSolutions = createSolutionCounter(rules);
