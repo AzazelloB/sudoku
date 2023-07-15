@@ -8,6 +8,7 @@ const PopoverInContext: ParentComponent = (props) => {
   return (
     <Popover
       open={open()}
+      onOpen={() => setOpen(true)}
       onClose={() => setOpen(false)}
     >
       {props.children}

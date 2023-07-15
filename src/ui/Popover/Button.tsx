@@ -2,10 +2,22 @@ import { Component, ComponentProps } from 'solid-js';
 import {
   PopoverTrigger,
 } from '@ark-ui/solid/popover';
+import { Dynamic } from 'solid-js/web';
 
-const Button: Component<ComponentProps<typeof PopoverTrigger>> = (props) => {
+import { AsProp } from '~/utils/asPropType';
+
+import ButtonUI from '~/ui/Button';
+
+const Button = <T extends Component>(props: AsProp<T, ComponentProps<typeof ButtonUI>>) => {
   return (
-    <PopoverTrigger {...props} />
+    <PopoverTrigger asChild>
+      <Dynamic
+        component={props.as || ButtonUI}
+        {...props}
+      >
+        {props.children}
+      </Dynamic>
+    </PopoverTrigger>
   );
 };
 

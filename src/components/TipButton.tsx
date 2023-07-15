@@ -127,10 +127,8 @@ const TipButton: Component<TipButtonProps> = (props) => {
       >
         <Popover>
           <Popover.Button
-            asChild
-          >
-            <Button
-              title="Get a tip"
+            as={Button}
+            title="Get a tip"
               class={twMerge(
                 'p-2 lg:p-3',
                 'transition-all ease-in-out duration-200',
@@ -139,9 +137,8 @@ const TipButton: Component<TipButtonProps> = (props) => {
               variant="secondary"
               shape="circle"
               onClick={handleTip}
-            >
-              <Bulb class="h-4 w-4" />
-            </Button>
+          >
+            <Bulb class="h-4 w-4" />
           </Popover.Button>
 
           <Popover.Content
