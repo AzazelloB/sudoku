@@ -49,7 +49,7 @@ function useModalState(props: Params) {
 
   const setOpen = (value: boolean) => {
     navigate(value ? `#${props.id}` : '', { replace: false });
-    console.log(value);
+
     setInternalOpen(value);
   };
 
