@@ -1,5 +1,6 @@
 export enum RuleType {
-  NORMAL_SUDOKU,
-  KINGS_MOVE,
-  KNIGHTS_MOVE,
+  NORMAL_SUDOKU = 'normal-sudoku',
+  KINGS_MOVE = 'kings-move',
+  KNIGHTS_MOVE = 'knights-move',
+  KILLER_SUDOKU = 'killer-sudoku',
 }

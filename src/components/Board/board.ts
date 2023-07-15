@@ -7,12 +7,13 @@ import { state } from '~/components/Board/state';
 import { delegateTaskTo } from '~/utils/humanResources';
 
 export const generateGrid = async (difficulty: DifficultyLevel, rules: RuleType[]) => {
-  const response = await delegateTaskTo('boardGenerator', {
+  const response: { meta: Meta, cells: Cell[] } = await delegateTaskTo('boardGenerator', {
     difficulty,
     rules,
   });
 
-  state.cells = response;
+  state.meta = response.meta;
+  state.cells = response.cells;
 };
 
 export const checkIfSolved = (cells: Cell[]) => {

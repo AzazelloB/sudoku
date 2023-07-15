@@ -4,6 +4,7 @@ import {
 import { twMerge } from 'tailwind-merge';
 
 import { TipType } from '~/workers/tipper';
+import { RuleType } from '~/constants/rules';
 import { delegateTaskTo } from '~/utils/humanResources';
 import { publish } from '~/utils/pubSub';
 import nakedSingeAnimation from '~/animations/nakedSingle.json';
@@ -18,7 +19,6 @@ import Link from '~/ui/Link';
 import { state } from '~/components/Board/state';
 import SequencedBoard, { Animation } from '~/components/Board/SequencedBoard';
 import { cellsInRow } from '~/components/Board/settings';
-import { RuleType } from '~/constants/rules';
 
 interface TipData {
   message: string;
@@ -89,6 +89,8 @@ const TipButton: Component<TipButtonProps> = (props) => {
   const [tipType, setTipType] = createSignal<TipType | null>(null);
 
   const handleTip = async () => {
+    setTipType(null);
+
     const maskedCells = [];
 
     for (let i = 0; i < state.cells.length; i++) {
@@ -106,6 +108,7 @@ const TipButton: Component<TipButtonProps> = (props) => {
     const response = await delegateTaskTo('tipper', {
       cells: maskedCells,
       rules: props.rules(),
+      meta: state.meta,
     });
 
     setTipType(response.type);
@@ -144,7 +147,7 @@ const TipButton: Component<TipButtonProps> = (props) => {
           <Popover.Content
             class="left-0 flex flex-col"
           >
-              <Show when={tipType()} fallback="Thinking...">
+              <Show when={tipType() !== null} fallback="Thinking...">
                 <p class="text-sm">
                   <strong class="font-semibold">{tip().message}</strong>
                 </p>

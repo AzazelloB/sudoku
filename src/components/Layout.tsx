@@ -1,23 +1,15 @@
 import {
-  ParentComponent, Show, createSignal, onCleanup,
+  ParentComponent, Show,
 } from 'solid-js';
+
+import { useGlobalContext } from '~/context/GlobalContext';
 
 import Header from '~/components/Header';
 import ReloadPrompt from '~/components/ReloadPrompt';
 import SpellCaster from '~/components/SpellCaster';
 
 const Layout: ParentComponent = (props) => {
-  const [isFS, setFS] = createSignal(!!document.fullscreenElement);
-
-  const onFSChange = () => {
-    setFS(!!document.fullscreenElement);
-  };
-
-  document.addEventListener('fullscreenchange', onFSChange);
-
-  onCleanup(() => {
-    document.removeEventListener('fullscreenchange', onFSChange);
-  });
+  const { isFS } = useGlobalContext();
 
   return (
     <>
