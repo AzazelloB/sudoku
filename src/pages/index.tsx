@@ -242,12 +242,12 @@ const HomePage = () => {
               Restart
             </Control>
 
-                  <Timer
-                    time={time}
-                    paused={paused}
-                    onPausePlay={handlePausePlay}
-                    class="mx-4 flex lg:hidden"
-                  />
+            <Timer
+              time={time}
+              paused={paused}
+              onPausePlay={handlePausePlay}
+              class="mx-4 flex lg:hidden"
+            />
 
             <CheckModal
               open={checkModalOpen}
