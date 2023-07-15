@@ -240,14 +240,16 @@ const updateMeta = (rules: RuleType[], meta: Meta, cells: Cell[]) => {
   return updatedMeta;
 };
 
-type Params = {
-  data: {
-    difficulty: DifficultyLevel;
-    rules: RuleType[];
-  }
+interface Params {
+  difficulty: DifficultyLevel;
+  rules: RuleType[];
 }
 
-export const onMessage = ({ difficulty, rules }: Params['data']) => {
+type Request = {
+  data: string;
+}
+
+export const onMessage = ({ difficulty, rules }: Params) => {
   const meta = generateMeta(rules);
 
   const solved = new Array(cellsInRow * cellsInColumn).fill(null);
@@ -276,6 +278,6 @@ export const onMessage = ({ difficulty, rules }: Params['data']) => {
   };
 };
 
-onmessage = ({ data }: Params) => {
-  postMessage(onMessage(data));
+onmessage = ({ data }: Request) => {
+  postMessage(onMessage(JSON.parse(data)));
 };

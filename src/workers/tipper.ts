@@ -265,14 +265,16 @@ interface Result {
 }
 
 interface Params {
-  data: {
-    cells: Cells,
-    rules: RuleType[],
-    meta: Meta,
-  }
+  cells: Cells,
+  rules: RuleType[],
+  meta: Meta,
 }
 
-export const onMessage = ({ cells, rules, meta }: Params['data']) => {
+interface Request {
+  data: string;
+}
+
+export const onMessage = ({ cells, rules, meta }: Params) => {
   const numericKeys: TipType[] = Object.keys(TipType).map((x) => parseInt(x, 10)).filter((x) => !Number.isNaN(x));
 
   for (const tip of numericKeys) {
@@ -296,8 +298,8 @@ export const onMessage = ({ cells, rules, meta }: Params['data']) => {
   } satisfies Result;
 };
 
-onmessage = ({ data }: Params) => {
-  const response = onMessage(data);
+onmessage = ({ data }: Request) => {
+  const response = onMessage(JSON.parse(data));
 
   postMessage(JSON.stringify(response));
 };

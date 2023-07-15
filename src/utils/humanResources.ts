@@ -12,7 +12,7 @@ export const delegateTaskTo = async (name: RegisteredWorkers, args: any): Promis
   if (window.Worker) {
     const worker = workers[name];
 
-    worker.postMessage(args);
+    worker.postMessage(JSON.stringify(args));
 
     return new Promise((resolve) => {
       const listener = (message: MessageEvent) => {
