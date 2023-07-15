@@ -1,4 +1,5 @@
-import { ParentComponent, Show } from 'solid-js';
+import { ParentComponent, splitProps } from 'solid-js';
+import { TransitionProvider } from '~/context/TransitionContext';
 
 import Child from '~/ui/Transition/Child';
 
@@ -6,13 +7,33 @@ interface TransitionComponent {
   Child: typeof Child;
 }
 
-type TransitionProps = any;
+interface TransitionProps {
+  show: boolean;
+  class?: string;
+  unmount?: boolean;
+  appear?: boolean;
+  enter?: string;
+  enterFrom?: string;
+  enterTo?: string;
+  entered?: string;
+  leave?: string;
+  leaveFrom?: string;
+  leaveTo?: string;
+  beforeEnter?: () => void;
+  afterEnter?: () => void;
+  beforeLeave?: () => void;
+  afterLeave?: () => void;
+}
 
 const Transition: ParentComponent<TransitionProps> & TransitionComponent = (props) => {
+  const [local, others] = splitProps(props, ['show']);
+
   return (
-    <Show when={props.show}>
-      {props.children}
-    </Show>
+    <TransitionProvider show={local.show}>
+      <Transition.Child {...others}>
+        {props.children}
+      </Transition.Child>
+    </TransitionProvider>
   );
 };
 

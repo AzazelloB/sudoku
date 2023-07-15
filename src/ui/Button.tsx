@@ -28,7 +28,7 @@ const Button: Component<ButtonProps> = (props) => {
         props.shape === 'circle' && 'rounded-full aspect-square',
         props.class,
       )}
-      />
+    />
   );
 };
 
