@@ -5,8 +5,6 @@ import { twMerge } from 'tailwind-merge';
 
 import { RuleType } from '~/constants/rules';
 
-import Select from '~/ui/Select';
-
 const ruleMessages: Record<RuleType, string> = {
   [RuleType.NORMAL_SUDOKU]: 'Normal Sudoku',
   [RuleType.KINGS_MOVE]: 'King\'s Move',
@@ -35,12 +33,12 @@ const Ruler: Component<RulerProps> = (props) => {
       <div class="mb-3 flex items-center space-x-4">
         <h4 class="text-lg tracking-widest">Rules</h4>
 
-        <Select
+        {/* <Select
           label="Select rules"
           selected={props.rules}
           setSelected={props.setRules}
           options={toOptions(Object.values(RuleType))}
-        />
+        /> */}
       </div>
 
       <For each={props.rules()}>

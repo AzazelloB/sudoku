@@ -1,7 +1,7 @@
 import {
-  Dialog,
   DialogContent,
   DialogBackdrop,
+  DialogContainer,
 } from '@ark-ui/solid/dialog';
 import { Component, JSX, Ref } from 'solid-js';
 import { Portal } from 'solid-js/web';
@@ -30,22 +30,20 @@ const Content: Component<ContentProps> = (props) => {
         appear
         show={open()}
       >
-        <Dialog
-          open
-          // class="fixed inset-0 z-50 flex justify-center overflow-y-auto"
-          onClose={closeModal}
+        <Transition.Child
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
         >
-          <Transition.Child
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <DialogBackdrop class="fixed inset-0 bg-bgfg-900/50" />
-          </Transition.Child>
+          <DialogBackdrop class="fixed inset-0 z-50 bg-bgfg-900/50" />
+        </Transition.Child>
 
+        <DialogContainer
+          class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto"
+        >
           <Transition.Child
             class="my-auto"
             enter="ease-out duration-300"
@@ -63,7 +61,7 @@ const Content: Component<ContentProps> = (props) => {
               {props.children({ closeModal })}
             </DialogContent>
           </Transition.Child>
-        </Dialog>
+        </DialogContainer>
       </Transition>
     </Portal>
   );

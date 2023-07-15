@@ -3,6 +3,7 @@ import { ModalProvider, Params } from '~/context/ModalContext';
 
 import Button from '~/ui/Modal/Button';
 import Content from '~/ui/Modal/Content';
+import ModalInContext from '~/ui/Modal/ModalInContext';
 import Title from '~/ui/Modal/Title';
 
 interface ModalComponent {
@@ -16,7 +17,9 @@ type ModalProps = Params;
 const Modal: ParentComponent<ModalProps> & ModalComponent = (props) => {
   return (
     <ModalProvider {...props}>
-      {props.children}
+      <ModalInContext>
+        {props.children}
+      </ModalInContext>
     </ModalProvider>
   );
 };

@@ -1,8 +1,5 @@
 import { ParentComponent } from 'solid-js';
-import {
-  Popover as HeadlessPopover,
-} from 'solid-headless';
-import { twMerge } from 'tailwind-merge';
+import { PopoverProvider } from '~/context/PopoverContext';
 
 import Button from '~/ui/Popover/Button';
 import Content from '~/ui/Popover/Content';
@@ -19,11 +16,11 @@ interface PopoverProps {
 
 const Popover: ParentComponent<PopoverProps> & PopoverComponent = (props) => {
   return (
-    <HeadlessPopover defaultOpen={false} class={twMerge('relative', props.class)}>
+    <PopoverProvider>
       <PopoverInContext>
         {props.children}
       </PopoverInContext>
-    </HeadlessPopover>
+    </PopoverProvider>
   );
 };
 

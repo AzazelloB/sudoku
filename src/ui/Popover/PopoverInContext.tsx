@@ -1,24 +1,17 @@
-import { useHeadlessDisclosureProperties } from 'solid-headless';
-import { ParentComponent, createSignal } from 'solid-js';
-
-import useClickOutside from '~/hooks/useClickOutside';
+import { ParentComponent } from 'solid-js';
+import { Popover } from '@ark-ui/solid/popover';
+import { usePopoverContext } from '~/context/PopoverContext';
 
 const PopoverInContext: ParentComponent = (props) => {
-  const { isOpen, setState } = useHeadlessDisclosureProperties();
-
-  const [ref, setRef] = createSignal<HTMLElement | null>(null);
-
-  // TODO remove if PopoverOverlay is fixed
-  useClickOutside(ref, () => {
-    if (isOpen()) {
-      setState(false);
-    }
-  });
+  const { open, setOpen } = usePopoverContext();
 
   return (
-    <div ref={setRef}>
+    <Popover
+      open={open()}
+      onClose={() => setOpen(false)}
+    >
       {props.children}
-    </div>
+    </Popover>
   );
 };
 

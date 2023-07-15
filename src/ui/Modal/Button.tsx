@@ -1,6 +1,7 @@
 import { Component, ComponentProps } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 
+import { DialogTrigger } from '@ark-ui/solid/dialog';
 import { useModalContext } from '~/context/ModalContext';
 import { AsProp } from '~/utils/asPropType';
 
@@ -18,13 +19,15 @@ const Button = <T extends Component>(props: AsProp<T, ComponentProps<typeof Butt
   };
 
   return (
-    <Dynamic
-      component={props.as || ButtonUI}
-      {...props}
-      onClick={openModal}
-    >
-      {props.children}
-    </Dynamic>
+    <DialogTrigger asChild>
+      <Dynamic
+        component={props.as || ButtonUI}
+        {...props}
+        onClick={openModal}
+      >
+        {props.children}
+      </Dynamic>
+    </DialogTrigger>
   );
 };
 

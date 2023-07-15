@@ -1,4 +1,4 @@
-import { Component } from 'solid-js';
+import { ParentComponent, Show } from 'solid-js';
 
 import Child from '~/ui/Transition/Child';
 
@@ -8,9 +8,11 @@ interface TransitionComponent {
 
 type TransitionProps = any;
 
-const Transition: Component<TransitionProps> & TransitionComponent = () => {
+const Transition: ParentComponent<TransitionProps> & TransitionComponent = (props) => {
   return (
-    <div>Transition</div>
+    <Show when={props.show}>
+      {props.children}
+    </Show>
   );
 };
 

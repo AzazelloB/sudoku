@@ -1,10 +1,12 @@
-import { Component } from 'solid-js';
+import { ParentComponent } from 'solid-js';
 
 type ChildProps = any;
 
-const Child: Component<ChildProps> = () => {
+const Child: ParentComponent<ChildProps> = (props) => {
   return (
-    <div>Child</div>
+    <div>
+      {props.children}
+    </div>
   );
 };
 
