@@ -7,21 +7,9 @@ interface LinkProps extends ComponentProps<typeof Pressable> {
 }
 
 const Link: ParentComponent<LinkProps> = (props) => {
-  const handleClick = (event: any) => {
-    if (typeof props.onClick === 'function') {
-      props.onClick(event);
-    }
-
-    if (Array.isArray(props.onClick)) {
-      const [handle, ...args] = props.onClick;
-      handle(...args);
-    }
-  };
-
   return (
-    <Pressable
+    <button
       {...props}
-      onPress={handleClick}
       class={twMerge(
         'cursor-pointer underline',
         'hover:brightness-90 active:brightness-110 dark:hover:brightness-125 dark:active:brightness-90',
@@ -29,7 +17,7 @@ const Link: ParentComponent<LinkProps> = (props) => {
       )}
     >
       {props.children}
-    </Pressable>
+    </button>
   );
 };
 

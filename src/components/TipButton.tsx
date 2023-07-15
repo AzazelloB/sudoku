@@ -144,20 +144,20 @@ const TipButton: Component<TipButtonProps> = (props) => {
           <Popover.Content
             class="left-0 flex flex-col"
           >
-              <Show when={tipType() !== null} fallback="Thinking...">
-                <p class="text-sm">
-                  <strong class="font-semibold">{tip().message}</strong>
-                </p>
+            <Show when={tipType() !== null} fallback="Thinking...">
+              <p class="text-sm">
+                <strong class="font-semibold">{tip().message}</strong>
+              </p>
 
-                <Show when={tipType() && tips[tipType()!].hasExplanation}>
-                  <Modal.Button
-                    as={Link}
-                    class="ml-auto mt-1 text-xs text-bgfg-400"
-                  >
-                    What's that?
-                  </Modal.Button>
-                </Show>
+              <Show when={tipType() && tips[tipType()!].hasExplanation}>
+                <Modal.Button
+                  as={Link}
+                  class="ml-auto mt-1 text-xs text-bgfg-400"
+                >
+                  What's that?
+                </Modal.Button>
               </Show>
+            </Show>
           </Popover.Content>
         </Popover>
 
