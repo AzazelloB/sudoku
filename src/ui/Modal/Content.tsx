@@ -30,6 +30,7 @@ const Content: Component<ContentProps> = (props) => {
         show={open()}
       >
         <Transition.Child
+          class="fixed inset-0 z-50 bg-bgfg-900/50"
           enter="ease-out duration-300"
           enterFrom="opacity-0"
           enterTo="opacity-100"
@@ -37,7 +38,7 @@ const Content: Component<ContentProps> = (props) => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <DialogBackdrop class="fixed inset-0 z-50 bg-bgfg-900/50" />
+          <DialogBackdrop />
         </Transition.Child>
 
         <DialogContainer
