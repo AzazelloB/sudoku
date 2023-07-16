@@ -276,10 +276,10 @@ const HomePage = () => {
             >
               <Transition.Child
                 class="flex h-full items-center justify-center"
-                enter="transition duration-[150ms] ease-in-out"
+                enter="transition duration-150 ease-in-out"
                 enterFrom="-translate-y-full"
                 enterTo="translate-y-0"
-                leave="transition duration-[150ms] ease-in-out"
+                leave="transition duration-150 ease-in-out"
                 leaveFrom="translate-y-0"
                 leaveTo="-translate-y-full"
               >

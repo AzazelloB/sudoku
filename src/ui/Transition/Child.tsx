@@ -40,7 +40,7 @@ const Child: ParentComponent<ChildProps> = (props) => {
 
   const [visible, setVisible] = createSignal(show());
 
-  let ref: HTMLDivElement | undefined;
+  const [ref, setRef] = createSignal<HTMLDivElement | null>(null);
   let timeout: NodeJS.Timeout;
 
   const transition = (element: HTMLElement, shouldEnter: boolean) => {
@@ -50,8 +50,6 @@ const Child: ParentComponent<ChildProps> = (props) => {
       const enterTo = getClassList(props.enterTo);
 
       addClassList(element, enterFrom);
-
-      setVisible(true);
 
       clearTimeout(timeout);
       timeout = setTimeout(() => {
@@ -103,20 +101,27 @@ const Child: ParentComponent<ChildProps> = (props) => {
   };
 
   createEffect(() => {
-    if (ref instanceof HTMLElement) {
-      transition(ref, show());
+    const shouldEnter = show();
+    const element = ref();
+
+    if (shouldEnter) {
+      setVisible(true);
+    }
+
+    if (element instanceof HTMLElement) {
+      transition(element, shouldEnter);
     }
   });
 
   return (
-    <div
-      ref={ref}
-      class={props.class}
-    >
-      <Show when={visible()}>
+    <Show when={visible()}>
+      <div
+        ref={setRef}
+        class={props.class}
+      >
         {props.children}
-      </Show>
-    </div>
+      </div>
+    </Show>
   );
 };
 
