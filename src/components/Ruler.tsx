@@ -35,9 +35,7 @@ const Ruler: Component<RulerProps> = (props) => {
       <div class="mb-3 flex items-center space-x-2">
         <Menu
           value={{ rules: props.rules() }}
-          // onValueChange={({ value }) => props.setRules(value as RuleType[])}
-          onValueChange={console.log}
-          onSelect={console.log}
+          onValueChange={({ value }) => props.setRules(value as RuleType[])}
           closeOnSelect={false}
         >
           <Menu.Button
