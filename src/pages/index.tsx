@@ -270,29 +270,28 @@ const HomePage = () => {
             />
           </div>
 
-          <Transition
-            show={paused()}
-            class="absolute inset-0 z-10 overflow-hidden"
-          >
-            <Transition.Child
-              class="h-full"
-              enter="transition ease-in-out duration-200 transform"
-              enterFrom="-translate-y-full"
-              enterTo="translate-y-0"
-              leave="transition ease-in-out duration-200 transform"
-              leaveFrom="translate-y-0"
-              leaveTo="-translate-y-full"
+          <div class="absolute inset-0 z-10 h-full overflow-hidden ">
+            <Transition
+              show={paused()}
             >
-              <div class="flex h-full items-center justify-center">
+              <Transition.Child
+                class="flex h-full items-center justify-center"
+                enter="transition duration-[150ms] ease-in-out"
+                enterFrom="-translate-y-full"
+                enterTo="translate-y-0"
+                leave="transition duration-[150ms] ease-in-out"
+                leaveFrom="translate-y-0"
+                leaveTo="-translate-y-full"
+              >
                 <div class={classNames(
                   'bg-bgfg-100 dark:bg-bgfg-800 rounded-md shadow-lg px-12 py-5',
                   'text-4xl',
                 )}>
                   Paused
                 </div>
-              </div>
-            </Transition.Child>
-          </Transition>
+              </Transition.Child>
+            </Transition>
+          </div>
 
           <div class={classNames(
             'transition-all duration-200',

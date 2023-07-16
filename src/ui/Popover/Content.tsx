@@ -21,15 +21,24 @@ const Content: ParentComponent<ContentProps> = (props) => {
       show={open()}
     >
       <PopoverPositioner>
-        <PopoverContent
-          class={twMerge(
-            'w-max max-w-sm px-4 py-2',
-            'bg-bgfg-200 dark:bg-bgfg-800 text-bgfg-800 dark:text-bgfg-100 rounded-md shadow-md',
-            props.class,
-          )}
+        <Transition.Child
+          enter="transition duration-200"
+          enterFrom="opacity-0 translate-y-1"
+          enterTo="opacity-100 translate-y-0"
+          leave="transition duration-150"
+          leaveFrom="opacity-100 translate-y-0"
+          leaveTo="opacity-0 translate-y-1"
         >
-          {props.children}
-        </PopoverContent>
+            <PopoverContent
+              class={twMerge(
+                'w-max max-w-sm px-4 py-2',
+                'bg-bgfg-200 dark:bg-bgfg-800 text-bgfg-800 dark:text-bgfg-100 rounded-md shadow-md',
+                props.class,
+              )}
+            >
+              {props.children}
+            </PopoverContent>
+        </Transition.Child>
       </PopoverPositioner>
     </Transition>
   );

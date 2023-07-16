@@ -1,6 +1,11 @@
 import {
-  ParentComponent, Show, createEffect, createSignal,
+  ParentComponent,
+  Show,
+  createEffect,
+  createSignal,
+  onCleanup,
 } from 'solid-js';
+
 import { useTransitionContext } from '~/context/TransitionContext';
 
 function getClassList(classes?: string): string[] {
@@ -22,105 +27,96 @@ function removeClassList(ref: HTMLElement, classes: string[]) {
 
 interface ChildProps {
   class?: string;
-  unmount?: boolean;
-  appear?: boolean;
   enter?: string;
   enterFrom?: string;
   enterTo?: string;
-  entered?: string;
   leave?: string;
   leaveFrom?: string;
   leaveTo?: string;
-  beforeEnter?: () => void;
-  afterEnter?: () => void;
-  beforeLeave?: () => void;
-  afterLeave?: () => void;
 }
 
 const Child: ParentComponent<ChildProps> = (props) => {
   const { show } = useTransitionContext();
 
-  const [visible, setVisisble] = createSignal(show());
+  const [visible, setVisible] = createSignal(show());
 
-  const [ref, setRef] = createSignal<HTMLElement>();
+  let ref: HTMLDivElement | undefined;
+  let timeout: NodeJS.Timeout;
 
-  let initial = true;
-
-  function transition(element: HTMLElement, shouldEnter: boolean): void {
+  const transition = (element: HTMLElement, shouldEnter: boolean) => {
     if (shouldEnter) {
-      if (initial) {
-        const enter = getClassList(props.enter);
-        const enterFrom = getClassList(props.enterFrom);
-        const enterTo = getClassList(props.enterTo);
-        const entered = getClassList(props.entered);
+      const enter = getClassList(props.enter);
+      const enterFrom = getClassList(props.enterFrom);
+      const enterTo = getClassList(props.enterTo);
 
-        const endTransition = () => {
-          removeClassList(element, enter);
-          removeClassList(element, enterTo);
-          addClassList(element, entered);
-          props.afterEnter?.();
-        };
+      addClassList(element, enterFrom);
 
-        props.beforeEnter?.();
+      setVisible(true);
+
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
         addClassList(element, enter);
-        addClassList(element, enterFrom);
+        removeClassList(element, enterFrom);
+        addClassList(element, enterTo);
+      }, 10);
 
-        requestAnimationFrame(() => {
-          removeClassList(element, enterFrom);
-          addClassList(element, enterTo);
-          element.addEventListener('transitionend', endTransition, { once: true });
-          element.addEventListener('animationend', endTransition, { once: true });
-        });
-      }
+      const endTransition = () => {
+        removeClassList(element, enter);
+        removeClassList(element, enterTo);
+      };
+
+      element.addEventListener('transitionend', endTransition, { once: true });
+      element.addEventListener('animationend', endTransition, { once: true });
+
+      onCleanup(() => {
+        element.removeEventListener('transitionend', endTransition);
+        element.removeEventListener('animationend', endTransition);
+      });
     } else {
       const leave = getClassList(props.leave);
       const leaveFrom = getClassList(props.leaveFrom);
       const leaveTo = getClassList(props.leaveTo);
-      const entered = getClassList(props.entered);
-      props.beforeLeave?.();
-      removeClassList(element, entered);
+
       addClassList(element, leave);
       addClassList(element, leaveFrom);
-      requestAnimationFrame(() => {
+
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
         removeClassList(element, leaveFrom);
         addClassList(element, leaveTo);
-      });
+      }, 10);
+
       const endTransition = () => {
         removeClassList(element, leave);
         removeClassList(element, leaveTo);
-        setVisisble(false);
-        props.afterLeave?.();
+        setVisible(false);
       };
+
       element.addEventListener('transitionend', endTransition, { once: true });
       element.addEventListener('animationend', endTransition, { once: true });
+
+      onCleanup(() => {
+        element.removeEventListener('transitionend', endTransition);
+        element.removeEventListener('animationend', endTransition);
+      });
     }
-  }
+  };
 
   createEffect(() => {
-    const shouldShow = show();
-
-    if (shouldShow) {
-      setVisisble(true);
-    }
-
-    const internalRef = ref();
-    if (internalRef instanceof HTMLElement) {
-      transition(internalRef, shouldShow);
-    } else {
-      // Ref is missing, reset initial
-      initial = true;
+    if (ref instanceof HTMLElement) {
+      transition(ref, show());
     }
   });
 
   return (
-    <Show when={visible()}>
-      <div
-        ref={setRef}
-        class={props.class}
-      >
+    <div
+      ref={ref}
+      class={props.class}
+    >
+      <Show when={visible()}>
         {props.children}
-      </div>
-    </Show>
+      </Show>
+    </div>
   );
 };
 

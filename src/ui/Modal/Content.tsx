@@ -27,7 +27,6 @@ const Content: Component<ContentProps> = (props) => {
   return (
     <Portal ref={props.ref}>
       <Transition
-        appear
         show={open()}
       >
         <Transition.Child
