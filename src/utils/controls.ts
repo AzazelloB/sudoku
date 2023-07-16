@@ -43,5 +43,6 @@ export const canRedefineControls = (shortcut: Shortcut) => {
     return true;
   }
 
-  return document.activeElement?.tagName !== 'BUTTON';
+  return document.activeElement?.tagName !== 'BUTTON'
+      && document.activeElement?.getAttribute('data-scope') !== 'menu';
 };

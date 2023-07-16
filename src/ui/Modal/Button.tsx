@@ -1,7 +1,7 @@
 import { Component, ComponentProps } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
-
 import { DialogTrigger } from '@ark-ui/solid/dialog';
+
 import { useModalContext } from '~/context/ModalContext';
 import { AsProp } from '~/utils/asPropType';
 
