@@ -14,6 +14,12 @@ const ruleMessages: Record<RuleType, string> = {
   [RuleType.KILLER_SUDOKU]: 'Killer Sudoku',
 };
 
+interface Option {
+  label: string;
+  value: RuleType;
+  disabled: boolean;
+}
+
 interface RulerProps {
   class?: string;
   savedRules: Accessor<RuleType[]>;
@@ -28,14 +34,21 @@ const Ruler: Component<RulerProps> = (props) => {
     disabled: rule === RuleType.NORMAL_SUDOKU,
   }));
 
+  // eslint-disable-next-line solid/reactivity
+  const handleCheckboxChange = (option: Option) => ({ checked }: any) => {
+    if (checked) {
+      props.setRules([...props.rules(), option.value]);
+    } else {
+      props.setRules(props.rules().filter((rule) => rule !== option.value));
+    }
+  };
+
   return (
     <div class={twMerge(
       props.class,
     )}>
       <div class="mb-3 flex items-center space-x-2">
         <Menu
-          value={{ rules: props.rules() }}
-          onValueChange={({ value }) => props.setRules(value as RuleType[])}
           closeOnSelect={false}
         >
           <Menu.Button
@@ -49,24 +62,13 @@ const Ruler: Component<RulerProps> = (props) => {
             <For each={toOptions(Object.values(RuleType))}>
               {(option) => (
                 <Menu.OptionItem
-                  name="rules"
-                  type="checkbox"
+                  id={option.value}
+                  checked={props.rules().includes(option.value)}
+                  onChange={handleCheckboxChange(option)}
                   value={option.value}
                   disabled={option.disabled}
                 >
-                  {(state) => (
-                    <div class="flex items-center">
-                      <span class={twMerge(
-                        'w-2 h-2 rounded-full mr-2',
-                        state().isActive
-                          ? 'bg-bgfg-900 dark:bg-bgfg-100'
-                          : 'border border-bgfg-900 dark:border-bgfg-100',
-                      )} />
-                      <span class="whitespace-nowrap">
-                        {option.label}
-                      </span>
-                    </div>
-                  )}
+                  {option.label}
                 </Menu.OptionItem>
               )}
             </For>
