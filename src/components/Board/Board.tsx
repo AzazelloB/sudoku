@@ -236,7 +236,7 @@ const Board: Component<BoardProps> = (props) => {
     <div class="relative">
       <canvas
         ref={layer_1!}
-        class="pointer-events-none absolute inset-0 z-10"
+        class="pointer-events-none absolute inset-0"
         width={canvasWidth() * scale}
         height={canvasHeight() * scale}
         style={{
@@ -248,7 +248,7 @@ const Board: Component<BoardProps> = (props) => {
         ref={layer_2!}
         tabIndex={0}
         class={twMerge(
-          'relative z-20 select-none',
+          'relative select-none',
           'focus-visible:outline-none',
           usingTab() && 'focus-visible:ring-4 focus-visible:ring-offset-4',
           usingTab() && 'focus-visible:ring-bgfg-900 focus-visible:ring-offset-bgfg-100',
@@ -263,7 +263,7 @@ const Board: Component<BoardProps> = (props) => {
       />
       <canvas
         ref={layer_3!}
-        class="pointer-events-none absolute inset-0 z-30"
+        class="pointer-events-none absolute inset-0"
         width={canvasWidth() * scale}
         height={canvasHeight() * scale}
         style={{
@@ -273,7 +273,7 @@ const Board: Component<BoardProps> = (props) => {
       />
       <canvas
         ref={layer_4!}
-        class="pointer-events-none absolute inset-0 z-40"
+        class="pointer-events-none absolute inset-0"
         width={canvasWidth() * scale}
         height={canvasHeight() * scale}
         style={{
@@ -285,7 +285,7 @@ const Board: Component<BoardProps> = (props) => {
       />
       <canvas
         ref={layer_5!}
-        class="pointer-events-none absolute inset-0 z-50"
+        class="pointer-events-none absolute inset-0"
         width={canvasWidth() * scale}
         height={canvasHeight() * scale}
         style={{

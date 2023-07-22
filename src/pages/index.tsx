@@ -261,7 +261,9 @@ const HomePage = () => {
         </div>
 
         <div class="relative">
-          <div class="absolute left-0 top-0 z-40 -translate-x-1/2 -translate-y-1/2">
+          <div
+            class="absolute left-0 top-0 z-10 -translate-x-1/2 -translate-y-1/2"
+          >
             <TipButton
               ref={setTipBtnRef}
               modalRef={setModalRef}
@@ -270,7 +272,7 @@ const HomePage = () => {
             />
           </div>
 
-          <div class="absolute inset-0 z-10 h-full overflow-hidden ">
+          <div class="pointer-events-none absolute inset-0 z-10 h-full overflow-hidden">
             <Transition
               show={paused()}
             >
