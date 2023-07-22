@@ -84,6 +84,7 @@ const mask = (cells: Cells, difficulty: DifficultyLevel, rules: RuleType[], meta
   try {
     const countSolutions = createSolutionCounter(rules, meta);
 
+    // TODO mask cells on a clue first
     const masked = cells.slice();
     const indexes = [...masked.keys()];
 
