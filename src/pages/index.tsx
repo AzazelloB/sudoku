@@ -155,6 +155,8 @@ const HomePage = () => {
     setSolved(false);
     setPause(false);
     setGeneratingNewBoard(false);
+
+    publish('game:restart');
   };
 
   const handleDifficulty = (diff: DifficultyLevel) => {

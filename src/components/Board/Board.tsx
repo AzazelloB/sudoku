@@ -74,6 +74,7 @@ const Board: Component<BoardProps> = (props) => {
   const drawUnchangingLayers = (
     layer_4_ctx: CanvasRenderingContext2D,
   ) => {
+    renderer.drawBackground(layer_4_ctx);
     renderer.drawMeta(layer_4_ctx, state.meta, BUFFER_PADDING * scale);
   };
 
@@ -123,6 +124,11 @@ const Board: Component<BoardProps> = (props) => {
 
     const layer_1_ctx = layer_1.getContext('2d')!;
     const layer_3_ctx = layer_3.getContext('2d')!;
+    const layer_4_ctx = layer_4.getContext('2d')!;
+
+    const updateUnchangingLayers = () => {
+      drawUnchangingLayers(layer_4_ctx);
+    };
 
     const updateStaticLayers = () => {
       renderer.pushToRenderQueue(() => {
@@ -138,13 +144,14 @@ const Board: Component<BoardProps> = (props) => {
       });
     };
 
-    drawStaticLayers(layer_1_ctx, layer_3_ctx);
+    subscribe('game:restart', updateUnchangingLayers);
     subscribe('cells:changed', updateStaticLayers);
     subscribe('selectedCells:changed', updateStaticLayers);
     subscribe('revealed:changed', updateStaticLayers);
     subscribe('tip:added', flyInCells);
 
     onCleanup(() => {
+      unsubscribe('game:restart', updateUnchangingLayers);
       unsubscribe('cells:changed', updateStaticLayers);
       unsubscribe('selectedCells:changed', updateStaticLayers);
       unsubscribe('revealed:changed', updateStaticLayers);
@@ -228,8 +235,10 @@ const Board: Component<BoardProps> = (props) => {
 
     const layer_1_ctx = layer_1.getContext('2d')!;
     const layer_3_ctx = layer_3.getContext('2d')!;
+    const layer_4_ctx = layer_4.getContext('2d')!;
 
     drawStaticLayers(layer_1_ctx, layer_3_ctx);
+    drawUnchangingLayers(layer_4_ctx);
   });
 
   return (
