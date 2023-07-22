@@ -361,133 +361,186 @@ export class Renderer {
     );
 
     if (meta.cages) {
-      const cages = meta.cages;
-      const padding = this.#width * 0.0115;
+      this.#drawCages(ctx, meta.cages);
+    }
 
-      if (this.#theme === 'dark') {
-        ctx.strokeStyle = colors.bgfg[700];
-      } else {
-        ctx.strokeStyle = colors.bgfg[300];
-      }
-      ctx.lineWidth = this.#getPixel(this.#width * 0.005);
-      ctx.setLineDash([padding * 2, padding * 2]);
+    if (meta.thermos) {
+      this.#drawThermos(ctx, meta.thermos);
+    }
 
-      for (const cage of cages) {
-        ctx.beginPath();
+    ctx.restore();
+  }
 
-        for (let i = 0; i < cage.path.length; i += 1) {
-          const cell = cage.path[i];
+  #drawCages(ctx: CanvasRenderingContext2D, cages: Cage[]) {
+    const padding = this.#width * 0.0115;
 
-          const x = this.#getPixel(cell.col * this.#cellWidth);
-          const y = this.#getPixel(cell.row * this.#cellHeight);
+    if (this.#theme === 'dark') {
+      ctx.strokeStyle = colors.bgfg[700];
+    } else {
+      ctx.strokeStyle = colors.bgfg[300];
+    }
+    ctx.lineWidth = this.#getPixel(this.#width * 0.005);
+    ctx.setLineDash([padding * 2, padding * 2]);
 
+    for (const cage of cages) {
+      ctx.beginPath();
+
+      for (let i = 0; i < cage.path.length; i += 1) {
+        const cell = cage.path[i];
+
+        const x = this.#getPixel(cell.col * this.#cellWidth);
+        const y = this.#getPixel(cell.row * this.#cellHeight);
+
+        ctx.moveTo(
+          this.#getPixel(x + padding),
+          this.#getPixel(y + padding),
+        );
+
+        if (cage.path.some((c) => c.col === cell.col && c.row === cell.row - 1)) {
+          ctx.moveTo(
+            this.#getPixel(x + this.#cellWidth - padding),
+            this.#getPixel(y + padding),
+          );
+        } else {
+          ctx.lineTo(
+            this.#getPixel(x + this.#cellWidth - padding),
+            this.#getPixel(y + padding),
+          );
+        }
+
+        if (cage.path.some((c) => c.col === cell.col + 1 && c.row === cell.row)) {
+          ctx.moveTo(
+            this.#getPixel(x + this.#cellWidth - padding),
+            this.#getPixel(y + this.#cellHeight - padding),
+          );
+        } else {
+          ctx.lineTo(
+            this.#getPixel(x + this.#cellWidth - padding),
+            this.#getPixel(y + this.#cellHeight - padding),
+          );
+        }
+
+        if (cage.path.some((c) => c.col === cell.col && c.row === cell.row + 1)) {
+          ctx.moveTo(
+            this.#getPixel(x + padding),
+            this.#getPixel(y + this.#cellHeight - padding),
+          );
+        } else {
+          ctx.lineTo(
+            this.#getPixel(x + padding),
+            this.#getPixel(y + this.#cellHeight - padding),
+          );
+        }
+
+        if (cage.path.some((c) => c.col === cell.col - 1 && c.row === cell.row)) {
           ctx.moveTo(
             this.#getPixel(x + padding),
             this.#getPixel(y + padding),
           );
-
-          if (cage.path.some((c) => c.col === cell.col && c.row === cell.row - 1)) {
-            ctx.moveTo(
-              this.#getPixel(x + this.#cellWidth - padding),
-              this.#getPixel(y + padding),
-            );
-          } else {
-            ctx.lineTo(
-              this.#getPixel(x + this.#cellWidth - padding),
-              this.#getPixel(y + padding),
-            );
-          }
-
-          if (cage.path.some((c) => c.col === cell.col + 1 && c.row === cell.row)) {
-            ctx.moveTo(
-              this.#getPixel(x + this.#cellWidth - padding),
-              this.#getPixel(y + this.#cellHeight - padding),
-            );
-          } else {
-            ctx.lineTo(
-              this.#getPixel(x + this.#cellWidth - padding),
-              this.#getPixel(y + this.#cellHeight - padding),
-            );
-          }
-
-          if (cage.path.some((c) => c.col === cell.col && c.row === cell.row + 1)) {
-            ctx.moveTo(
-              this.#getPixel(x + padding),
-              this.#getPixel(y + this.#cellHeight - padding),
-            );
-          } else {
-            ctx.lineTo(
-              this.#getPixel(x + padding),
-              this.#getPixel(y + this.#cellHeight - padding),
-            );
-          }
-
-          if (cage.path.some((c) => c.col === cell.col - 1 && c.row === cell.row)) {
-            ctx.moveTo(
-              this.#getPixel(x + padding),
-              this.#getPixel(y + padding),
-            );
-          } else {
-            ctx.lineTo(
-              this.#getPixel(x + padding),
-              this.#getPixel(y + padding),
-            );
-          }
-        }
-
-        ctx.stroke();
-        ctx.closePath();
-
-        // find top left cell
-        const path = [...cage.path];
-        path.sort((a, b) => {
-          if (a.row === b.row) {
-            return a.col - b.col;
-          }
-
-          return a.row - b.row;
-        });
-
-        const x = this.#getPixel(path[0].col * this.#cellWidth + padding);
-        const y = this.#getPixel(path[0].row * this.#cellHeight + padding);
-
-        const fontSize = this.#getPixel(this.#width * 0.025);
-        ctx.font = `${fontSize}px ${Renderer.fontFamily}`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-
-        if (this.#theme === 'dark') {
-          ctx.fillStyle = colors.bgfg[700];
         } else {
-          ctx.fillStyle = colors.bgfg[300];
+          ctx.lineTo(
+            this.#getPixel(x + padding),
+            this.#getPixel(y + padding),
+          );
         }
-        ctx.beginPath();
-        ctx.arc(
-          x,
-          y,
-          this.#getPixel(fontSize * 0.9),
-          0,
-          Math.PI * 2,
-        );
-        ctx.fill();
-        ctx.closePath();
-
-        if (this.#theme === 'dark') {
-          ctx.fillStyle = colors.bgfg[100];
-        } else {
-          ctx.fillStyle = colors.bgfg[900];
-        }
-        ctx.fillText(
-          cage.total.toString(),
-          x,
-          y,
-        );
       }
 
-      ctx.setLineDash([]);
+      ctx.stroke();
+      ctx.closePath();
+
+      // find top left cell
+      const path = [...cage.path];
+      path.sort((a, b) => {
+        if (a.row === b.row) {
+          return a.col - b.col;
+        }
+
+        return a.row - b.row;
+      });
+
+      const x = this.#getPixel(path[0].col * this.#cellWidth + padding);
+      const y = this.#getPixel(path[0].row * this.#cellHeight + padding);
+
+      const fontSize = this.#getPixel(this.#width * 0.025);
+      ctx.font = `${fontSize}px ${Renderer.fontFamily}`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      if (this.#theme === 'dark') {
+        ctx.fillStyle = colors.bgfg[700];
+      } else {
+        ctx.fillStyle = colors.bgfg[300];
+      }
+      ctx.beginPath();
+      ctx.arc(
+        x,
+        y,
+        this.#getPixel(fontSize * 0.9),
+        0,
+        Math.PI * 2,
+      );
+      ctx.fill();
+      ctx.closePath();
+
+      if (this.#theme === 'dark') {
+        ctx.fillStyle = colors.bgfg[100];
+      } else {
+        ctx.fillStyle = colors.bgfg[900];
+      }
+      ctx.fillText(
+        cage.total.toString(),
+        x,
+        y,
+      );
     }
 
-    ctx.restore();
+    ctx.setLineDash([]);
+  }
+
+  #drawThermos(ctx: CanvasRenderingContext2D, thermos: Thermo[]) {
+    if (this.#theme === 'dark') {
+      ctx.strokeStyle = colors.bgfg[700];
+      ctx.fillStyle = colors.bgfg[700];
+    } else {
+      ctx.strokeStyle = colors.bgfg[300];
+      ctx.fillStyle = colors.bgfg[300];
+    }
+    ctx.lineWidth = this.#getPixel(this.#width * 0.03);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    for (const thermo of thermos) {
+      ctx.beginPath();
+
+      for (let i = 0; i < thermo.path.length; i += 1) {
+        const cell = thermo.path[i];
+
+        const x = this.#getPixel(cell.col * this.#cellWidth + this.#cellWidth / 2);
+        const y = this.#getPixel(cell.row * this.#cellHeight + this.#cellHeight / 2);
+
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        }
+
+        ctx.lineTo(x, y);
+      }
+
+      ctx.stroke();
+      ctx.closePath();
+
+      const x = this.#getPixel(thermo.path[0].col * this.#cellWidth + this.#cellWidth / 2);
+      const y = this.#getPixel(thermo.path[0].row * this.#cellHeight + this.#cellHeight / 2);
+      ctx.beginPath();
+      ctx.arc(
+        x,
+        y,
+        this.#getPixel(this.#width * 0.04),
+        0,
+        Math.PI * 2,
+      );
+      ctx.fill();
+      ctx.closePath();
+    }
   }
 
   drawValues(ctx: CanvasRenderingContext2D, cells: Cell[], revealed = false) {

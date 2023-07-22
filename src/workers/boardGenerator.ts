@@ -198,13 +198,95 @@ const generateCages = () => {
     }
 
     cages[i] = {
-      size,
       path,
       total: 0,
     };
   }
 
   return cages;
+};
+
+const generateThermos = () => {
+  const thermos: Thermo[] = [];
+
+  const thermoSizeRange = {
+    min: 2,
+    max: 6,
+  };
+
+  const thermoCountRange = {
+    min: 2,
+    max: 4,
+  };
+
+  const thermoCount = Math.floor(
+    Math.random() * (thermoCountRange.max - thermoCountRange.min + 1),
+  ) + thermoCountRange.min;
+
+  const occupiedCells: number[] = [];
+  const freeCellIndexes = [...Array(cellsInColumn * cellsInRow).keys()];
+  shuffleArray(freeCellIndexes);
+
+  outer: for (let i = 0; i < thermoCount; i++) {
+    let iter = 0;
+
+    const size = Math.floor(
+      Math.random() * (thermoSizeRange.max - thermoSizeRange.min + 1),
+    ) + thermoSizeRange.min;
+    const path: CellPosition[] = [];
+
+    const index = freeCellIndexes.pop()!;
+    let col = index % cellsInColumn;
+    let row = Math.floor(index / cellsInColumn);
+
+    while (path.length < size) {
+      iter++;
+
+      if (iter > 1000) {
+        i--;
+        continue outer;
+      }
+
+      if (Math.random() > 0.5) {
+        const newCol = col + (Math.random() > 0.5 ? 1 : -1);
+        const newIndex = newCol + row * cellsInColumn;
+
+        if (newCol < 0 || newCol >= cellsInColumn) {
+          continue;
+        }
+
+        if (occupiedCells.includes(newIndex)) {
+          continue;
+        }
+
+        col = newCol;
+      } else {
+        const newRow = row + (Math.random() > 0.5 ? 1 : -1);
+        const newIndex = col + newRow * cellsInColumn;
+
+        if (newRow < 0 || newRow >= cellsInRow) {
+          continue;
+        }
+
+        if (occupiedCells.includes(newIndex)) {
+          continue;
+        }
+
+        row = newRow;
+      }
+
+      const newIndex = col + row * cellsInColumn;
+      occupiedCells.push(newIndex);
+
+      path.push({ col, row });
+    }
+
+    thermos[i] = {
+      path,
+    };
+  }
+
+  return thermos;
 };
 
 const countTotals = (cages: Cage[], cells: Cell[]) => {
@@ -224,6 +306,10 @@ const generateMeta = (rules: RuleType[]): Meta => {
     switch (rule) {
       case RuleType.KILLER_SUDOKU:
         meta.cages = generateCages();
+        break;
+
+      case RuleType.THERMOS:
+        meta.thermos = generateThermos();
         break;
 
       default:

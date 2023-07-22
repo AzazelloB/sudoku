@@ -21,13 +21,17 @@ interface Cell extends CellPosition {
 }
 
 interface Cage {
-  size: number;
   total: number;
+  path: CellPosition[];
+}
+
+interface Thermo {
   path: CellPosition[];
 }
 
 interface Meta {
   cages: Cage[];
+  thermos: Thermo[];
 }
 
 interface State {

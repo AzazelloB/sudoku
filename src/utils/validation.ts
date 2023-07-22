@@ -105,6 +105,52 @@ const isValidKillerSudoku: Validator = (meta, cells, number, index) => {
   return true;
 };
 
+const isValidThermos: Validator = (meta, cells, number, index) => {
+  const { thermos } = meta;
+  const col = index % cellsInRow;
+  const row = Math.floor(index / cellsInRow);
+
+  for (const thermo of thermos) {
+    const indexInThermo = thermo.path.findIndex((c) => c.col === col && c.row === row);
+
+    if (indexInThermo === -1) {
+      continue;
+    }
+
+    if (number <= indexInThermo) {
+      return false;
+    }
+
+    if (cellsInRow - number < thermo.path.length - indexInThermo) {
+      return false;
+    }
+
+    for (let i = 0; i < thermo.path.length; i++) {
+      if (i === indexInThermo) {
+        continue;
+      }
+
+      const cell = thermo.path[i];
+      const cellIndex = cell.col + cell.row * cellsInRow;
+      const cellValue = cells[cellIndex];
+
+      if (cellValue === null) {
+        continue;
+      }
+
+      if (i < indexInThermo && cellValue >= number) {
+        return false;
+      }
+
+      if (i > indexInThermo && cellValue <= number) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+};
+
 type Validator = (meta: Meta, cells: Cells, number: number, index: number) => boolean
 
 const ruleValidaroMap: Record<RuleType, Validator> = {
@@ -112,6 +158,7 @@ const ruleValidaroMap: Record<RuleType, Validator> = {
   [RuleType.KINGS_MOVE]: isValidKingsMove,
   [RuleType.KNIGHTS_MOVE]: isValidKnightsMove,
   [RuleType.KILLER_SUDOKU]: isValidKillerSudoku,
+  [RuleType.THERMOS]: isValidThermos,
 };
 
 export const isValid = (rules: RuleType[], meta: Meta, cells: Cells, number: number, index: number) => {

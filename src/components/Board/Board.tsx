@@ -58,24 +58,23 @@ const Board: Component<BoardProps> = (props) => {
 
   const drawStaticLayers = (
     layer_1_ctx: CanvasRenderingContext2D,
-    layer_3_ctx: CanvasRenderingContext2D,
+    layer_4_ctx: CanvasRenderingContext2D,
   ) => {
     renderer.drawBackground(layer_1_ctx);
-    renderer.drawBackground(layer_3_ctx);
+    renderer.drawBackground(layer_4_ctx);
 
     renderer.drawCellColors(layer_1_ctx, state.cells);
     renderer.drawGrid(layer_1_ctx);
 
-    renderer.drawSelection(layer_3_ctx, state.selectedCells);
-
-    renderer.drawValues(layer_3_ctx, state.cells, state.revealed);
+    renderer.drawSelection(layer_4_ctx, state.selectedCells);
+    renderer.drawValues(layer_4_ctx, state.cells, state.revealed);
   };
 
   const drawUnchangingLayers = (
-    layer_4_ctx: CanvasRenderingContext2D,
+    layer_3_ctx: CanvasRenderingContext2D,
   ) => {
-    renderer.drawBackground(layer_4_ctx);
-    renderer.drawMeta(layer_4_ctx, state.meta, BUFFER_PADDING * scale);
+    renderer.drawBackground(layer_3_ctx);
+    renderer.drawMeta(layer_3_ctx, state.meta, BUFFER_PADDING * scale);
   };
 
   onMount(() => {
@@ -98,8 +97,8 @@ const Board: Component<BoardProps> = (props) => {
       renderer.resize(size * scale, size * scale);
 
       window.requestAnimationFrame(() => {
-        drawStaticLayers(layer_1_ctx, layer_3_ctx);
-        drawUnchangingLayers(layer_4_ctx);
+        drawStaticLayers(layer_1_ctx, layer_4_ctx);
+        drawUnchangingLayers(layer_3_ctx);
       });
     };
 
@@ -108,7 +107,7 @@ const Board: Component<BoardProps> = (props) => {
 
     document.fonts.ready.then(() => {
       renderer.pushToRenderQueue(() => {
-        drawStaticLayers(layer_1_ctx, layer_3_ctx);
+        drawStaticLayers(layer_1_ctx, layer_4_ctx);
       });
     });
 
@@ -127,12 +126,12 @@ const Board: Component<BoardProps> = (props) => {
     const layer_4_ctx = layer_4.getContext('2d')!;
 
     const updateUnchangingLayers = () => {
-      drawUnchangingLayers(layer_4_ctx);
+      drawUnchangingLayers(layer_3_ctx);
     };
 
     const updateStaticLayers = () => {
       renderer.pushToRenderQueue(() => {
-        drawStaticLayers(layer_1_ctx, layer_3_ctx);
+        drawStaticLayers(layer_1_ctx, layer_4_ctx);
       });
     };
 
@@ -234,8 +233,8 @@ const Board: Component<BoardProps> = (props) => {
     renderer.setTheme(theme());
 
     const layer_1_ctx = layer_1.getContext('2d')!;
-    const layer_3_ctx = layer_3.getContext('2d')!;
-    const layer_4_ctx = layer_4.getContext('2d')!;
+    const layer_3_ctx = layer_4.getContext('2d')!;
+    const layer_4_ctx = layer_3.getContext('2d')!;
 
     drawStaticLayers(layer_1_ctx, layer_3_ctx);
     drawUnchangingLayers(layer_4_ctx);
@@ -276,8 +275,10 @@ const Board: Component<BoardProps> = (props) => {
         width={canvasWidth() * scale}
         height={canvasHeight() * scale}
         style={{
-          width: `${canvasWidth()}px`,
-          height: `${canvasHeight()}px`,
+          width: `${canvasWidth() + BUFFER_PADDING * 2}px`,
+          height: `${canvasHeight() + BUFFER_PADDING * 2}px`,
+          top: `-${BUFFER_PADDING}px`,
+          left: `-${BUFFER_PADDING}px`,
         }}
       />
       <canvas
@@ -286,10 +287,8 @@ const Board: Component<BoardProps> = (props) => {
         width={canvasWidth() * scale}
         height={canvasHeight() * scale}
         style={{
-          width: `${canvasWidth() + BUFFER_PADDING * 2}px`,
-          height: `${canvasHeight() + BUFFER_PADDING * 2}px`,
-          top: `-${BUFFER_PADDING}px`,
-          left: `-${BUFFER_PADDING}px`,
+          width: `${canvasWidth()}px`,
+          height: `${canvasHeight()}px`,
         }}
       />
       <canvas
