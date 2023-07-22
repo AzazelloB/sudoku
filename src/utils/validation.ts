@@ -105,7 +105,7 @@ const isValidKillerSudoku: Validator = (meta, cells, number, index) => {
   return true;
 };
 
-const isValidThermos: Validator = (meta, cells, number, index) => {
+const isValidThermo: Validator = (meta, cells, number, index) => {
   const { thermos } = meta;
   const col = index % cellsInRow;
   const row = Math.floor(index / cellsInRow);
@@ -158,7 +158,7 @@ const ruleValidaroMap: Record<RuleType, Validator> = {
   [RuleType.KINGS_MOVE]: isValidKingsMove,
   [RuleType.KNIGHTS_MOVE]: isValidKnightsMove,
   [RuleType.KILLER_SUDOKU]: isValidKillerSudoku,
-  [RuleType.THERMOS]: isValidThermos,
+  [RuleType.THERMO]: isValidThermo,
 };
 
 export const isValid = (rules: RuleType[], meta: Meta, cells: Cells, number: number, index: number) => {

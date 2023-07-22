@@ -308,7 +308,7 @@ const generateMeta = (rules: RuleType[]): Meta => {
         meta.cages = generateCages();
         break;
 
-      case RuleType.THERMOS:
+      case RuleType.THERMO:
         meta.thermos = generateThermos();
         break;
 
