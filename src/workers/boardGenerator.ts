@@ -120,8 +120,8 @@ const generateCages = () => {
   const cages: Cage[] = [];
 
   const cageSizeRange = {
-    min: 3,
-    max: 6,
+    min: 2,
+    max: 4,
   };
   const cageCountRange = {
     min: 3,
