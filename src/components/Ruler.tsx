@@ -13,6 +13,7 @@ const ruleMessages: Record<RuleType, string> = {
   [RuleType.KNIGHTS_MOVE]: 'Knight\'s Move',
   [RuleType.KILLER_SUDOKU]: 'Killer Sudoku',
   [RuleType.THERMO]: 'Thermo',
+  [RuleType.SUM_ARROW]: 'Sum Arrow',
 };
 
 interface Option {

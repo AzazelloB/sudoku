@@ -29,9 +29,14 @@ interface Thermo {
   path: CellPosition[];
 }
 
+interface SumArrow {
+  path: CellPosition[];
+}
+
 interface Meta {
   cages: Cage[];
   thermos: Thermo[];
+  sumArrows: SumArrow[];
 }
 
 interface State {

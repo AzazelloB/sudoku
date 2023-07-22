@@ -151,6 +151,79 @@ const isValidThermo: Validator = (meta, cells, number, index) => {
   return true;
 };
 
+const isValidArrowSum: Validator = (meta, cells, number, index) => {
+  const { sumArrows } = meta;
+  const col = index % cellsInRow;
+  const row = Math.floor(index / cellsInRow);
+
+  for (const arrow of sumArrows) {
+    const indexOnArrow = arrow.path.findIndex((c) => c.col === col && c.row === row);
+
+    if (indexOnArrow === -1) {
+      continue;
+    }
+
+    const sum = arrow.path.slice(1).reduce((acc, cell) => {
+      const cellIndex = cell.col + cell.row * cellsInRow;
+      const cellValue = cells[cellIndex];
+
+      if (cellValue === null) {
+        return acc;
+      }
+
+      return acc + cellValue;
+    }, 0);
+
+    const isSumCell = indexOnArrow === 0;
+
+    if (isSumCell) {
+      if (sum > number) {
+        return false;
+      }
+
+      const arrowFilled = arrow.path.slice(1).every((cell) => {
+        const cellIndex = cell.col + cell.row * cellsInRow;
+        const cellValue = cells[cellIndex];
+
+        return cellValue !== null;
+      });
+
+      if (arrowFilled && sum !== number) {
+        return false;
+      }
+    } else {
+      const sumCell = arrow.path[0];
+      const sumCellIndex = sumCell.col + sumCell.row * cellsInRow;
+      const sumCellValue = cells[sumCellIndex];
+
+      if (sumCellValue === null) {
+        continue;
+      }
+
+      if (sumCellValue < number) {
+        return false;
+      }
+
+      if (sum + number > sumCellValue) {
+        return false;
+      }
+
+      const isLastCellOnArrow = arrow.path.slice(1).filter((cell) => {
+        const cellIndex = cell.col + cell.row * cellsInRow;
+        const cellValue = cells[cellIndex];
+
+        return cellValue === null;
+      }).length === 1;
+
+      if (isLastCellOnArrow && sum + number !== sumCellValue) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+};
+
 type Validator = (meta: Meta, cells: Cells, number: number, index: number) => boolean
 
 const ruleValidaroMap: Record<RuleType, Validator> = {
@@ -159,6 +232,7 @@ const ruleValidaroMap: Record<RuleType, Validator> = {
   [RuleType.KNIGHTS_MOVE]: isValidKnightsMove,
   [RuleType.KILLER_SUDOKU]: isValidKillerSudoku,
   [RuleType.THERMO]: isValidThermo,
+  [RuleType.SUM_ARROW]: isValidArrowSum,
 };
 
 export const isValid = (rules: RuleType[], meta: Meta, cells: Cells, number: number, index: number) => {

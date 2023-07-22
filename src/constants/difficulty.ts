@@ -16,4 +16,5 @@ export const ruleWeights: Record<RuleType, number> = {
   [RuleType.KNIGHTS_MOVE]: 7,
   [RuleType.KILLER_SUDOKU]: 0,
   [RuleType.THERMO]: 4,
+  [RuleType.SUM_ARROW]: 0,
 };

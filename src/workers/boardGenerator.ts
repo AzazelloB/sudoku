@@ -289,6 +289,89 @@ const generateThermos = () => {
   return thermos;
 };
 
+const generateArrowSums = () => {
+  const arrows: SumArrow[] = [];
+
+  const arrowSizeRange = {
+    min: 3, // min of 2 would be possible if arrows could be diagonal
+    max: 4,
+  };
+
+  const arrowCountRange = {
+    min: 3,
+    max: 5,
+  };
+
+  const arrowCount = Math.floor(
+    Math.random() * (arrowCountRange.max - arrowCountRange.min + 1),
+  ) + arrowCountRange.min;
+
+  const occupiedCells: number[] = [];
+  const freeCellIndexes = [...Array(cellsInColumn * cellsInRow).keys()];
+  shuffleArray(freeCellIndexes);
+
+  outer: for (let i = 0; i < arrowCount; i++) {
+    let iter = 0;
+
+    const size = Math.floor(
+      Math.random() * (arrowSizeRange.max - arrowSizeRange.min + 1),
+    ) + arrowSizeRange.min;
+    const path: CellPosition[] = [];
+
+    const index = freeCellIndexes.pop()!;
+    let col = index % cellsInColumn;
+    let row = Math.floor(index / cellsInColumn);
+
+    while (path.length < size) {
+      iter++;
+
+      if (iter > 1000) {
+        i--;
+        continue outer;
+      }
+
+      if (Math.random() > 0.5) {
+        const newCol = col + (Math.random() > 0.5 ? 1 : -1);
+        const newIndex = newCol + row * cellsInColumn;
+
+        if (newCol < 0 || newCol >= cellsInColumn) {
+          continue;
+        }
+
+        if (occupiedCells.includes(newIndex)) {
+          continue;
+        }
+
+        col = newCol;
+      } else {
+        const newRow = row + (Math.random() > 0.5 ? 1 : -1);
+        const newIndex = col + newRow * cellsInColumn;
+
+        if (newRow < 0 || newRow >= cellsInRow) {
+          continue;
+        }
+
+        if (occupiedCells.includes(newIndex)) {
+          continue;
+        }
+
+        row = newRow;
+      }
+
+      const newIndex = col + row * cellsInColumn;
+      occupiedCells.push(newIndex);
+
+      path.push({ col, row });
+    }
+
+    arrows[i] = {
+      path,
+    };
+  }
+
+  return arrows;
+};
+
 const countTotals = (cages: Cage[], cells: Cell[]) => {
   for (const cage of cages) {
     cage.total = 0;
@@ -300,7 +383,7 @@ const countTotals = (cages: Cage[], cells: Cell[]) => {
 };
 
 const generateMeta = (rules: RuleType[]): Meta => {
-  const meta: any = {};
+  const meta: Partial<Meta> = {};
 
   for (const rule of rules) {
     switch (rule) {
@@ -312,12 +395,16 @@ const generateMeta = (rules: RuleType[]): Meta => {
         meta.thermos = generateThermos();
         break;
 
+      case RuleType.SUM_ARROW:
+        meta.sumArrows = generateArrowSums();
+        break;
+
       default:
         break;
     }
   }
 
-  return meta;
+  return meta as Meta;
 };
 
 const updateMeta = (rules: RuleType[], meta: Meta, cells: Cell[]) => {

@@ -4,4 +4,5 @@ export enum RuleType {
   KNIGHTS_MOVE = 'knights-move',
   KILLER_SUDOKU = 'killer-sudoku',
   THERMO = 'thermo',
+  SUM_ARROW = 'sum-arrow',
 }

@@ -368,6 +368,10 @@ export class Renderer {
       this.#drawThermos(ctx, meta.thermos);
     }
 
+    if (meta.sumArrows) {
+      this.#drawSumArrows(ctx, meta.sumArrows);
+    }
+
     ctx.restore();
   }
 
@@ -539,6 +543,130 @@ export class Renderer {
         Math.PI * 2,
       );
       ctx.fill();
+      ctx.closePath();
+    }
+  }
+
+  #drawSumArrows(ctx: CanvasRenderingContext2D, arrows: SumArrow[]) {
+    if (this.#theme === 'dark') {
+      ctx.strokeStyle = colors.bgfg[700];
+      ctx.fillStyle = colors.bgfg[700];
+    } else {
+      ctx.strokeStyle = colors.bgfg[300];
+      ctx.fillStyle = colors.bgfg[300];
+    }
+    ctx.lineWidth = this.#getPixel(this.#width * 0.005);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    const r = this.#getPixel(this.#width * 0.04);
+    const arrowTipLength = this.#getPixel(this.#width * 0.025);
+
+    for (const arrow of arrows) {
+      ctx.beginPath();
+
+      for (let i = 0; i < arrow.path.length; i += 1) {
+        const cell = arrow.path[i];
+
+        const x = this.#getPixel(cell.col * this.#cellWidth + this.#cellWidth / 2);
+        const y = this.#getPixel(cell.row * this.#cellHeight + this.#cellHeight / 2);
+
+        if (i === arrow.path.length - 1) {
+          const prevCell = arrow.path[i - 1];
+
+          if (cell.col === prevCell.col) {
+            if (cell.row > prevCell.row) {
+              const tip = this.#getPixel(cell.row * this.#cellWidth + this.#cellWidth * 0.7);
+              ctx.lineTo(x, tip);
+
+              ctx.moveTo(
+                this.#getPixel(x - arrowTipLength),
+                this.#getPixel(tip - arrowTipLength),
+              );
+              ctx.lineTo(
+                this.#getPixel(x),
+                this.#getPixel(tip),
+              );
+              ctx.lineTo(
+                this.#getPixel(x + arrowTipLength),
+                this.#getPixel(tip - arrowTipLength),
+              );
+            } else {
+              const tip = this.#getPixel(cell.row * this.#cellWidth + this.#cellWidth * 0.3);
+              ctx.lineTo(x, tip);
+
+              ctx.moveTo(
+                this.#getPixel(x - arrowTipLength),
+                this.#getPixel(tip + arrowTipLength),
+              );
+              ctx.lineTo(
+                this.#getPixel(x),
+                this.#getPixel(tip),
+              );
+              ctx.lineTo(
+                this.#getPixel(x + arrowTipLength),
+                this.#getPixel(tip + arrowTipLength),
+              );
+            }
+          }
+
+          if (cell.row === prevCell.row) {
+            if (cell.col > prevCell.col) {
+              const tip = this.#getPixel(cell.col * this.#cellWidth + this.#cellWidth * 0.7);
+              ctx.lineTo(tip, y);
+
+              ctx.moveTo(
+                this.#getPixel(tip - arrowTipLength),
+                this.#getPixel(y - arrowTipLength),
+              );
+              ctx.lineTo(
+                this.#getPixel(tip),
+                this.#getPixel(y),
+              );
+              ctx.lineTo(
+                this.#getPixel(tip - arrowTipLength),
+                this.#getPixel(y + arrowTipLength),
+              );
+            } else {
+              const tip = this.#getPixel(cell.col * this.#cellWidth + this.#cellWidth * 0.3);
+              ctx.lineTo(tip, y);
+
+              ctx.moveTo(
+                this.#getPixel(tip + arrowTipLength),
+                this.#getPixel(y - arrowTipLength),
+              );
+              ctx.lineTo(
+                this.#getPixel(tip),
+                this.#getPixel(y),
+              );
+              ctx.lineTo(
+                this.#getPixel(tip + arrowTipLength),
+                this.#getPixel(y + arrowTipLength),
+              );
+            }
+          }
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+
+      ctx.stroke();
+      ctx.closePath();
+
+      const x = this.#getPixel(arrow.path[0].col * this.#cellWidth + this.#cellWidth / 2);
+      const y = this.#getPixel(arrow.path[0].row * this.#cellHeight + this.#cellHeight / 2);
+      ctx.beginPath();
+      ctx.arc(
+        x,
+        y,
+        r,
+        0,
+        Math.PI * 2,
+      );
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fill();
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.stroke();
       ctx.closePath();
     }
   }
