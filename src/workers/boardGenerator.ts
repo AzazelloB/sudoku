@@ -152,6 +152,9 @@ const generateCages = () => {
         continue outer;
       }
 
+      const prevCol = col;
+      const prevRow = row;
+
       if (Math.random() > 0.5) {
         const newCol = col + (Math.random() > 0.5 ? 1 : -1);
         const newIndex = newCol + row * cellsInColumn;
@@ -178,6 +181,13 @@ const generateCages = () => {
         }
 
         row = newRow;
+      }
+
+      // the TipButton overlaps the sum clue for a cages that has a cell in the top left corner
+      if (col === 0 && row === 0) {
+        col = prevCol;
+        row = prevRow;
+        continue;
       }
 
       const newIndex = col + row * cellsInColumn;
