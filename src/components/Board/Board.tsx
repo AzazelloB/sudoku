@@ -18,6 +18,8 @@ import { initialHeight, initialWidth, scale } from '~/components/Board/settings'
 import { state } from '~/components/Board/state';
 import { selectCell } from '~/components/Board/board';
 
+const BUFFER_PADDING = 20;
+
 interface BoardProps {
   paused: () => boolean;
   mode: Accessor<InsertionMode>;
@@ -47,6 +49,7 @@ const Board: Component<BoardProps> = (props) => {
   let layer_2: HTMLCanvasElement;
   let layer_3: HTMLCanvasElement;
   let layer_4: HTMLCanvasElement;
+  let layer_5: HTMLCanvasElement;
 
   const renderer = new Renderer();
 
@@ -62,16 +65,22 @@ const Board: Component<BoardProps> = (props) => {
 
     renderer.drawCellColors(layer_1_ctx, state.cells);
     renderer.drawGrid(layer_1_ctx);
-    renderer.drawMeta(layer_1_ctx, state.meta);
 
     renderer.drawSelection(layer_3_ctx, state.selectedCells);
 
     renderer.drawValues(layer_3_ctx, state.cells, state.revealed);
   };
 
+  const drawUnchangingLayers = (
+    layer_4_ctx: CanvasRenderingContext2D,
+  ) => {
+    renderer.drawMeta(layer_4_ctx, state.meta, BUFFER_PADDING * scale);
+  };
+
   onMount(() => {
     const layer_1_ctx = layer_1.getContext('2d')!;
     const layer_3_ctx = layer_3.getContext('2d')!;
+    const layer_4_ctx = layer_4.getContext('2d')!;
 
     const onResize = () => {
       const { top, left } = layer_2.getBoundingClientRect();
@@ -87,7 +96,10 @@ const Board: Component<BoardProps> = (props) => {
 
       renderer.resize(size * scale, size * scale);
 
-      window.requestAnimationFrame(() => drawStaticLayers(layer_1_ctx, layer_3_ctx));
+      window.requestAnimationFrame(() => {
+        drawStaticLayers(layer_1_ctx, layer_3_ctx);
+        drawUnchangingLayers(layer_4_ctx);
+      });
     };
 
     onResize();
@@ -146,7 +158,7 @@ const Board: Component<BoardProps> = (props) => {
     }
 
     const layer_2_ctx = layer_2.getContext('2d')!;
-    const layer_4_ctx = layer_4.getContext('2d')!;
+    const layer_4_ctx = layer_5.getContext('2d')!;
 
     let prevTimeStamp = 0;
 
@@ -262,6 +274,18 @@ const Board: Component<BoardProps> = (props) => {
       <canvas
         ref={layer_4!}
         class="pointer-events-none absolute inset-0 z-40"
+        width={canvasWidth() * scale}
+        height={canvasHeight() * scale}
+        style={{
+          width: `${canvasWidth() + BUFFER_PADDING * 2}px`,
+          height: `${canvasHeight() + BUFFER_PADDING * 2}px`,
+          top: `-${BUFFER_PADDING}px`,
+          left: `-${BUFFER_PADDING}px`,
+        }}
+      />
+      <canvas
+        ref={layer_5!}
+        class="pointer-events-none absolute inset-0 z-50"
         width={canvasWidth() * scale}
         height={canvasHeight() * scale}
         style={{

@@ -98,13 +98,11 @@ export class Renderer {
   flyInCallback: CallableFunction | null = null;
 
   resize(width: number, height: number) {
-    const cellWidth = width / cellsInRow;
-    const cellHeight = height / cellsInColumn;
-
     this.#width = width;
     this.#height = height;
-    this.#cellWidth = cellWidth;
-    this.#cellHeight = cellHeight;
+
+    this.#cellWidth = this.#width / cellsInRow;
+    this.#cellHeight = this.#height / cellsInColumn;
   }
 
   setTheme(theme: Theme) {
@@ -352,7 +350,16 @@ export class Renderer {
     ctx.globalAlpha = 1;
   }
 
-  drawMeta(ctx: CanvasRenderingContext2D, meta: Meta) {
+  drawMeta(ctx: CanvasRenderingContext2D, meta: Meta, metaPadding = 0) {
+    ctx.save();
+    // scaling and translating is inaccurate and doesn't give pixel perfect results
+    // as if we didn't introduce metaPadding
+    ctx.translate(metaPadding, metaPadding);
+    ctx.scale(
+      (this.#width - metaPadding * 2) / this.#width,
+      (this.#height - metaPadding * 2) / this.#height,
+    );
+
     if (meta.cages) {
       const cages = meta.cages;
       const padding = this.#width * 0.0115;
@@ -479,6 +486,8 @@ export class Renderer {
 
       ctx.setLineDash([]);
     }
+
+    ctx.restore();
   }
 
   drawValues(ctx: CanvasRenderingContext2D, cells: Cell[], revealed = false) {
