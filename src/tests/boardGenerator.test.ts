@@ -6,7 +6,7 @@ import {
 import { RuleType } from '~/constants/rules';
 import { onMessage } from '~/workers/boardGenerator';
 
-it('board generator tests', async () => {
+it('board generator generation time tests', async () => {
   const ts = Date.now();
   onMessage({ difficulty: 'hard', rules: [RuleType.NORMAL_SUDOKU] });
 

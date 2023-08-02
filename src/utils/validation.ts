@@ -3,7 +3,7 @@ import { RuleType } from '~/constants/rules';
 
 type Cells = (number | null)[];
 
-const isValidNormalSudoku: Validator = (meta, cells, number, index) => {
+export const isValidNormalSudoku: Validator = (meta, cells, number, index) => {
   const col = index % cellsInRow;
   const row = Math.floor(index / cellsInRow);
 
@@ -41,7 +41,7 @@ const isValidNormalSudoku: Validator = (meta, cells, number, index) => {
   return true;
 };
 
-const isValidKingsMove: Validator = (meta, cells, number, index) => {
+export const isValidKingsMove: Validator = (meta, cells, number, index) => {
   for (let i = -1; i <= 1; i++) {
     for (let j = -1; j <= 1; j++) {
       const kingIndex = index + (i * cellsInRow) + j;
@@ -55,7 +55,7 @@ const isValidKingsMove: Validator = (meta, cells, number, index) => {
   return true;
 };
 
-const isValidKnightsMove: Validator = (meta, cells, number, index) => {
+export const isValidKnightsMove: Validator = (meta, cells, number, index) => {
   const col = index % cellsInRow;
   const row = Math.floor(index / cellsInRow);
 
@@ -83,7 +83,7 @@ const isValidKnightsMove: Validator = (meta, cells, number, index) => {
   return true;
 };
 
-const isValidKillerSudoku: Validator = (meta, cells, number, index) => {
+export const isValidKillerSudoku: Validator = (meta, cells, number, index) => {
   const { cages } = meta;
   const col = index % cellsInRow;
   const row = Math.floor(index / cellsInRow);
@@ -105,7 +105,7 @@ const isValidKillerSudoku: Validator = (meta, cells, number, index) => {
   return true;
 };
 
-const isValidThermo: Validator = (meta, cells, number, index) => {
+export const isValidThermo: Validator = (meta, cells, number, index) => {
   const { thermos } = meta;
   const col = index % cellsInRow;
   const row = Math.floor(index / cellsInRow);
@@ -151,7 +151,7 @@ const isValidThermo: Validator = (meta, cells, number, index) => {
   return true;
 };
 
-const isValidArrowSum: Validator = (meta, cells, number, index) => {
+export const isValidArrowSum: Validator = (meta, cells, number, index) => {
   const { sumArrows } = meta;
   const col = index % cellsInRow;
   const row = Math.floor(index / cellsInRow);
