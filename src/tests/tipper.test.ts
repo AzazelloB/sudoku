@@ -3,7 +3,9 @@ import { expect, it } from 'vitest';
 import { RuleType } from '~/constants/rules';
 import {
   TipType,
+  checkMistakes,
   findEasyNakedSingle,
+  findNakedSingle,
   isBoardFinished,
   onMessage,
 } from '~/workers/tipper';
@@ -18,6 +20,30 @@ const board = [
   null, null, null, null, null, null, 7, 4, null,
   null, null, 3, null, 2, null, null, 6, null,
   5, null, null, 1, null, null, null, null, 9,
+];
+
+const board2 = [
+  9, 2, null, null, null, null, null, null, 3,
+  null, null, null, 2, 3, null, null, null, null,
+  null, null, 6, null, 8, 7, 5, null, null,
+  4, null, 1, 5, null, null, null, null, 8,
+  6, 5, 9, 8, null, 3, null, 1, 4,
+  2, 8, null, 4, 9, 1, 6, null, 5,
+  8, null, null, null, null, 2, 4, null, null,
+  null, null, 2, null, null, null, null, null, null,
+  null, 6, null, 7, null, 8, 1, null, null,
+];
+
+const board3 = [
+  9, 2, null, null, null, null, 2, null, 3,
+  null, null, null, 2, 3, null, null, null, null,
+  null, null, 6, null, 8, 7, 5, null, null,
+  4, null, 1, 5, null, null, null, null, 8,
+  6, 5, 9, 8, null, 3, null, 1, 4,
+  2, 8, null, 4, 9, 1, 6, null, 5,
+  8, null, null, null, null, 2, 4, null, null,
+  null, null, 2, null, null, null, null, null, null,
+  null, 6, null, 7, null, 8, 1, null, null,
 ];
 
 const solvedBoard = [
@@ -39,6 +65,30 @@ it('tipper tests', async () => {
   expect(onMessage({ cells: board, rules, meta: {} as Meta })).toEqual({
     type: TipType.EASY_NAKED_SINGLE,
     cells: [{ col: 0, row: 3 }],
+  });
+
+  expect(findNakedSingle(rules, {} as Meta, board2)).toEqual([{ col: 5, row: 3 }]);
+  expect(onMessage({ cells: board2, rules, meta: {} as Meta })).toEqual({
+    type: TipType.NAKED_SINGLE,
+    cells: [{ col: 5, row: 3 }],
+  });
+
+  expect(checkMistakes(rules, {} as Meta, board3)).toEqual([
+    { col: 1, row: 0 },
+    { col: 6, row: 0 },
+  ]);
+  expect(onMessage({ cells: board3, rules, meta: {} as Meta })).toEqual({
+    type: TipType.MISTAKE,
+    cells: [
+      { col: 1, row: 0 },
+      { col: 6, row: 0 },
+    ],
+  });
+
+  // has to be called forth or whatever max attemts is
+  expect(onMessage({ cells: [], rules, meta: {} as Meta })).toEqual({
+    type: TipType.TRY_THINKING,
+    cells: [],
   });
 
   expect(isBoardFinished(rules, {} as Meta, board)).toBeNull();

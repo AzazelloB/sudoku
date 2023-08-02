@@ -31,7 +31,7 @@ const checkAttempts: TipFiner = () => {
   return null;
 };
 
-const checkMistakes: TipFiner = (rules, meta, cells) => {
+export const checkMistakes: TipFiner = (rules, meta, cells) => {
   const seen = new Map();
 
   for (let i = 0; i < cellsInColumn; i++) {
@@ -174,7 +174,7 @@ export const findEasyNakedSingle: TipFiner = (rules, meta, cells): CellPosition[
   return null;
 };
 
-const findNakedSingle: TipFiner = (rules, meta, cells): CellPosition[] | null => {
+export const findNakedSingle: TipFiner = (rules, meta, cells): CellPosition[] | null => {
   for (let index = 0; index < cells.length; index++) {
     if (cells[index] !== null) {
       continue;
