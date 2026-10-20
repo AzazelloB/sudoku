@@ -5,11 +5,11 @@ import checker from 'vite-plugin-checker';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 
-// shouldn't end with /
-const baseURL = 'https://number.place';
+const siteURL = 'https://azazellob.github.io/sudoku';
+const basePath = '/sudoku/';
 
 export default defineConfig({
-  base: baseURL,
+  base: basePath,
   plugins: [
     solidPlugin(),
     checker({
@@ -19,7 +19,6 @@ export default defineConfig({
     VitePWA({
       workbox: {
         globPatterns: ['**/*'],
-        globIgnores: ['CNAME'],
       },
       registerType: 'autoUpdate',
       includeAssets: [
@@ -28,9 +27,9 @@ export default defineConfig({
         'mask-icon.svg',
       ],
       manifest: {
-        id: `${baseURL}/`,
-        start_url: `${baseURL}/`,
-        scope: `${baseURL}/`,
+          id: `${siteURL}/`,
+          start_url: `${siteURL}/`,
+          scope: `${siteURL}/`,
         name: 'Sudoku',
         short_name: 'Sudoku',
         theme_color: '#138686',

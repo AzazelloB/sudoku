@@ -2,7 +2,7 @@
   "name": "sudoku",
   "version": "1.0.0",
   "description": "",
-  "homepage": "https://number.place",
+  "homepage": "https://azazellob.github.io/sudoku/",
   "scripts": {
     "start": "vite",
     "dev": "vite",

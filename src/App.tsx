@@ -1,5 +1,4 @@
 import {
-  Router,
   Route,
   Routes,
 } from '@solidjs/router';
@@ -13,13 +12,11 @@ import PlaygroundPage from '~/pages/playground';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path={ROUTES.HOME} element={<Layout><HomePage /></Layout>} />
-        <Route path={ROUTES.WHOAMI} element={<WhoamiPage />} />
-        <Route path={ROUTES.PLAYGROUND} element={<Layout><PlaygroundPage /></Layout>} />
-      </Routes>
-    </Router>
+    <Routes base={import.meta.env.BASE_URL}>
+      <Route path={ROUTES.HOME} element={<Layout><HomePage /></Layout>} />
+      <Route path={ROUTES.WHOAMI} element={<WhoamiPage />} />
+      <Route path={ROUTES.PLAYGROUND} element={<Layout><PlaygroundPage /></Layout>} />
+    </Routes>
   );
 }
 
